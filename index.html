@@ -1107,6 +1107,17 @@ async function init() {
   } catch(e) {
     showToast('Не вдалося завантажити програму', 'error');
   }
+
+  // Auto-sync logs from GitHub if local is empty
+  const localLogs = getLocalLogs();
+  if (localLogs.sessions.length === 0) {
+    const remote = await fetchLogsFromGitHub();
+    if (remote && remote.sessions && remote.sessions.length > 0) {
+      saveLocalLogs(remote);
+      renderStats();
+      showToast('Журнал завантажено з GitHub ✓', 'success');
+    }
+  }
 }
 
 init();
