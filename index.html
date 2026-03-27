@@ -1083,6 +1083,19 @@ function showToast(msg, type = '') {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
+  // One-time setup via URL hash: #setup?token=ghp_xxx
+  const hash = window.location.hash;
+  if (hash.includes('token=')) {
+    const match = hash.match(/token=([^&]+)/);
+    if (match) {
+      setSetting('github_token', match[1]);
+      setSetting('github_owner', 'TheKrips');
+      setSetting('github_repo', 'gym-tracker');
+      history.replaceState(null, '', window.location.pathname);
+      showToast('GitHub налаштовано ✓', 'success');
+    }
+  }
+
   renderTimers();
   renderDayGrid();
   renderStats();
