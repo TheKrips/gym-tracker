@@ -1,3 +1,580 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "date": "2026-02-25",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "notes": "Перше тренування ніг. RDL ще в програмі (пізніше виключено через техніку).",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            { "set": 1, "weight": 25, "reps": 10 },
+            { "set": 2, "weight": 35, "reps": 5 },
+            { "set": 3, "weight": 55, "reps": 8 },
+            { "set": 4, "weight": 65, "reps": 6 },
+            { "set": 5, "weight": 55, "reps": 8 },
+            { "set": 6, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "romanian_deadlift",
+          "sets": [
+            { "set": 1, "weight": 20, "reps": 10 },
+            { "set": 2, "weight": 30, "reps": 10 },
+            { "set": 3, "weight": 40, "reps": 8 },
+            { "set": 4, "weight": 60, "reps": 6 },
+            { "set": 5, "weight": 60, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            { "set": 1, "weight": 60, "reps": 8 },
+            { "set": 2, "weight": 100, "reps": 8 },
+            { "set": 3, "weight": 100, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            { "set": 1, "weight": 0, "reps": 12 },
+            { "set": 2, "weight": 0, "reps": 12 },
+            { "set": 3, "weight": 0, "reps": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-02-26",
+      "workout_id": "upper_b",
+      "workout_name": "Upper B",
+      "notes": "Четвер. Гантельний жим, тяга блоку, плечі, руки.",
+      "exercises": [
+        {
+          "exercise_id": "db_bench_press",
+          "sets": [
+            { "set": 1, "weight": 10, "reps": 5 },
+            { "set": 2, "weight": 15, "reps": 10 },
+            { "set": 3, "weight": 15, "reps": 12 },
+            { "set": 4, "weight": 17.5, "reps": 10 },
+            { "set": 5, "weight": 17.5, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_neutral",
+          "sets": [
+            { "set": 1, "weight": 45, "reps": 10 },
+            { "set": 2, "weight": 45, "reps": 10 },
+            { "set": 3, "weight": 45, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 15, "reps": 10 },
+            { "set": 2, "weight": 15, "reps": 8 },
+            { "set": 3, "weight": 15, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 12 },
+            { "set": 2, "weight": 4, "reps": 12 },
+            { "set": 3, "weight": 4, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_b",
+          "sets": [
+            { "set": 1, "weight": 7.5, "reps": 12 },
+            { "set": 2, "weight": 7.5, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_b",
+          "sets": [
+            { "set": 1, "weight": 25, "reps": 12 },
+            { "set": 2, "weight": 25, "reps": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-02",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "notes": "Понеділок. Жим штанги, тяга блоку, плечі, тяга гантелі, підйоми, суперсет руки.",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 10 },
+            { "set": 2, "weight": 40, "reps": 6 },
+            { "set": 3, "weight": 55, "reps": 6 },
+            { "set": 4, "weight": 55, "reps": 6 },
+            { "set": 5, "weight": 55, "reps": 6 },
+            { "set": 6, "weight": 55, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            { "set": 1, "weight": 50, "reps": 10 },
+            { "set": 2, "weight": 55, "reps": 8 },
+            { "set": 3, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 15, "reps": 8 },
+            { "set": 2, "weight": 15, "reps": 10 },
+            { "set": 3, "weight": 15, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            { "set": 1, "weight": 20, "reps": 10 },
+            { "set": 2, "weight": 20, "reps": 10 },
+            { "set": 3, "weight": 20, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 4, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            { "set": 1, "weight": 8, "reps": 12 },
+            { "set": 2, "weight": 8, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            { "set": 1, "weight": 25, "reps": 15 },
+            { "set": 2, "weight": 30, "reps": 12 },
+            { "set": 3, "weight": 30, "reps": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-04",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "notes": "Середа (в оригіналі написано 4.02.26 — вважаємо 4.03.26). RDL ще в програмі але техніка погана.",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            { "set": 1, "weight": 60, "reps": 6 },
+            { "set": 2, "weight": 60, "reps": 6 },
+            { "set": 3, "weight": 60, "reps": 6 },
+            { "set": 4, "weight": 60, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "romanian_deadlift",
+          "sets": [
+            { "set": 1, "weight": 60, "reps": 8 },
+            { "set": 2, "weight": 60, "reps": 8 },
+            { "set": 3, "weight": 60, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            { "set": 1, "weight": 80, "reps": 8 },
+            { "set": 2, "weight": 110, "reps": 8 },
+            { "set": 3, "weight": 110, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 12 },
+            { "set": 2, "weight": 30, "reps": 12 },
+            { "set": 3, "weight": 30, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            { "set": 1, "weight": 0, "reps": 15 },
+            { "set": 2, "weight": 0, "reps": 15 },
+            { "set": 3, "weight": 0, "reps": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-09",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "notes": "Понеділок. Перший раз 60кг на жимі. Додатково підйом бліна перед собою 5кг×15, 10кг×10×2.",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 6 },
+            { "set": 2, "weight": 60, "reps": 6 },
+            { "set": 3, "weight": 60, "reps": 6 },
+            { "set": 4, "weight": 60, "reps": 6 },
+            { "set": 5, "weight": 60, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 8 },
+            { "set": 2, "weight": 55, "reps": 8 },
+            { "set": 3, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 15, "reps": 8 },
+            { "set": 2, "weight": 17.5, "reps": 8 },
+            { "set": 3, "weight": 17.5, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            { "set": 1, "weight": 22.5, "reps": 10 },
+            { "set": 2, "weight": 22.5, "reps": 10 },
+            { "set": 3, "weight": 22.5, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 4, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            { "set": 1, "weight": 8, "reps": 12 },
+            { "set": 2, "weight": 8, "reps": 10 },
+            { "set": 3, "weight": 8, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 15 },
+            { "set": 2, "weight": 35, "reps": 15 },
+            { "set": 3, "weight": 35, "reps": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-16",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "notes": "Понеділок. Цікаво: жим 60×6, потім 60×10 — різниця велика, можливо недожимав в перших сетах.",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            { "set": 1, "weight": 60, "reps": 6 },
+            { "set": 2, "weight": 60, "reps": 6 },
+            { "set": 3, "weight": 60, "reps": 10 },
+            { "set": 4, "weight": 60, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            { "set": 1, "weight": 50, "reps": 8 },
+            { "set": 2, "weight": 50, "reps": 8 },
+            { "set": 3, "weight": 50, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 17.5, "reps": 8 },
+            { "set": 2, "weight": 17.5, "reps": 8 },
+            { "set": 3, "weight": 17.5, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            { "set": 1, "weight": 20, "reps": 10 },
+            { "set": 2, "weight": 20, "reps": 10 },
+            { "set": 3, "weight": 20, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 4, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            { "set": 1, "weight": 7, "reps": 12 },
+            { "set": 2, "weight": 7, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 12 },
+            { "set": 2, "weight": 30, "reps": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-18",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "notes": "Середа. Перший раз 62.5кг на присіді. Гіперекстензія без ваги. RDL виключено.",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            { "set": 1, "weight": 62.5, "reps": 6 },
+            { "set": 2, "weight": 62.5, "reps": 6 },
+            { "set": 3, "weight": 62.5, "reps": 6 },
+            { "set": 4, "weight": 62.5, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            { "set": 1, "weight": 110, "reps": 10 },
+            { "set": 2, "weight": 110, "reps": 10 },
+            { "set": 3, "weight": 110, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            { "set": 1, "weight": 35, "reps": 12 },
+            { "set": 2, "weight": 35, "reps": 12 },
+            { "set": 3, "weight": 35, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "hyperextension_a",
+          "sets": [
+            { "set": 1, "weight": 0, "reps": 15 },
+            { "set": 2, "weight": 0, "reps": 15 },
+            { "set": 3, "weight": 0, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            { "set": 1, "weight": 0, "reps": 20 },
+            { "set": 2, "weight": 0, "reps": 20 },
+            { "set": 3, "weight": 0, "reps": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-20",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "notes": "П'ятниця (зроблено Upper A замість Lower B). Жим 68кг — особистий рекорд на 9 повторів!",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            { "set": 1, "weight": 62, "reps": 6 },
+            { "set": 2, "weight": 62, "reps": 6 },
+            { "set": 3, "weight": 68, "reps": 6 },
+            { "set": 4, "weight": 68, "reps": 9 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 8 },
+            { "set": 2, "weight": 55, "reps": 8 },
+            { "set": 3, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 20, "reps": 10 },
+            { "set": 2, "weight": 20, "reps": 10 },
+            { "set": 3, "weight": 20, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            { "set": 1, "weight": 22.5, "reps": 10 },
+            { "set": 2, "weight": 22.5, "reps": 10 },
+            { "set": 3, "weight": 22.5, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 4, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            { "set": 1, "weight": 7, "reps": 12 },
+            { "set": 2, "weight": 7, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 15 },
+            { "set": 2, "weight": 30, "reps": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-23",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "notes": "Понеділок. Збій сну (кілька ночей о 4:30). Не випив креатин. Результат впав — 70кг на 3 рази замість 6, довелося знизити до 65кг.",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            { "set": 1, "weight": 50, "reps": 6 },
+            { "set": 2, "weight": 70, "reps": 3 },
+            { "set": 3, "weight": 65, "reps": 6 },
+            { "set": 4, "weight": 65, "reps": 6 }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 8 },
+            { "set": 2, "weight": 57, "reps": 8 },
+            { "set": 3, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 20, "reps": 10 },
+            { "set": 2, "weight": 20, "reps": 10 },
+            { "set": 3, "weight": 20, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            { "set": 1, "weight": 22.5, "reps": 15 },
+            { "set": 2, "weight": 22.5, "reps": 15 },
+            { "set": 3, "weight": 22.5, "reps": 12 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 5, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            { "set": 1, "weight": 8, "reps": 10 },
+            { "set": 2, "weight": 8, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            { "set": 1, "weight": 30, "reps": 15 },
+            { "set": 2, "weight": 30, "reps": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-03-25",
+      "workout_id": "upper_b",
+      "workout_name": "Upper B",
+      "notes": "Середа. Зворотні розводки були дуже тяжкими — з 2-го сету по ~10 повторів з 5кг + добивав з 2кг.",
+      "exercises": [
+        {
+          "exercise_id": "lat_pulldown_neutral",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 8 },
+            { "set": 2, "weight": 55, "reps": 8 },
+            { "set": 3, "weight": 55, "reps": 8 },
+            { "set": 4, "weight": 55, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "cable_row",
+          "sets": [
+            { "set": 1, "weight": 55, "reps": 10 },
+            { "set": 2, "weight": 55, "reps": 10 },
+            { "set": 3, "weight": 55, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            { "set": 1, "weight": 18, "reps": 8 },
+            { "set": 2, "weight": 18, "reps": 8 },
+            { "set": 3, "weight": 18, "reps": 8 }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 4, "reps": 15 },
+            { "set": 3, "weight": 4, "reps": 15 }
+          ]
+        },
+        {
+          "exercise_id": "rear_delt_fly",
+          "sets": [
+            { "set": 1, "weight": 4, "reps": 15 },
+            { "set": 2, "weight": 5, "reps": 10 },
+            { "set": 3, "weight": 5, "reps": 10 }
+          ]
+        },
+        {
+          "exercise_id": "face_pull",
+          "sets": [
+            { "set": 1, "weight": 25, "reps": 12 },
+            { "set": 2, "weight": 25, "reps": 12 }
+          ]
+        }
+      ]
+    }
+  ]
 }
