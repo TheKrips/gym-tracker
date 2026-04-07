@@ -1,6 +1,119 @@
 {
   "sessions": [
     {
+      "date": "2026-04-07",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 60,
+              "reps": 7
+            },
+            {
+              "set": 2,
+              "weight": 60,
+              "reps": 7
+            },
+            {
+              "set": 3,
+              "weight": 60,
+              "reps": 10
+            },
+            {
+              "set": 4,
+              "weight": 60,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 115,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 115,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 115,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 37,
+              "reps": 12
+            },
+            {
+              "set": 2,
+              "weight": 37,
+              "reps": 12
+            },
+            {
+              "set": 3,
+              "weight": 37,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "hyperextension_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 5,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 5,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 5,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 0,
+              "reps": 20
+            },
+            {
+              "set": 2,
+              "weight": 0,
+              "reps": 20
+            },
+            {
+              "set": 3,
+              "weight": 0,
+              "reps": 20
+            }
+          ]
+        }
+      ],
+      "finished_at": "2026-04-07T22:42:18.058Z"
+    },
+    {
       "date": "2026-04-02",
       "workout_id": "upper_a",
       "workout_name": "Upper A",
