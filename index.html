@@ -26,19 +26,21 @@
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 16px; overflow-x: hidden; }
     body { padding-bottom: 80px; }
 
-    /* Header */
+    /* Header — auto-hides on scroll down */
     .header {
       position: sticky; top: 0; z-index: 100;
       background: var(--bg); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; min-height: 56px;
+      padding: 12px 16px; min-height: 52px;
+      transition: transform 0.25s ease;
     }
+    .header.hidden { transform: translateY(-100%); }
     .header h1 { font-size: 18px; font-weight: 700; }
     .header-actions { display: flex; gap: 8px; }
     .icon-btn {
-      width: 40px; height: 40px; border-radius: 50%;
+      width: 36px; height: 36px; border-radius: 50%;
       background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); font-size: 18px; cursor: pointer;
+      color: var(--text); font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
@@ -156,24 +158,24 @@
     .warmup-line { font-size: 12px; color: var(--yellow); margin-top: 8px; padding: 6px 10px; background: #f59e0b11; border-radius: 6px; border: 1px solid #f59e0b22; }
     .note-line { font-size: 12px; color: var(--muted); margin-top: 8px; padding: 6px 10px; background: var(--surface2); border-radius: 6px; border: 1px solid var(--border); font-style: italic; }
 
-    /* Set logger */
-    .sets-section { border-top: 1px solid var(--border); padding: 12px 16px 14px; }
-    .sets-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-    .set-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .set-num { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+    /* Set logger — compact for iPhone */
+    .sets-section { border-top: 1px solid var(--border); padding: 10px 12px 12px; }
+    .sets-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .set-num { width: 24px; height: 24px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
     .set-num.done { background: var(--green); border-color: var(--green); color: white; }
-    .set-input-wrap { display: flex; align-items: center; gap: 4px; flex: 1; }
+    .set-input-wrap { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; }
     .set-input {
       flex: 1; background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); border-radius: 8px; padding: 8px 10px;
-      font-size: 15px; text-align: center; min-width: 0;
+      color: var(--text); border-radius: 8px; padding: 8px 6px;
+      font-size: 15px; text-align: center; min-width: 0; width: 0;
       -webkit-appearance: none;
     }
     .set-input:focus { outline: none; border-color: var(--primary); }
     .set-input.done { border-color: var(--green); }
-    .set-unit { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .set-unit { font-size: 11px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
     .set-done-btn {
-      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
       background: var(--surface2); border: 2px solid var(--border);
       color: var(--muted); font-size: 18px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
@@ -399,8 +401,10 @@ let pageHistory = ['home'];
 let timerDefault = parseInt(localStorage.getItem('gym_timer_default') || '90');
 let timerSeconds = timerDefault;
 let timerTotal = timerDefault;
+let timerEndTime = 0; // absolute timestamp when timer ends
 let timerInterval = null;
 let timerRunning = false;
+let timerDone = false;
 let audioCtx = null;
 
 function getAudioCtx() {
@@ -429,26 +433,30 @@ function playDoneSound() {
   if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
 }
 
+// Timer uses absolute end time — survives background/scroll
 function timerTick() {
-  if (timerSeconds <= 0) {
+  const remaining = Math.max(0, Math.ceil((timerEndTime - Date.now()) / 1000));
+  timerSeconds = remaining;
+  if (remaining <= 0 && timerRunning) {
     clearInterval(timerInterval);
     timerInterval = null;
     timerRunning = false;
+    timerDone = true;
     timerSeconds = 0;
     playDoneSound();
-    renderTimers();
-    return;
   }
-  timerSeconds--;
   renderTimers();
 }
 
 function startTimer(secs) {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-  timerSeconds = secs !== undefined ? secs : timerDefault;
-  timerTotal = timerSeconds;
+  const duration = secs !== undefined ? secs : timerDefault;
+  timerSeconds = duration;
+  timerTotal = duration;
+  timerEndTime = Date.now() + duration * 1000;
   timerRunning = true;
-  timerInterval = setInterval(timerTick, 1000);
+  timerDone = false;
+  timerInterval = setInterval(timerTick, 250); // 250ms for smooth updates
   renderTimers();
 }
 
@@ -456,9 +464,11 @@ function tapTimer() {
   if (timerRunning) {
     clearInterval(timerInterval); timerInterval = null;
     timerRunning = false;
+    timerDone = false;
     timerSeconds = timerDefault;
     timerTotal = timerDefault;
   } else {
+    timerDone = false;
     startTimer();
   }
   renderTimers();
@@ -467,9 +477,16 @@ function tapTimer() {
 function adjustTimerDefault(delta) {
   timerDefault = Math.max(30, timerDefault + delta);
   localStorage.setItem('gym_timer_default', timerDefault);
-  if (!timerRunning) { timerSeconds = timerDefault; timerTotal = timerDefault; }
+  if (!timerRunning && !timerDone) { timerSeconds = timerDefault; timerTotal = timerDefault; }
   renderTimers();
 }
+
+// Recalculate on visibility change (coming back from background)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && timerRunning) {
+    timerTick(); // immediate recalc
+  }
+});
 
 function fmtTime(s) {
   const m = Math.floor(s / 60), sec = s % 60;
@@ -481,21 +498,20 @@ function timerHTML(id_suffix) {
   const fraction = timerTotal > 0 ? timerSeconds / timerTotal : 1;
   const offset = circ * (1 - fraction);
   const urgent = timerSeconds <= 10 && timerRunning;
-  const done = timerSeconds === 0 && !timerRunning && timerTotal > 0;
-  const progressClass = done ? 'done' : urgent ? 'urgent' : '';
-  const statusText = timerRunning ? 'Tap to cancel' : (done ? '✓ Done — tap to reset' : 'Tap to start');
-  const statusClass = timerRunning ? 'running' : done ? 'done' : '';
+  const progressClass = timerDone ? 'done' : urgent ? 'urgent' : '';
+  const statusText = timerRunning ? 'Tap to cancel' : (timerDone ? '✓ Готово — tap to reset' : 'Tap to start');
+  const statusClass = timerRunning ? 'running' : timerDone ? 'done' : '';
   return `
   <div class="timer-card" onclick="tapTimer()">
     <div class="timer-ring-wrap">
-      <svg class="timer-ring" width="100" height="100" viewBox="0 0 100 100">
+      <svg class="timer-ring" width="90" height="90" viewBox="0 0 100 100">
         <circle class="timer-ring-bg" cx="50" cy="50" r="${r}"/>
         <circle class="timer-ring-progress ${progressClass}" cx="50" cy="50" r="${r}"
           stroke-dasharray="${circ.toFixed(2)}"
           stroke-dashoffset="${offset.toFixed(2)}"/>
       </svg>
       <div class="timer-display">
-        <div class="timer-time">${fmtTime(timerSeconds)}</div>
+        <div class="timer-time" style="font-size:20px">${fmtTime(timerSeconds)}</div>
         <div class="timer-label">${timerRunning ? 'REST' : 'TIMER'}</div>
       </div>
     </div>
@@ -1121,6 +1137,22 @@ async function init() {
 }
 
 init();
+
+// ─── Auto-hide header on scroll down ──────────────────────────────────────
+let lastScrollY = 0;
+let headerHidden = false;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  const header = document.querySelector('.header');
+  if (y > lastScrollY && y > 60 && !headerHidden) {
+    header.classList.add('hidden');
+    headerHidden = true;
+  } else if (y < lastScrollY && headerHidden) {
+    header.classList.remove('hidden');
+    headerHidden = false;
+  }
+  lastScrollY = y;
+}, { passive: true });
 </script>
 </body>
 </html>
