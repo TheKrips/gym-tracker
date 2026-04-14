@@ -605,7 +605,26 @@ async function fetchWorkoutJson() {
   const c=localStorage.getItem('gym_workout_cache'); if(c) return JSON.parse(c); return null;
 }
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
-async function fetchHealthData() { return await fetchJSON('health/health-data.json'); }
+async function fetchHealthData() {
+  const raw = await fetchJSON('health-data.json');
+  if (!raw || !raw.samples) return null;
+  // Aggregate raw Apple Health samples into daily maps
+  const stepsByDay = {}, weightByDay = {}, fatByDay = {}, bmiByDay = {};
+  for (const s of raw.samples) {
+    const date = s.startDate.slice(0, 10);
+    if (s.type === 'stepCount') {
+      stepsByDay[date] = (stepsByDay[date] || 0) + s.value;
+    } else if (s.type === 'bodyMass') {
+      weightByDay[date] = s.value;
+    } else if (s.type === 'bodyFatPercentage') {
+      fatByDay[date] = s.value;
+    } else if (s.type === 'bodyMassIndex') {
+      bmiByDay[date] = s.value;
+    }
+  }
+  const toArr = map => Object.keys(map).sort().map(d => ({ date: d, value: map[d] }));
+  return { weight_kg: toArr(weightByDay), body_fat_pct: toArr(fatByDay), bmi: toArr(bmiByDay), steps: toArr(stepsByDay) };
+}
 async function pushLogsToGitHub(logs) {
   const token=getSetting('github_token'); if(!token) return false;
   const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
@@ -664,7 +683,7 @@ function renderHealthSection() {
     {label:'Вага', val:w?w.toFixed(1):'—', unit:'кг', trend:trend(h.weight_kg,'кг',true), spark:sparklineSVG(weightVals,'var(--p)'), color:'var(--p)'},
     {label:'Жир', val:f?f.toFixed(1):'—', unit:'%', trend:trend(h.body_fat_pct,'%',true), spark:sparklineSVG(fatVals,'#f87171'), color:'#f87171'},
     {label:'BMI', val:b?b.toFixed(1):'—', unit:'', trend:trend(h.bmi,''), spark:sparklineSVG(bmiVals,'var(--y)'), color:'var(--y)'},
-    {label:'Кроки', val:s?Math.round(s/1000).toFixed(1)+'k':'—', unit:'тис/день', trend:trend(h.steps,'','inv'), spark:sparklineSVG(stepsVals,'var(--g)'), color:'var(--g)'},
+    {label:'Кроки', val:s?Math.round(s/1000).toFixed(1)+'k':'—', unit:'тис/день', trend:(()=>{const l=last(h.steps),p=prev(h.steps);if(l==null||p==null)return'';const d=l-p;const cls=d===0?'trend-flat':d>0?'trend-up':'trend-down';return`<div class="hc-trend ${cls}">${d>0?'↑':'↓'} ${(Math.abs(d)/1000).toFixed(1)}k</div>`})(), spark:sparklineSVG(stepsVals,'var(--g)'), color:'var(--g)'},
   ].map(c=>`
     <div class="health-card">
       <div>
