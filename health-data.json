@@ -1,6 +1,6 @@
 {
   "generatedBy" : "HealthGitSync",
-  "lastSyncedAt" : "2026-04-16T22:37:26Z",
+  "lastSyncedAt" : "2026-04-16T22:38:28Z",
   "samples" : [
     {
       "endDate" : "2026-01-14T23:55:28Z",
@@ -35263,6 +35263,36 @@
       "value" : 45
     },
     {
+      "endDate" : "2026-04-14T10:02:05Z",
+      "id" : "9426DE6C-305C-4B7D-8E50-BD8C5FE0D7A0",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-14T10:02:05Z",
+      "type" : "bodyFatPercentage",
+      "unit" : "percent",
+      "value" : 15.299999999999999
+    },
+    {
+      "endDate" : "2026-04-14T10:02:05Z",
+      "id" : "D80C8BA6-22B4-44AD-B8EF-42E6DE94D058",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-14T10:02:05Z",
+      "type" : "bodyMass",
+      "unit" : "kg",
+      "value" : 65.5
+    },
+    {
+      "endDate" : "2026-04-14T10:02:05Z",
+      "id" : "DD0F2FA5-F5F6-4D7A-AF02-13C14F922A01",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-14T10:02:05Z",
+      "type" : "bodyMassIndex",
+      "unit" : "count",
+      "value" : 20.9
+    },
+    {
       "endDate" : "2026-04-14T10:18:42Z",
       "id" : "909BC204-67A6-40C6-A594-41D2B40122B3",
       "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
@@ -35591,6 +35621,36 @@
       "type" : "stepCount",
       "unit" : "count",
       "value" : 32
+    },
+    {
+      "endDate" : "2026-04-15T09:40:56Z",
+      "id" : "5B730952-E88B-4EC8-AAA3-857E4CCBFBF9",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-15T09:40:56Z",
+      "type" : "bodyMassIndex",
+      "unit" : "count",
+      "value" : 21
+    },
+    {
+      "endDate" : "2026-04-15T09:40:56Z",
+      "id" : "8135B088-0B2A-469D-AC93-1A813ADE47DD",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-15T09:40:56Z",
+      "type" : "bodyMass",
+      "unit" : "kg",
+      "value" : 65.8
+    },
+    {
+      "endDate" : "2026-04-15T09:40:56Z",
+      "id" : "F2C62723-1E97-4959-A6F8-6A817ADC3DDF",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-15T09:40:56Z",
+      "type" : "bodyFatPercentage",
+      "unit" : "percent",
+      "value" : 15.4
     },
     {
       "endDate" : "2026-04-15T09:48:47Z",
@@ -36041,6 +36101,36 @@
       "type" : "stepCount",
       "unit" : "count",
       "value" : 39
+    },
+    {
+      "endDate" : "2026-04-16T09:39:50Z",
+      "id" : "3456A4E7-8C3E-417C-A0BA-8A02CE357E08",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-16T09:39:50Z",
+      "type" : "bodyFatPercentage",
+      "unit" : "percent",
+      "value" : 15.1
+    },
+    {
+      "endDate" : "2026-04-16T09:39:50Z",
+      "id" : "CF6D806E-0EB5-4D74-AB7D-E6C7515AB452",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-16T09:39:50Z",
+      "type" : "bodyMass",
+      "unit" : "kg",
+      "value" : 65.1
+    },
+    {
+      "endDate" : "2026-04-16T09:39:50Z",
+      "id" : "DEF878D4-7F81-4C15-B48E-07C08A4AAB19",
+      "sourceBundle" : "com.xiaomi.mihome",
+      "sourceName" : "Xiaomi Home",
+      "startDate" : "2026-04-16T09:39:50Z",
+      "type" : "bodyMassIndex",
+      "unit" : "count",
+      "value" : 20.8
     },
     {
       "endDate" : "2026-04-16T09:49:54Z",
