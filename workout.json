@@ -1,18 +1,30 @@
 {
   "meta": {
-    "version": "3.0",
+    "version": "3.1",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
-    "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)"
+    "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
+    "updated": "2026-04-17"
   },
   "schedule": [
-    { "day": "Понеділок",  "workout_id": "upper_a" },
-    { "day": "Вівторок",   "workout_id": "lower_a" },
-    { "day": "Четвер",     "workout_id": "upper_b" },
-    { "day": "Пʼятниця",   "workout_id": "lower_b" }
+    {
+      "day": "Понеділок",
+      "workout_id": "upper_a"
+    },
+    {
+      "day": "Вівторок",
+      "workout_id": "lower_a"
+    },
+    {
+      "day": "Четвер",
+      "workout_id": "upper_b"
+    },
+    {
+      "day": "Пʼятниця",
+      "workout_id": "lower_b"
+    }
   ],
-  "override_today": { "date": "2026-04-16", "workout_id": "lower_a" },
   "workouts": [
     {
       "id": "upper_a",
@@ -133,8 +145,8 @@
               "id": "tricep_pushdown_a",
               "name": "Тяга каната вниз (тріцепс)",
               "sets": 3,
-              "reps": "12",
-              "weight_kg": 35,
+              "reps": "10",
+              "weight_kg": 36.0,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті притиснуті до тулуба і НЕ РУХАЮТЬСЯ",
@@ -176,8 +188,8 @@
           "type": "compound",
           "warmup": "70 кг × 10",
           "sets": 3,
-          "reps": "10",
-          "weight_kg": 100,
+          "reps": "6",
+          "weight_kg": 105.0,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/29/leg-press",
@@ -195,8 +207,8 @@
           "type": "isolation",
           "warmup": null,
           "sets": 3,
-          "reps": "15",
-          "weight_kg": 35,
+          "reps": "10",
+          "weight_kg": 36.0,
           "rir": "1-2",
           "rest_sec": 90,
           "jefit_url": "https://www.jefit.com/exercises/33/leg-extensions",
@@ -231,8 +243,8 @@
           "type": "isolation",
           "warmup": null,
           "sets": 3,
-          "reps": "12",
-          "weight_kg": 7.5,
+          "reps": "10",
+          "weight_kg": 8.5,
           "rir": "1-2",
           "rest_sec": 60,
           "jefit_url": "https://www.jefit.com/exercises/63/hyperextensions",

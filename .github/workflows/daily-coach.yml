@@ -1,0 +1,39 @@
+name: Daily Coach
+
+on:
+  schedule:
+    # Runs at 04:00 UTC every day (06:00 Kyiv winter / 07:00 summer)
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  coach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run daily coach
+        run: python scripts/daily_coach.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "AI Coach"
+          git config user.email "coach@gym-tracker.bot"
+          git add workout.json coach-log.md
+          # Only commit if there are changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            DATE=$(date -u +%Y-%m-%d)
+            git commit -m "coach: daily analysis $DATE"
+            git push
+          fi
