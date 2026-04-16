@@ -1,6 +1,119 @@
 {
   "sessions": [
     {
+      "date": "2026-04-16",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 62.5,
+              "reps": 7
+            },
+            {
+              "set": 2,
+              "weight": 62.5,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 62.5,
+              "reps": 10
+            },
+            {
+              "set": 4,
+              "weight": 62.5,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 120,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 120,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 120,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 40,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 40,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 40,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "hyperextension_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 6,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 10,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 10,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 0,
+              "reps": 20
+            },
+            {
+              "set": 2,
+              "weight": 0,
+              "reps": 20
+            },
+            {
+              "set": 3,
+              "weight": 0,
+              "reps": 20
+            }
+          ]
+        }
+      ],
+      "finished_at": "2026-04-16T21:04:12.925Z"
+    },
+    {
       "date": "2026-04-13",
       "workout_id": "upper_a",
       "workout_name": "Upper A",
@@ -89,50 +202,9 @@
               "reps": 11
             }
           ]
-        },
-        {
-          "exercise_id": "lateral_raises",
-          "sets": [
-            {
-              "set": 1,
-              "weight": 4,
-              "reps": 15
-            },
-            {
-              "set": 2,
-              "weight": 4,
-              "reps": 15
-            },
-            {
-              "set": 3,
-              "weight": 4,
-              "reps": 15
-            }
-          ]
-        },
-        {
-          "exercise_id": "plate_front_raise",
-          "sets": [
-            {
-              "set": 1,
-              "weight": 10,
-              "reps": 15
-            },
-            {
-              "set": 2,
-              "weight": 10,
-              "reps": 15
-            },
-            {
-              "set": 3,
-              "weight": 10,
-              "reps": 15
-            }
-          ]
         }
       ],
-      "finished_at": "2026-04-13T21:32:23.374Z",
-      "notes": "Підйоми в сторони (4кг×15) суперсетом з підйомом бліна (10кг×15), 10с відпочинок між, 45-60с між колами. 3 кола. Не встиг суперсет на руки — зал закривався."
+      "finished_at": "2026-04-13T21:32:23.374Z"
     },
     {
       "date": "2026-04-10",
