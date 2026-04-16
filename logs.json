@@ -51,6 +51,26 @@
           ]
         },
         {
+          "exercise_id": "leg_extension",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 35,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 35,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 35,
+              "reps": 15
+            }
+          ]
+        },
+        {
           "exercise_id": "leg_curl_a",
           "sets": [
             {
