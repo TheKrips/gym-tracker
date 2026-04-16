@@ -35,17 +35,17 @@
           "sets": [
             {
               "set": 1,
-              "weight": 120,
+              "weight": 100,
               "reps": 10
             },
             {
               "set": 2,
-              "weight": 120,
+              "weight": 100,
               "reps": 10
             },
             {
               "set": 3,
-              "weight": 120,
+              "weight": 100,
               "reps": 12
             }
           ]
@@ -374,17 +374,17 @@
           "sets": [
             {
               "set": 1,
-              "weight": 115,
+              "weight": 95,
               "reps": 10
             },
             {
               "set": 2,
-              "weight": 115,
+              "weight": 95,
               "reps": 10
             },
             {
               "set": 3,
-              "weight": 115,
+              "weight": 95,
               "reps": 12
             }
           ]
@@ -1055,17 +1055,17 @@
           "sets": [
             {
               "set": 1,
-              "weight": 110,
+              "weight": 90,
               "reps": 10
             },
             {
               "set": 2,
-              "weight": 110,
+              "weight": 90,
               "reps": 10
             },
             {
               "set": 3,
-              "weight": 110,
+              "weight": 90,
               "reps": 10
             }
           ]
@@ -1489,17 +1489,17 @@
           "sets": [
             {
               "set": 1,
-              "weight": 80,
+              "weight": 60,
               "reps": 8
             },
             {
               "set": 2,
-              "weight": 110,
+              "weight": 90,
               "reps": 8
             },
             {
               "set": 3,
-              "weight": 110,
+              "weight": 90,
               "reps": 8
             }
           ]
@@ -1908,17 +1908,17 @@
           "sets": [
             {
               "set": 1,
-              "weight": 60,
+              "weight": 40,
               "reps": 8
             },
             {
               "set": 2,
-              "weight": 100,
+              "weight": 80,
               "reps": 8
             },
             {
               "set": 3,
-              "weight": 100,
+              "weight": 80,
               "reps": 8
             }
           ]

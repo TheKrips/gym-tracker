@@ -20,8 +20,10 @@
       --eo3:cubic-bezier(0.215,0.61,0.355,1);
       --eioc:cubic-bezier(0.77,0,0.175,1);
       --bh:1px;
+      --safe-t:env(safe-area-inset-top,0px);
       --safe-b:env(safe-area-inset-bottom,0px);
-      --hh:48px; --nh:calc(58px + var(--safe-b));
+      --hh:48px; --hh-full:calc(48px + env(safe-area-inset-top,0px));
+      --nh:calc(58px + var(--safe-b));
     }
     @media only screen and (min-device-pixel-ratio:2),(min-resolution:192dpi){:root{--bh:0.5px}}
     @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
@@ -34,12 +36,14 @@
 
     /* ── Header ─────────────────────────────────────────────── */
     .header{
-      position:fixed;top:0;left:0;right:0;z-index:200;height:var(--hh);
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      height:var(--hh-full);padding-top:var(--safe-t);
       background:rgba(9,9,11,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
       border-bottom:var(--bh) solid var(--bd);
-      display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+      display:flex;align-items:flex-end;justify-content:space-between;padding-left:16px;padding-right:16px;padding-bottom:0;
       transition:transform 280ms var(--eo5);
     }
+    .header-inner{display:flex;align-items:center;justify-content:space-between;width:100%;height:var(--hh);}
     .header.hidden{transform:translateY(-100%)}
     .header h1{font-size:17px;font-weight:700;letter-spacing:-.02em}
     .icon-btn{
@@ -70,7 +74,7 @@
 
     /* ── Swipe track ────────────────────────────────────────── */
     .swipe-root{
-      position:fixed;top:var(--hh);left:0;right:0;bottom:var(--nh);
+      position:fixed;top:var(--hh-full);left:0;right:0;bottom:var(--nh);
       overflow:hidden;
     }
     .swipe-track{
@@ -89,15 +93,18 @@
       position:fixed;inset:0;z-index:300;
       background:var(--bg);overflow-y:auto;
       transform:translateX(100%);transition:transform 320ms var(--eo5);
-      padding:calc(var(--hh) + 14px) 16px 20px;
+      padding:calc(var(--hh-full) + 14px) 16px 20px;
     }
     .overlay.visible{transform:translateX(0)}
+    .overlay.dragging{transition:none}
     .overlay-header{
-      position:fixed;top:0;left:0;right:0;z-index:400;height:var(--hh);
+      position:fixed;top:0;left:0;right:0;z-index:400;
+      height:var(--hh-full);padding-top:var(--safe-t);
       background:rgba(9,9,11,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
       border-bottom:var(--bh) solid var(--bd);
-      display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+      display:flex;align-items:flex-end;justify-content:space-between;padding-left:16px;padding-right:16px;padding-bottom:0;
     }
+    .overlay-header-inner{display:flex;align-items:center;justify-content:space-between;width:100%;height:var(--hh);}
     .overlay-title{font-size:17px;font-weight:700;letter-spacing:-.02em}
 
     /* ── Timer ──────────────────────────────────────────────── */
@@ -297,6 +304,14 @@
     .badge-i{background:rgba(34,197,94,.1);color:var(--g)}
     .badge-s{background:rgba(234,179,8,.1);color:var(--y)}
     .cue-ico{color:var(--t3);font-size:15px;flex-shrink:0}
+    .jefit-link{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:26px;height:26px;border-radius:8px;background:var(--s2);
+      border:var(--bh) solid var(--bd2);color:var(--t3);font-size:12px;
+      text-decoration:none;flex-shrink:0;margin-left:4px;
+      -webkit-tap-highlight-color:transparent;transition:background 120ms ease,color 120ms ease;
+    }
+    .jefit-link:active{background:var(--s3);color:var(--t)}
 
     /* Cues animated expand */
     .ex-cues{
@@ -414,11 +429,13 @@
 
 <!-- Fixed header -->
 <header class="header" id="hdr">
-  <div style="display:flex;align-items:center;gap:7px">
-    <span style="font-size:17px">&#9939;</span>
-    <h1 id="hdr-title">Gym Tracker</h1>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:7px">
+      <span style="font-size:17px">&#9939;</span>
+      <h1 id="hdr-title">Gym Tracker</h1>
+    </div>
+    <button class="icon-btn" onclick="openSettings()" aria-label="Settings">&#9881;</button>
   </div>
-  <button class="icon-btn" onclick="openSettings()" aria-label="Settings">&#9881;</button>
 </header>
 
 <div id="toast" class="toast"></div>
@@ -476,9 +493,11 @@
 <!-- Overlay: Session detail -->
 <div class="overlay" id="ov-session">
   <div class="overlay-header">
-    <button class="icon-btn" onclick="closeOverlay('ov-session')" aria-label="Close">&#8592;</button>
-    <span class="overlay-title" id="ov-session-title">Тренування</span>
-    <div style="width:32px"></div>
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-session')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title" id="ov-session-title">Тренування</span>
+      <div style="width:32px"></div>
+    </div>
   </div>
   <div id="session-detail"></div>
 </div>
@@ -486,9 +505,11 @@
 <!-- Overlay: Settings -->
 <div class="overlay" id="ov-settings">
   <div class="overlay-header">
-    <button class="icon-btn" onclick="closeOverlay('ov-settings')" aria-label="Close">&#8592;</button>
-    <span class="overlay-title">Налаштування</span>
-    <div style="width:32px"></div>
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-settings')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">Налаштування</span>
+      <div style="width:32px"></div>
+    </div>
   </div>
 
   <div class="sec">GitHub</div>
@@ -522,9 +543,11 @@
 <!-- Overlay: Metric detail -->
 <div class="overlay" id="ov-metric">
   <div class="overlay-header">
-    <button class="icon-btn" onclick="closeOverlay('ov-metric')" aria-label="Close">&#8592;</button>
-    <span class="overlay-title" id="ov-metric-title">Метрика</span>
-    <div style="width:32px"></div>
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-metric')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title" id="ov-metric-title">Метрика</span>
+      <div style="width:32px"></div>
+    </div>
   </div>
   <div id="metric-content"></div>
 </div>
@@ -532,9 +555,11 @@
 <!-- Overlay: Daily note editor -->
 <div class="overlay" id="ov-note">
   <div class="overlay-header">
-    <button class="icon-btn" onclick="closeOverlay('ov-note')" aria-label="Close">&#8592;</button>
-    <span class="overlay-title" id="ov-note-title">Нотатка</span>
-    <button class="icon-btn" id="ov-note-save" onclick="saveDailyNote()" aria-label="Save" style="width:auto;padding:0 12px;font-size:13px;border-radius:16px">&#10003;</button>
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-note')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title" id="ov-note-title">Нотатка</span>
+      <button class="icon-btn" id="ov-note-save" onclick="saveDailyNote()" aria-label="Save" style="width:auto;padding:0 12px;font-size:13px;border-radius:16px">&#10003;</button>
+    </div>
   </div>
   <div id="note-editor"></div>
 </div>
@@ -664,8 +689,54 @@ document.querySelectorAll('.swipe-page').forEach((page, i) => {
 
 // ─── Overlay management ───────────────────────────────────────────────────────
 function openOverlay(id) { document.getElementById(id).classList.add('visible'); }
-function closeOverlay(id) { document.getElementById(id).classList.remove('visible'); }
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  el.style.transform = ''; el.classList.remove('visible','dragging');
+}
+function getTopOverlay() { return document.querySelector('.overlay.visible'); }
 function openSettings() { loadSettingsPage(); openOverlay('ov-settings'); }
+
+// Swipe-back gesture for overlays (edge swipe right → close)
+let ovSwipeStartX=0, ovSwipeStartY=0, ovSwipeDragging=false, ovSwipeEl=null;
+document.addEventListener('touchstart', e=>{
+  const ov = getTopOverlay(); if(!ov) return;
+  const t=e.touches[0];
+  ovSwipeStartX=t.clientX; ovSwipeStartY=t.clientY;
+  ovSwipeDragging=false; ovSwipeEl=ov;
+},{passive:true});
+document.addEventListener('touchmove', e=>{
+  if(!ovSwipeEl) return;
+  const t=e.touches[0];
+  const dx=t.clientX-ovSwipeStartX, dy=Math.abs(t.clientY-ovSwipeStartY);
+  if(!ovSwipeDragging){
+    // Only activate if horizontal and from anywhere (like iOS) or left edge
+    if(dx>10 && dx>dy){ ovSwipeDragging=true; ovSwipeEl.classList.add('dragging'); }
+    else if(dy>10||dx<-5){ ovSwipeEl=null; return; }
+    else return;
+  }
+  if(dx>0){
+    ovSwipeEl.style.transform=`translateX(${dx}px)`;
+    ovSwipeEl.style.opacity = String(Math.max(0.4, 1 - dx/window.innerWidth*0.6));
+  }
+},{passive:true});
+document.addEventListener('touchend', e=>{
+  if(!ovSwipeEl||!ovSwipeDragging){ ovSwipeEl=null; return; }
+  const dx=e.changedTouches[0].clientX-ovSwipeStartX;
+  ovSwipeEl.classList.remove('dragging');
+  if(dx>window.innerWidth*0.32){
+    // Commit close
+    ovSwipeEl.style.transition='transform 280ms cubic-bezier(0.23,1,0.32,1),opacity 280ms ease';
+    ovSwipeEl.style.transform='translateX(100%)';
+    ovSwipeEl.style.opacity='';
+    const el=ovSwipeEl; ovSwipeEl=null;
+    setTimeout(()=>{ el.classList.remove('visible'); el.style.transform=''; el.style.transition=''; el.style.opacity=''; },300);
+  } else {
+    ovSwipeEl.style.transition='transform 280ms cubic-bezier(0.23,1,0.32,1),opacity 200ms ease';
+    ovSwipeEl.style.transform=''; ovSwipeEl.style.opacity='';
+    setTimeout(()=>{ if(ovSwipeEl) return; e.target?.closest('.overlay')?.style && (document.querySelectorAll('.overlay').forEach(o=>{if(o.style.transition)o.style.transition='';})); },300);
+    ovSwipeEl=null;
+  }
+},{passive:true});
 
 // ─── Timer ────────────────────────────────────────────────────────────────────
 let timerDefault = parseInt(localStorage.getItem('gym_timer_default') || '90');
@@ -879,12 +950,23 @@ function renderTodayHero() {
     </div>`;
   } else if (todId && workoutData) {
     const w = workoutData.workouts.find(x=>x.id===todId);
-    if (w) {
+    const skipped = sessions.some(s => s.date === todayStr && s.skipped);
+    if (skipped) {
+      el.innerHTML = `<div class="today-hero rest">
+        <div class="hero-lbl">${weekday}, ${niceDate}</div>
+        <div class="hero-title">Пропущено</div>
+        <div class="hero-sub">${w?.name||''} — відмічено як пропущено.</div>
+        <button class="hero-cta ghost" onclick="openDailyNote()">Нотатка</button>
+      </div>`;
+    } else if (w) {
       el.innerHTML = `<div class="today-hero">
         <div class="hero-lbl">${weekday}, ${niceDate}</div>
         <div class="hero-title">${w.name}</div>
         <div class="hero-sub">${w.focus}</div>
-        <button class="hero-cta" onclick="startWorkout('${w.id}')">Почати тренування →</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="hero-cta" onclick="startWorkout('${w.id}')">Почати тренування →</button>
+          <button class="hero-cta ghost" style="font-size:12px;padding:8px 14px" onclick="confirmSkip('${w.id}')">Пропустити</button>
+        </div>
       </div>`;
     } else {
       renderRestHero(el, weekday, niceDate);
@@ -900,6 +982,26 @@ function renderRestHero(el, weekday, niceDate) {
     <div class="hero-sub">Відновлення — частина програми. Вода, сон, білок.</div>
     <button class="hero-cta ghost" onclick="openDailyNote()">Додати нотатку</button>
   </div>`;
+}
+
+function confirmSkip(wid) {
+  if (!workoutData) return;
+  const w = workoutData.workouts.find(x=>x.id===wid);
+  if (confirm(`Пропустити ${w?.name||wid} сьогодні?\nЦе збережеться у журналі для аналізу.`)) skipWorkout(wid);
+}
+async function skipWorkout(wid) {
+  if (!workoutData) return;
+  const w = workoutData.workouts.find(x=>x.id===wid); if (!w) return;
+  const today = new Date().toISOString().split('T')[0];
+  const skipEntry = {
+    date: today, workout_id: wid, workout_name: w.name,
+    skipped: true, exercises: [], finished_at: new Date().toISOString()
+  };
+  const logs = addSession(skipEntry);
+  showToast('Відмічено як пропущено','');
+  const ok = await pushLogsToGitHub(logs);
+  showToast(ok ? 'GitHub ✓' : 'Збережено локально', ok ? 'success' : '');
+  renderStats(); renderWeekRow();
 }
 
 // ─── Week Row ────────────────────────────────────────────────────────────────
@@ -1353,7 +1455,12 @@ function drawMetricChart(points, m) {
 }
 
 // ─── Home: day grid + stats ───────────────────────────────────────────────────
-function getDayId() { return ({1:'upper_a',3:'lower_a',4:'upper_b',5:'lower_b'})[new Date().getDay()]||null; }
+function getDayId() {
+  const today = new Date().toISOString().split('T')[0];
+  if (workoutData?.override_today?.date===today) return workoutData.override_today.workout_id;
+  // New schedule: Mon=upper_a, Tue=lower_a, Thu=upper_b, Fri=lower_b
+  return ({1:'upper_a',2:'lower_a',4:'upper_b',5:'lower_b'})[new Date().getDay()]||null;
+}
 function renderDayGrid() {
   const grid=document.getElementById('day-grid');
   if(!workoutData){grid.innerHTML='<p style="font-size:12px;color:var(--t3)">Завантаження…</p>';return;}
@@ -1408,6 +1515,10 @@ function renderExercises(workout) {
 }
 function badgeCls(t){return t==='compound'?'badge-c':t==='isolation'?'badge-i':'badge-s'}
 function badgeLbl(t){return t==='compound'?'Базова':t==='isolation'?'Ізоляція':'Суперсет'}
+function jefitBtn(ex){
+  if(!ex.jefit_url) return '';
+  return `<a class="jefit-link" href="${ex.jefit_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="JetFit">📹</a>`;
+}
 function renderEx(ex,n){
   const p=ex.weight_kg>0?`${ex.sets}×${ex.reps} @ ${ex.weight_kg}кг`:`${ex.sets}×${ex.reps}`;
   const rest=ex.rest_sec?fmt(ex.rest_sec):'';
@@ -1419,6 +1530,7 @@ function renderEx(ex,n){
         <div class="ex-name">${ex.name}</div>
         <div class="ex-meta"><span class="badge ${badgeCls(ex.type)}">${badgeLbl(ex.type)}</span><span>${p}</span>${rest?`<span style="color:var(--p)">⏱ ${rest}</span>`:''}</div>
       </div>
+      ${jefitBtn(ex)}
       <div class="cue-ico">💡</div>
     </div>
     <div class="ex-cues" id="cues-${ex.id}">
@@ -1436,7 +1548,8 @@ function renderSS(ex,n){
       <div class="ex-info">
         <div class="ex-name">${ex.name}</div>
         <div class="ex-meta"><span class="badge badge-s">Суперсет</span><span style="color:var(--p)">⏱ ${fmt(ex.rest_sec)}</span></div>
-      </div><div class="cue-ico">💡</div>
+      </div>
+      <div class="cue-ico">💡</div>
     </div>
     <div class="ex-cues" id="cues-${ex.id}">${ex.note?`<div class="note">${ex.note}</div>`:''}</div>
     <div class="sets-sec">`;
@@ -1444,7 +1557,7 @@ function renderSS(ex,n){
     const sub=ex.exercises[i];
     if(i>0)h+=`<div class="ss-div">↕ Суперсет</div>`;
     const p=sub.weight_kg>0?`${sub.sets}×${sub.reps} @ ${sub.weight_kg}кг`:`${sub.sets}×${sub.reps}`;
-    h+=`<div class="ss-name">${sub.name} <span style="color:var(--t3);font-size:10px">${p}</span></div>`;
+    h+=`<div class="ss-name" style="display:flex;align-items:center;gap:6px">${sub.name} <span style="color:var(--t3);font-size:10px">${p}</span>${jefitBtn(sub)}</div>`;
     for(let j=1;j<=sub.sets;j++) h+=setRowH(sub.id,j,sub.weight_kg,sub.reps,ex.rest_sec);
   }
   return h+'</div></div>';
