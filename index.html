@@ -157,6 +157,133 @@
     .hc-trend{font-size:11px;margin-top:4px}
     .trend-up{color:#f87171}.trend-down{color:var(--g)}.trend-flat{color:var(--t3)}
     .spark{width:100%;height:28px;display:block;margin-top:5px}
+    .health-card{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 140ms var(--eo3),border-color 200ms ease}
+    .health-card:active{transform:scale(0.97)}
+
+    /* ── Today Hero ─────────────────────────────────────────── */
+    .today-hero{
+      background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(139,92,246,.04));
+      border:var(--bh) solid rgba(139,92,246,.3);
+      border-radius:var(--rad);padding:14px 15px 13px;margin-bottom:14px;position:relative;overflow:hidden;
+    }
+    .today-hero.rest{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.02));border-color:rgba(34,197,94,.22)}
+    .today-hero.done{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(34,197,94,.03));border-color:rgba(34,197,94,.3)}
+    .hero-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-weight:600}
+    .hero-title{font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+    .hero-sub{font-size:12px;color:var(--t2);margin-top:4px;margin-bottom:10px;line-height:1.4}
+    .hero-cta{background:var(--p);color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--eo3),background 120ms ease;display:inline-flex;align-items:center;gap:6px}
+    .hero-cta:active{transform:scale(0.96);background:var(--p2)}
+    .hero-cta.ghost{background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t)}
+    .hero-cta.ghost:active{background:var(--s3)}
+
+    /* ── Week Row ───────────────────────────────────────────── */
+    .week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+    .week-day{
+      background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad-s);
+      padding:8px 4px 7px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
+      transition:transform 140ms var(--eo3),border-color 180ms ease,background 180ms ease;
+      min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+    }
+    .week-day:active{transform:scale(0.94)}
+    .week-day.today{border-color:rgba(139,92,246,.55);background:var(--pg)}
+    .week-day.future{opacity:.45}
+    .week-dow{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+    .week-dd{font-size:15px;font-weight:700;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;margin-top:3px}
+    .week-dots{display:flex;gap:3px;justify-content:center;margin-top:5px;min-height:5px}
+    .week-dot{width:5px;height:5px;border-radius:50%;background:var(--s3)}
+    .week-dot.gym{background:var(--p)}
+    .week-dot.note{background:var(--g)}
+
+    /* ── Note card ──────────────────────────────────────────── */
+    .note-card{
+      background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);
+      padding:12px 13px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+      transition:transform 140ms var(--eo3),border-color 200ms ease;
+    }
+    .note-card:active{transform:scale(0.985)}
+    .note-hdr-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .note-title{font-size:13px;font-weight:600}
+    .note-pill{font-size:10px;color:var(--p);background:var(--pg);padding:3px 9px;border-radius:20px;font-weight:600}
+    .note-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+    .note-m{text-align:center;min-width:0}
+    .note-m-val{font-size:14px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+    .note-m-emoji{font-size:20px;line-height:1}
+    .note-m-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+    .note-text{font-size:12px;color:var(--t2);line-height:1.4;margin-top:8px;padding-top:8px;border-top:var(--bh) solid var(--bd)}
+    .note-empty-text{font-size:12px;color:var(--t3);text-align:center;padding:6px 0}
+
+    /* ── Insights ───────────────────────────────────────────── */
+    .insight-card{
+      background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);
+      padding:11px 13px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;
+    }
+    .insight-icon{
+      width:28px;height:28px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--s2);
+    }
+    .insight-icon.good{background:rgba(34,197,94,.14)}
+    .insight-icon.warn{background:rgba(234,179,8,.14)}
+    .insight-icon.info{background:rgba(139,92,246,.14)}
+    .insight-body{flex:1;min-width:0}
+    .insight-title{font-size:13px;font-weight:600;letter-spacing:-.01em;margin-bottom:2px}
+    .insight-text{font-size:11.5px;color:var(--t3);line-height:1.4}
+
+    /* ── Metric detail ──────────────────────────────────────── */
+    .metric-hero{padding:6px 0 14px;text-align:center}
+    .metric-hero .m-lbl{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:600}
+    .metric-hero .m-big{font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;display:inline-block}
+    .metric-hero .m-unit{font-size:15px;color:var(--t3);margin-left:4px;font-weight:500;vertical-align:top;display:inline-block;margin-top:10px}
+    .metric-hero .m-sub{font-size:13px;color:var(--t2);margin-top:8px;font-variant-numeric:tabular-nums}
+    .d-up{color:#f87171}.d-down{color:var(--g)}.d-flat{color:var(--t3)}
+
+    .range-tabs{display:flex;gap:1px;background:var(--s2);border-radius:10px;padding:2px;margin:0 0 12px}
+    .range-tab{flex:1;padding:8px 4px;border:none;background:none;color:var(--t3);font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 150ms ease,color 150ms ease}
+    .range-tab.active{background:var(--s3);color:var(--t)}
+
+    .chart-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:14px 8px 10px;margin-bottom:10px;position:relative;overflow:hidden}
+    .chart-svg{display:block;width:100%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+    .chart-axis text{fill:var(--t3);font-size:9px}
+    .chart-cursor{stroke:var(--t2);stroke-width:1;stroke-dasharray:3,3;opacity:0;pointer-events:none}
+    .chart-cursor.on{opacity:.5}
+    .chart-hover-dot{stroke:#fff;stroke-width:2;opacity:0;pointer-events:none}
+    .chart-hover-dot.on{opacity:1}
+    .chart-tip{position:absolute;background:var(--s3);border:var(--bh) solid var(--bd2);border-radius:8px;padding:5px 10px;font-size:12px;font-variant-numeric:tabular-nums;pointer-events:none;opacity:0;transition:opacity 120ms ease;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.4);z-index:2}
+    .chart-tip.on{opacity:1}
+    .chart-tip-d{color:var(--t3);font-size:10px;margin-bottom:1px}
+    .chart-tip-v{font-weight:700;color:var(--t)}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .stat-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad-s);padding:10px 12px}
+    .stat-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600}
+    .stat-val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1}
+
+    /* ── Note editor ────────────────────────────────────────── */
+    .mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
+    .mood-btn{
+      aspect-ratio:1;background:var(--s2);border:var(--bh) solid var(--bd2);border-radius:12px;
+      display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;transition:transform 120ms var(--eo3),border-color 180ms ease,background 180ms ease;
+    }
+    .mood-btn.active{border-color:var(--p);background:var(--pg)}
+    .mood-btn:active{transform:scale(0.92)}
+    .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+    .chip{
+      background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t2);
+      border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+      transition:transform 100ms var(--eo3),background 180ms ease,border-color 180ms ease,color 180ms ease;
+    }
+    .chip.active{background:var(--pg);border-color:var(--p);color:var(--t)}
+    .chip:active{transform:scale(0.95)}
+    .textarea{
+      width:100%;background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t);
+      border-radius:var(--rad-s);padding:10px 12px;font-size:14px;font-family:inherit;
+      resize:none;min-height:92px;transition:border-color 200ms ease;
+    }
+    .textarea:focus{outline:none;border-color:var(--p)}
+    .num-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;justify-content:center}
+    .num-step-btn{width:40px;height:40px;border-radius:50%;background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t2);font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 100ms var(--eo3),background 120ms ease;display:flex;align-items:center;justify-content:center}
+    .num-step-btn:active{transform:scale(0.9);background:var(--s3)}
+    .num-val{font-size:22px;font-weight:700;min-width:80px;text-align:center;font-variant-numeric:tabular-nums}
+    .num-val .unit{font-size:12px;color:var(--t3);margin-left:2px}
 
     /* ── Exercise card ──────────────────────────────────────── */
     .ex-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);margin-bottom:9px;overflow:hidden}
@@ -302,31 +429,24 @@
 
     <!-- PAGE 0: HOME -->
     <div class="swipe-page" id="page-home">
-      <div id="timer-home"></div>
+      <div id="today-hero"></div>
+
+      <div class="sec">Тиждень</div>
+      <div class="week-row" id="week-row"></div>
 
       <div class="sec">Здоров'я</div>
       <div id="health-section">
         <div class="health-grid" id="health-grid"></div>
       </div>
 
+      <div class="sec">Нотатка за сьогодні</div>
+      <div id="daily-note-card"></div>
+
+      <div class="sec" id="insights-sec-label" style="display:none">Інсайти</div>
+      <div id="insights-list"></div>
+
       <div class="sec">Програма</div>
       <div class="day-grid" id="day-grid"></div>
-
-      <div class="sec">Статистика</div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-          <span style="font-size:12px;color:var(--t3)">Тренувань</span>
-          <span style="font-size:14px;font-weight:700;font-variant-numeric:tabular-nums" id="stat-total">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-          <span style="font-size:12px;color:var(--t3)">Цього тижня</span>
-          <span style="font-size:14px;font-weight:700;font-variant-numeric:tabular-nums" id="stat-week">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between">
-          <span style="font-size:12px;color:var(--t3)">Останнє</span>
-          <span style="font-size:12px;color:var(--t3)" id="stat-last">—</span>
-        </div>
-      </div>
     </div>
 
     <!-- PAGE 1: WORKOUT -->
@@ -399,6 +519,26 @@
   <div style="text-align:center;padding:12px;color:var(--t3);font-size:11px">Gym Tracker v2.1</div>
 </div>
 
+<!-- Overlay: Metric detail -->
+<div class="overlay" id="ov-metric">
+  <div class="overlay-header">
+    <button class="icon-btn" onclick="closeOverlay('ov-metric')" aria-label="Close">&#8592;</button>
+    <span class="overlay-title" id="ov-metric-title">Метрика</span>
+    <div style="width:32px"></div>
+  </div>
+  <div id="metric-content"></div>
+</div>
+
+<!-- Overlay: Daily note editor -->
+<div class="overlay" id="ov-note">
+  <div class="overlay-header">
+    <button class="icon-btn" onclick="closeOverlay('ov-note')" aria-label="Close">&#8592;</button>
+    <span class="overlay-title" id="ov-note-title">Нотатка</span>
+    <button class="icon-btn" id="ov-note-save" onclick="saveDailyNote()" aria-label="Save" style="width:auto;padding:0 12px;font-size:13px;border-radius:16px">&#10003;</button>
+  </div>
+  <div id="note-editor"></div>
+</div>
+
 <!-- Bottom nav -->
 <nav class="nav" id="nav">
   <button class="nav-item active" data-page="0" onclick="swipeTo(0)">
@@ -446,7 +586,7 @@ function swipeTo(page, animated=true) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', +n.dataset.page === clamp));
   // Refresh content if needed
   if (clamp===2) renderHistory();
-  if (clamp===0) { renderDayGrid(); renderStats(); }
+  if (clamp===0) { renderDayGrid(); renderStats(); renderHealthSection(); }
   // Restore scroll position
   const pageEls = document.querySelectorAll('.swipe-page');
   pageEls.forEach((el,i) => { if(i===clamp) el.scrollTop = lastScrollTops[i]; });
@@ -641,7 +781,28 @@ async function pushLogsToGitHub(logs) {
 function getLogs() { try{return JSON.parse(localStorage.getItem('gym_logs')||'{"sessions":[]}')}catch(e){return{sessions:[]};} }
 function saveLogs(d) { localStorage.setItem('gym_logs',JSON.stringify(d)); }
 function addSession(s) { const d=getLogs(); d.sessions=d.sessions.filter(x=>!(x.date===s.date&&x.workout_id===s.workout_id)); d.sessions.push(s); d.sessions.sort((a,b)=>b.date.localeCompare(a.date)); saveLogs(d); return d; }
-async function syncFromGitHub() { showToast('Синхронізація…',''); const r=await fetchLogsFromGitHub(); if(!r){showToast('Не вдалося','error');return;} const l=getLogs(); const rk=new Set(r.sessions.map(s=>s.date+'_'+s.workout_id)); for(const s of l.sessions) if(!rk.has(s.date+'_'+s.workout_id)) r.sessions.push(s); r.sessions.sort((a,b)=>b.date.localeCompare(a.date)); saveLogs(r); showToast('Синхронізовано ✓','success'); renderStats(); }
+async function syncFromGitHub() {
+  showToast('Синхронізація…','');
+  const r=await fetchLogsFromGitHub();
+  if(r){
+    const l=getLogs(); const rk=new Set(r.sessions.map(s=>s.date+'_'+s.workout_id));
+    for(const s of l.sessions) if(!rk.has(s.date+'_'+s.workout_id)) r.sessions.push(s);
+    r.sessions.sort((a,b)=>b.date.localeCompare(a.date)); saveLogs(r);
+  }
+  const notesRemote = await fetchDailyNotesFromGitHub();
+  if (notesRemote) {
+    const local = getDailyNotes();
+    const byDate = {};
+    for (const n of notesRemote) byDate[n.date] = n;
+    for (const n of local) {
+      const rem = byDate[n.date];
+      if (!rem || (n.updated_at||'') > (rem.updated_at||'')) byDate[n.date] = n;
+    }
+    saveDailyNotes(Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)));
+  }
+  showToast('Синхронізовано ✓','success');
+  renderStats();
+}
 
 // ─── Health dashboard ─────────────────────────────────────────────────────────
 function sparklineSVG(values, color) {
@@ -680,12 +841,12 @@ function renderHealthSection() {
   const w = last(h.weight_kg), f = last(h.body_fat_pct), b = last(h.bmi), s = last(h.steps);
 
   grid.innerHTML = [
-    {label:'Вага', val:w?w.toFixed(1):'—', unit:'кг', trend:trend(h.weight_kg,'кг',true), spark:sparklineSVG(weightVals,'var(--p)'), color:'var(--p)'},
-    {label:'Жир', val:f?f.toFixed(1):'—', unit:'%', trend:trend(h.body_fat_pct,'%',true), spark:sparklineSVG(fatVals,'#f87171'), color:'#f87171'},
-    {label:'BMI', val:b?b.toFixed(1):'—', unit:'', trend:trend(h.bmi,''), spark:sparklineSVG(bmiVals,'var(--y)'), color:'var(--y)'},
-    {label:'Кроки', val:s?Math.round(s/1000).toFixed(1)+'k':'—', unit:'тис/день', trend:(()=>{const l=last(h.steps),p=prev(h.steps);if(l==null||p==null)return'';const d=l-p;const cls=d===0?'trend-flat':d>0?'trend-up':'trend-down';return`<div class="hc-trend ${cls}">${d>0?'↑':'↓'} ${(Math.abs(d)/1000).toFixed(1)}k</div>`})(), spark:sparklineSVG(stepsVals,'var(--g)'), color:'var(--g)'},
+    {key:'weight', label:'Вага', val:w?w.toFixed(1):'—', unit:'кг', trend:trend(h.weight_kg,'кг',true), spark:sparklineSVG(weightVals,'var(--p)'), color:'var(--p)'},
+    {key:'fat', label:'Жир', val:f?f.toFixed(1):'—', unit:'%', trend:trend(h.body_fat_pct,'%',true), spark:sparklineSVG(fatVals,'#f87171'), color:'#f87171'},
+    {key:'bmi', label:'BMI', val:b?b.toFixed(1):'—', unit:'', trend:trend(h.bmi,''), spark:sparklineSVG(bmiVals,'var(--y)'), color:'var(--y)'},
+    {key:'steps', label:'Кроки', val:s?Math.round(s/1000).toFixed(1)+'k':'—', unit:'тис/день', trend:(()=>{const l=last(h.steps),p=prev(h.steps);if(l==null||p==null)return'';const d=l-p;const cls=d===0?'trend-flat':d>0?'trend-up':'trend-down';return`<div class="hc-trend ${cls}">${d>0?'↑':'↓'} ${(Math.abs(d)/1000).toFixed(1)}k</div>`})(), spark:sparklineSVG(stepsVals,'var(--g)'), color:'var(--g)'},
   ].map(c=>`
-    <div class="health-card">
+    <div class="health-card" onclick="openMetric('${c.key}')">
       <div>
         <div class="hc-label">${c.label}</div>
         <div class="hc-value" style="color:${c.color}">${c.val}</div>
@@ -695,6 +856,500 @@ function renderHealthSection() {
       ${c.spark}
     </div>
   `).join('');
+}
+
+// ─── Today Hero ─────────────────────────────────────────────────────────────
+function renderTodayHero() {
+  const el = document.getElementById('today-hero');
+  const todId = getDayId();
+  const todayStr = new Date().toISOString().split('T')[0];
+  const sessions = getLogs().sessions || [];
+  const didToday = sessions.some(s => s.date === todayStr);
+  const weekday = new Date().toLocaleDateString('uk-UA',{weekday:'long'});
+  const niceDate = new Date().toLocaleDateString('uk-UA',{day:'numeric',month:'long'});
+
+  if (didToday) {
+    const s = sessions.find(x => x.date === todayStr);
+    const setC = (s.exercises||[]).reduce((a,e)=>a+(e.sets?e.sets.length:0),0);
+    el.innerHTML = `<div class="today-hero done">
+      <div class="hero-lbl">${weekday}, ${niceDate}</div>
+      <div class="hero-title">Тренування виконано ✓</div>
+      <div class="hero-sub">${s.workout_name} · ${setC} підходів · молодець!</div>
+      <button class="hero-cta ghost" onclick="swipeTo(2)">Переглянути журнал</button>
+    </div>`;
+  } else if (todId && workoutData) {
+    const w = workoutData.workouts.find(x=>x.id===todId);
+    if (w) {
+      el.innerHTML = `<div class="today-hero">
+        <div class="hero-lbl">${weekday}, ${niceDate}</div>
+        <div class="hero-title">${w.name}</div>
+        <div class="hero-sub">${w.focus}</div>
+        <button class="hero-cta" onclick="startWorkout('${w.id}')">Почати тренування →</button>
+      </div>`;
+    } else {
+      renderRestHero(el, weekday, niceDate);
+    }
+  } else {
+    renderRestHero(el, weekday, niceDate);
+  }
+}
+function renderRestHero(el, weekday, niceDate) {
+  el.innerHTML = `<div class="today-hero rest">
+    <div class="hero-lbl">${weekday}, ${niceDate}</div>
+    <div class="hero-title">День відпочинку</div>
+    <div class="hero-sub">Відновлення — частина програми. Вода, сон, білок.</div>
+    <button class="hero-cta ghost" onclick="openDailyNote()">Додати нотатку</button>
+  </div>`;
+}
+
+// ─── Week Row ────────────────────────────────────────────────────────────────
+function renderWeekRow() {
+  const el = document.getElementById('week-row');
+  const today = new Date();
+  const d0 = new Date(today); d0.setHours(0,0,0,0);
+  // Monday-start week
+  const dow = d0.getDay()===0?6:d0.getDay()-1;
+  const monday = new Date(d0); monday.setDate(d0.getDate()-dow);
+  const sessions = getLogs().sessions || [];
+  const notes = getDailyNotes();
+  const sessDates = new Set(sessions.map(s=>s.date));
+  const noteDates = new Set(notes.map(n=>n.date));
+  const dowNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
+  let html = '';
+  for (let i=0;i<7;i++) {
+    const d = new Date(monday); d.setDate(monday.getDate()+i);
+    const dStr = d.toISOString().split('T')[0];
+    const isToday = dStr === today.toISOString().split('T')[0];
+    const isFuture = d > today;
+    const hasGym = sessDates.has(dStr);
+    const hasNote = noteDates.has(dStr);
+    html += `<div class="week-day ${isToday?'today':''} ${isFuture?'future':''}" onclick="openDayAt('${dStr}')">
+      <div class="week-dow">${dowNames[i]}</div>
+      <div class="week-dd">${d.getDate()}</div>
+      <div class="week-dots">${hasGym?'<div class="week-dot gym"></div>':''}${hasNote?'<div class="week-dot note"></div>':''}</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+function openDayAt(dateStr) {
+  const sessions = getLogs().sessions || [];
+  const idx = sessions.findIndex(s=>s.date===dateStr);
+  if (idx >= 0) { showSession(idx); return; }
+  // Otherwise open note for that date
+  openDailyNote(dateStr);
+}
+
+// ─── Daily Notes ─────────────────────────────────────────────────────────────
+function getDailyNotes() { try { return JSON.parse(localStorage.getItem('gym_daily_notes')||'[]'); } catch(e){return [];} }
+function saveDailyNotes(arr) { localStorage.setItem('gym_daily_notes', JSON.stringify(arr)); }
+function getDailyNote(dateStr) { return getDailyNotes().find(n=>n.date===dateStr); }
+function upsertDailyNote(n) {
+  const arr = getDailyNotes().filter(x=>x.date!==n.date);
+  arr.push(n); arr.sort((a,b)=>b.date.localeCompare(a.date));
+  saveDailyNotes(arr); return arr;
+}
+async function pushDailyNotesToGitHub(notes) {
+  const token=getSetting('github_token'); if(!token) return false;
+  const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
+  try {
+    const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/daily-notes.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    const sha = hr.ok ? (await hr.json()).sha : undefined;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify({notes},null,2))));
+    const body={message:`note: ${new Date().toISOString().split('T')[0]}`,content};
+    if (sha) body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/daily-notes.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    return res.ok;
+  } catch(e){return false;}
+}
+async function fetchDailyNotesFromGitHub() {
+  const d = await fetchJSON('daily-notes.json');
+  return d && d.notes ? d.notes : null;
+}
+
+function renderDailyNoteCard() {
+  const el = document.getElementById('daily-note-card');
+  const today = new Date().toISOString().split('T')[0];
+  const n = getDailyNote(today);
+  if (!n) {
+    el.innerHTML = `<div class="note-card" onclick="openDailyNote()">
+      <div class="note-empty-text">+ Додай нотатку за сьогодні (настрій, сон, харчування)</div>
+    </div>`;
+    return;
+  }
+  const moodEmoji = ['😞','😕','😐','🙂','😄'][n.mood-1] || '';
+  const metrics = [
+    {val:moodEmoji||'—', lbl:'Настрій', emoji:true},
+    {val:n.energy?n.energy+'/5':'—', lbl:'Енергія'},
+    {val:n.sleep_h?n.sleep_h+'h':'—', lbl:'Сон'},
+    {val:n.nutrition?['🥤','🍔','🥗','💎'][n.nutrition-1]||'—':'—', lbl:'Їжа', emoji:true},
+  ];
+  el.innerHTML = `<div class="note-card" onclick="openDailyNote()">
+    <div class="note-hdr-r">
+      <div class="note-title">Сьогодні</div>
+      <div class="note-pill">Редагувати</div>
+    </div>
+    <div class="note-row">
+      ${metrics.map(m=>`<div class="note-m">
+        <div class="${m.emoji?'note-m-emoji':'note-m-val'}">${m.val}</div>
+        <div class="note-m-lbl">${m.lbl}</div>
+      </div>`).join('')}
+    </div>
+    ${n.text?`<div class="note-text">${escapeHTML(n.text)}</div>`:''}
+  </div>`;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// Note editor state
+let editingNoteDate = null;
+let editingNote = null;
+function openDailyNote(dateStr) {
+  editingNoteDate = dateStr || new Date().toISOString().split('T')[0];
+  const existing = getDailyNote(editingNoteDate);
+  editingNote = existing ? {...existing} : {date:editingNoteDate, mood:0, energy:0, sleep_h:0, nutrition:0, tags:[], text:''};
+  renderNoteEditor();
+  document.getElementById('ov-note-title').textContent = editingNoteDate===new Date().toISOString().split('T')[0] ? 'Сьогодні' : fmtDate(editingNoteDate);
+  openOverlay('ov-note');
+}
+function renderNoteEditor() {
+  const el = document.getElementById('note-editor');
+  const n = editingNote;
+  const moods = ['😞','😕','😐','🙂','😄'];
+  const nutrs = [{e:'🥤',l:'Погано'},{e:'🍔',l:'Фастфуд'},{e:'🥗',l:'Норм'},{e:'💎',l:'Чисто'}];
+  const tagOptions = ['💪 Сила','🔥 Енергія','😴 Втомлений','🤒 Хворію','💊 Кофеїн','🚶 Активний','🧘 Стрес','🍺 Алкоголь','🥩 Високо білка','🚰 Вода +'];
+  el.innerHTML = `
+    <div class="sec" style="margin-top:4px">Настрій</div>
+    <div class="mood-row">
+      ${moods.map((e,i)=>`<div class="mood-btn ${n.mood===i+1?'active':''}" onclick="setNoteField('mood',${i+1})">${e}</div>`).join('')}
+    </div>
+    <div class="sec">Енергія</div>
+    <div class="mood-row">
+      ${[1,2,3,4,5].map(i=>`<div class="mood-btn ${n.energy===i?'active':''}" style="font-size:13px;font-weight:700;color:var(--t2)" onclick="setNoteField('energy',${i})">${i}</div>`).join('')}
+    </div>
+    <div class="sec">Сон</div>
+    <div class="num-row">
+      <button class="num-step-btn" onclick="adjNoteSleep(-0.5)">−</button>
+      <div class="num-val">${(n.sleep_h||0).toFixed(1)}<span class="unit"> год</span></div>
+      <button class="num-step-btn" onclick="adjNoteSleep(0.5)">+</button>
+    </div>
+    <div class="sec">Харчування</div>
+    <div class="mood-row" style="grid-template-columns:repeat(4,1fr)">
+      ${nutrs.map((x,i)=>`<div class="mood-btn ${n.nutrition===i+1?'active':''}" style="flex-direction:column;font-size:22px;gap:2px" onclick="setNoteField('nutrition',${i+1})">${x.e}<span style="font-size:9px;color:var(--t3);font-weight:500">${x.l}</span></div>`).join('')}
+    </div>
+    <div class="sec">Теги</div>
+    <div class="chip-row">
+      ${tagOptions.map(t=>`<div class="chip ${n.tags.includes(t)?'active':''}" onclick="toggleNoteTag('${t.replace(/'/g,"\\'")}')">${t}</div>`).join('')}
+    </div>
+    <div class="sec">Нотатка</div>
+    <textarea class="textarea" id="note-text" placeholder="Як почуваєшся? Що зʼїв? Що болить? ..." oninput="editingNote.text=this.value">${escapeHTML(n.text||'')}</textarea>
+    ${getDailyNote(editingNoteDate)?`<button class="btn btn-d" style="margin-top:12px" onclick="deleteDailyNote()">Видалити нотатку</button>`:''}
+    <div style="height:40px"></div>
+  `;
+}
+function preserveTextAndRerender(){
+  const ta = document.getElementById('note-text');
+  if (ta) editingNote.text = ta.value;
+  renderNoteEditor();
+}
+function setNoteField(f,v){ editingNote[f] = editingNote[f]===v?0:v; preserveTextAndRerender(); }
+function adjNoteSleep(d){ editingNote.sleep_h = Math.max(0, Math.min(14, (editingNote.sleep_h||0) + d)); preserveTextAndRerender(); }
+function toggleNoteTag(t){
+  if(!editingNote.tags) editingNote.tags=[];
+  const i = editingNote.tags.indexOf(t);
+  if(i>=0) editingNote.tags.splice(i,1); else editingNote.tags.push(t);
+  preserveTextAndRerender();
+}
+async function saveDailyNote() {
+  const n = editingNote;
+  // Only save if something is set
+  const empty = !n.mood && !n.energy && !n.sleep_h && !n.nutrition && !(n.tags&&n.tags.length) && !(n.text&&n.text.trim());
+  if (empty) { closeOverlay('ov-note'); return; }
+  n.updated_at = new Date().toISOString();
+  const all = upsertDailyNote(n);
+  closeOverlay('ov-note');
+  renderDailyNoteCard(); renderWeekRow(); renderInsights();
+  showToast('Збережено…','');
+  const ok = await pushDailyNotesToGitHub(all);
+  showToast(ok?'GitHub ✓':'Збережено локально', ok?'success':'');
+}
+function deleteDailyNote() {
+  if (!confirm('Видалити нотатку за цей день?')) return;
+  const arr = getDailyNotes().filter(n=>n.date!==editingNoteDate);
+  saveDailyNotes(arr); closeOverlay('ov-note');
+  renderDailyNoteCard(); renderWeekRow(); renderInsights();
+  pushDailyNotesToGitHub(arr);
+}
+
+// ─── Insights engine ─────────────────────────────────────────────────────────
+function linearTrend(values) {
+  const n = values.length; if (n < 3) return 0;
+  const xs = values.map((_,i)=>i);
+  const mx = xs.reduce((a,b)=>a+b,0)/n, my = values.reduce((a,b)=>a+b,0)/n;
+  let num=0, den=0;
+  for (let i=0;i<n;i++){ num+=(xs[i]-mx)*(values[i]-my); den+=(xs[i]-mx)**2; }
+  return den===0?0:num/den; // slope per step
+}
+function renderInsights() {
+  const el = document.getElementById('insights-list');
+  const lbl = document.getElementById('insights-sec-label');
+  const insights = [];
+
+  // Gym streak
+  const sessions = (getLogs().sessions||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const today = new Date().toISOString().split('T')[0];
+  if (sessions.length >= 2) {
+    const last = sessions[sessions.length-1];
+    const daysSince = Math.round((new Date(today)-new Date(last.date))/86400000);
+    // 7-day session count
+    const wk = new Date(); wk.setDate(wk.getDate()-6);
+    const wkStr = wk.toISOString().split('T')[0];
+    const last7 = sessions.filter(s=>s.date>=wkStr).length;
+    if (last7 >= 4) insights.push({icon:'🔥',kind:'good',title:`${last7} тренувань за 7 днів`,text:'Повний план виконано — тримай ритм.'});
+    else if (last7 >= 1) insights.push({icon:'💪',kind:'info',title:`${last7} тренувань за 7 днів`,text:`Ціль: 4/тиждень. Останнє — ${daysSince===0?'сьогодні':daysSince===1?'вчора':daysSince+' днів тому'}.`});
+    else if (daysSince > 3) insights.push({icon:'⏰',kind:'warn',title:`${daysSince} днів без тренувань`,text:'Варто повернутися у зал — м\'язова памʼять коротка.'});
+  }
+
+  // Health trends
+  if (healthData) {
+    const weights = (healthData.weight_kg||[]).slice(-14).map(x=>x.value);
+    if (weights.length >= 5) {
+      const slope = linearTrend(weights); // kg per day
+      const totalChange = weights[weights.length-1] - weights[0];
+      const days = weights.length;
+      if (Math.abs(totalChange) >= 0.3) {
+        const up = totalChange > 0;
+        insights.push({
+          icon: up?'📈':'📉',
+          kind: 'info',
+          title: `Вага ${up?'+':''}${totalChange.toFixed(1)}кг за ${days} днів`,
+          text: `Тренд: ${slope>=0?'+':''}${(slope*7).toFixed(2)}кг/тиждень. ${up?'Набір — стеж за якістю їжі.':'Втрата — слідкуй за білком для збереження мʼязів.'}`
+        });
+      }
+    }
+    const fat = (healthData.body_fat_pct||[]).slice(-14).map(x=>x.value);
+    if (fat.length >= 5) {
+      const diff = fat[fat.length-1] - fat[0];
+      if (Math.abs(diff) >= 0.4) {
+        insights.push({
+          icon: diff<0?'🎯':'⚠️',
+          kind: diff<0?'good':'warn',
+          title: `Жир ${diff>0?'+':''}${diff.toFixed(1)}% за ${fat.length} днів`,
+          text: diff<0?'Композиція покращується.':'Перевір профіцит калорій і кардіо.'
+        });
+      }
+    }
+    const steps = (healthData.steps||[]).slice(-7).map(x=>x.value);
+    if (steps.length >= 5) {
+      const avg = steps.reduce((a,b)=>a+b,0)/steps.length;
+      if (avg < 5000) insights.push({icon:'🚶',kind:'warn',title:`Тільки ${Math.round(avg/100)/10}k кроків/день`,text:'Додай прогулянку — кардіо плюс відновлення.'});
+      else if (avg >= 8000) insights.push({icon:'👟',kind:'good',title:`${Math.round(avg/100)/10}k кроків/день`,text:'Чудова фонова активність.'});
+    }
+  }
+
+  // Sleep from notes
+  const notes = getDailyNotes().filter(n=>n.sleep_h>0).slice(0,7);
+  if (notes.length >= 3) {
+    const avg = notes.reduce((a,b)=>a+b.sleep_h,0)/notes.length;
+    if (avg < 7) insights.push({icon:'😴',kind:'warn',title:`Сон ${avg.toFixed(1)}h/добу`,text:'Сон <7h гальмує відновлення. Ціль: 7.5–8.5h.'});
+    else if (avg >= 7.5) insights.push({icon:'🛌',kind:'good',title:`Сон ${avg.toFixed(1)}h/добу`,text:'Відновлення на висоті.'});
+  }
+
+  if (insights.length === 0) { lbl.style.display='none'; el.innerHTML=''; return; }
+  lbl.style.display='block';
+  el.innerHTML = insights.slice(0,5).map(i=>`
+    <div class="insight-card">
+      <div class="insight-icon ${i.kind}">${i.icon}</div>
+      <div class="insight-body">
+        <div class="insight-title">${i.title}</div>
+        <div class="insight-text">${i.text}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ─── Metric Detail Page ──────────────────────────────────────────────────────
+const METRICS = {
+  weight: {label:'Вага', unit:'кг', color:'#8b5cf6', decimals:1, src:'weight_kg', invert:true, agg:'last'},
+  fat:    {label:'Жир',  unit:'%',  color:'#f87171', decimals:1, src:'body_fat_pct', invert:true, agg:'last'},
+  bmi:    {label:'BMI',  unit:'',   color:'#eab308', decimals:1, src:'bmi', agg:'last'},
+  steps:  {label:'Кроки',unit:'',   color:'#22c55e', decimals:0, src:'steps', agg:'sum'},
+};
+let metricState = {key:'weight', range:30};
+
+function openMetric(key) {
+  if (!healthData) { showToast('Немає даних','error'); return; }
+  metricState.key = key; metricState.range = 30;
+  document.getElementById('ov-metric-title').textContent = METRICS[key].label;
+  renderMetric();
+  openOverlay('ov-metric');
+}
+function setMetricRange(days) { metricState.range = days; renderMetric(); }
+
+function renderMetric() {
+  const {key, range} = metricState;
+  const m = METRICS[key];
+  const series = (healthData[m.src]||[]).slice(); // sorted asc by date
+  if (!series.length) { document.getElementById('metric-content').innerHTML='<div class="empty"><div class="empty-ico">📊</div><div>Немає даних</div></div>'; return; }
+
+  const endDate = new Date(series[series.length-1].date);
+  const startDate = range===0 ? new Date(series[0].date) : (()=>{const d=new Date(endDate);d.setDate(d.getDate()-(range-1));return d;})();
+  const startStr = startDate.toISOString().split('T')[0];
+  const filtered = series.filter(p => p.date >= startStr);
+
+  const latest = series[series.length-1].value;
+  const values = filtered.map(p=>p.value);
+  const prev = filtered.length > 1 ? filtered[0].value : null;
+  const change = prev!=null ? latest - prev : 0;
+
+  const avg = values.reduce((a,b)=>a+b,0)/values.length;
+  const min = Math.min(...values), max = Math.max(...values);
+
+  // Build insights
+  let insight = '';
+  if (filtered.length >= 5) {
+    const slope = linearTrend(values);
+    const perWeek = slope*7;
+    if (key==='steps') {
+      if (avg < 5000) insight = `Середнє ${Math.round(avg).toLocaleString('uk-UA')} кроків/день — нижче рекомендованого 7–10k. Додай прогулянки.`;
+      else if (avg >= 8000) insight = `Середнє ${Math.round(avg).toLocaleString('uk-UA')} — чудова активність. Так тримати.`;
+      else insight = `Середнє ${Math.round(avg).toLocaleString('uk-UA')} кроків/день. Ціль 8k+.`;
+    } else if (key==='weight') {
+      if (Math.abs(perWeek) < 0.15) insight = `Вага стабільна (${avg.toFixed(1)}кг). Якщо ціль — ріст, додай ~200ккал/день.`;
+      else if (perWeek > 0) insight = `Набираєш ${perWeek.toFixed(2)}кг/тиждень. Оптимум для росту мʼязів ~0.25–0.4 кг/тиждень.`;
+      else insight = `Втрачаєш ${Math.abs(perWeek).toFixed(2)}кг/тиждень. Слідкуй за білком (1.8–2.2 г/кг).`;
+    } else if (key==='fat') {
+      if (perWeek < -0.05) insight = `Жир знижується (${(perWeek*100/avg).toFixed(1)}%/тижд. відн.). Композиція покращується.`;
+      else if (perWeek > 0.05) insight = `Жир росте. Перевір профіцит, збільш кардіо.`;
+      else insight = `Жир стабільний (~${avg.toFixed(1)}%).`;
+    } else if (key==='bmi') {
+      insight = `BMI ${avg.toFixed(1)}. ${avg<18.5?'Недостатня':avg<25?'Нормальна':avg<30?'Надмірна':'Ожиріння'} вага. BMI не враховує мʼязи — орієнтуйся на %жиру.`;
+    }
+  }
+
+  const changeStr = prev!=null ? (change>=0?'+':'') + change.toFixed(m.decimals) : '';
+  const changeCls = change===0?'d-flat':((change>0)!==(m.invert===true))?'d-up':'d-down';
+  const bigVal = m.decimals===0 ? Math.round(latest).toLocaleString('uk-UA') : latest.toFixed(m.decimals);
+
+  document.getElementById('metric-content').innerHTML = `
+    <div class="metric-hero">
+      <div class="m-lbl">${m.label}</div>
+      <div><span class="m-big" style="color:${m.color}">${bigVal}</span>${m.unit?`<span class="m-unit">${m.unit}</span>`:''}</div>
+      ${changeStr?`<div class="m-sub"><span class="${changeCls}">${change>0?'↑':change<0?'↓':'='} ${changeStr}${m.unit}</span> за ${filtered.length} ${filtered.length===1?'день':'днів'}</div>`:`<div class="m-sub" style="color:var(--t3)">Оновлено ${fmtDate(series[series.length-1].date)}</div>`}
+    </div>
+
+    <div class="range-tabs">
+      ${[7,30,90,0].map(d=>`<button class="range-tab ${d===range?'active':''}" onclick="setMetricRange(${d})">${d===0?'Усе':d+'д'}</button>`).join('')}
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-tip" id="chart-tip"><div class="chart-tip-d" id="chart-tip-d"></div><div class="chart-tip-v" id="chart-tip-v"></div></div>
+      <svg class="chart-svg" id="chart-svg" viewBox="0 0 340 180" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-lbl">Середнє</div><div class="stat-val">${m.decimals===0?Math.round(avg).toLocaleString('uk-UA'):avg.toFixed(m.decimals)}${m.unit?' '+m.unit:''}</div></div>
+      <div class="stat-card"><div class="stat-lbl">Записів</div><div class="stat-val">${filtered.length}</div></div>
+      <div class="stat-card"><div class="stat-lbl">Мінімум</div><div class="stat-val">${m.decimals===0?Math.round(min).toLocaleString('uk-UA'):min.toFixed(m.decimals)}${m.unit?' '+m.unit:''}</div></div>
+      <div class="stat-card"><div class="stat-lbl">Максимум</div><div class="stat-val">${m.decimals===0?Math.round(max).toLocaleString('uk-UA'):max.toFixed(m.decimals)}${m.unit?' '+m.unit:''}</div></div>
+    </div>
+
+    ${insight?`<div class="insight-card"><div class="insight-icon info">💡</div><div class="insight-body"><div class="insight-title">Аналіз</div><div class="insight-text">${insight}</div></div></div>`:''}
+    <div style="height:40px"></div>
+  `;
+
+  drawMetricChart(filtered, m);
+}
+
+function drawMetricChart(points, m) {
+  const svg = document.getElementById('chart-svg');
+  if (!svg) return;
+  const W=340, H=180, padL=36, padR=10, padT=10, padB=22;
+  const values = points.map(p=>p.value);
+  const min = Math.min(...values), max = Math.max(...values);
+  const pad = (max-min)*0.12 || 1;
+  const yMin = min - pad, yMax = max + pad;
+  const range = yMax-yMin||1;
+
+  const toX = i => padL + (points.length===1?0:(i/(points.length-1))*(W-padL-padR));
+  const toY = v => padT + (1-(v-yMin)/range)*(H-padT-padB);
+
+  // Y-axis ticks (3 levels)
+  const ticks = [yMin, yMin+range/2, yMax];
+  const yLabel = v => m.decimals===0 ? Math.round(v).toLocaleString('uk-UA') : v.toFixed(m.decimals);
+
+  // Gradient under line
+  const linePath = points.map((p,i)=>`${i===0?'M':'L'}${toX(i).toFixed(1)} ${toY(p.value).toFixed(1)}`).join(' ');
+  const areaPath = linePath + ` L${toX(points.length-1).toFixed(1)} ${(H-padB).toFixed(1)} L${toX(0).toFixed(1)} ${(H-padB).toFixed(1)} Z`;
+
+  // X-axis labels (first, middle, last)
+  const xLabels = [];
+  if (points.length >= 2) {
+    xLabels.push({i:0, d:points[0].date});
+    if (points.length >= 5) xLabels.push({i:Math.floor(points.length/2), d:points[Math.floor(points.length/2)].date});
+    xLabels.push({i:points.length-1, d:points[points.length-1].date});
+  }
+  const fmtXLabel = d => d.slice(5).replace('-','/');
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${m.color}" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="${m.color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g class="chart-axis">
+      ${ticks.map(t=>`<line x1="${padL}" y1="${toY(t).toFixed(1)}" x2="${W-padR}" y2="${toY(t).toFixed(1)}" stroke="${t===yMin||t===yMax?'transparent':'rgba(255,255,255,.06)'}" stroke-dasharray="2,3"/>
+      <text x="${padL-6}" y="${(toY(t)+3).toFixed(1)}" text-anchor="end">${yLabel(t)}</text>`).join('')}
+      ${xLabels.map(x=>`<text x="${toX(x.i).toFixed(1)}" y="${H-4}" text-anchor="middle">${fmtXLabel(x.d)}</text>`).join('')}
+    </g>
+    <path d="${areaPath}" fill="url(#chart-grad)"/>
+    <path d="${linePath}" fill="none" stroke="${m.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${points.length<=45?points.map((p,i)=>`<circle cx="${toX(i).toFixed(1)}" cy="${toY(p.value).toFixed(1)}" r="2.5" fill="${m.color}"/>`).join(''):''}
+    <line class="chart-cursor" id="chart-cursor" x1="0" y1="${padT}" x2="0" y2="${H-padB}"/>
+    <circle class="chart-hover-dot" id="chart-hover-dot" r="5" fill="${m.color}"/>
+  `;
+
+  // Interaction: hover / touch
+  const cursor = document.getElementById('chart-cursor');
+  const hoverDot = document.getElementById('chart-hover-dot');
+  const tip = document.getElementById('chart-tip');
+  const tipD = document.getElementById('chart-tip-d');
+  const tipV = document.getElementById('chart-tip-v');
+
+  function pickAtX(clientX) {
+    const rect = svg.getBoundingClientRect();
+    const svgX = ((clientX - rect.left)/rect.width) * W;
+    // Find closest point by X
+    let best = 0, bestD = Infinity;
+    for (let i=0;i<points.length;i++){ const d=Math.abs(toX(i)-svgX); if(d<bestD){bestD=d;best=i;} }
+    const x = toX(best), y = toY(points[best].value);
+    cursor.setAttribute('x1', x.toFixed(1));
+    cursor.setAttribute('x2', x.toFixed(1));
+    cursor.classList.add('on');
+    hoverDot.setAttribute('cx', x.toFixed(1));
+    hoverDot.setAttribute('cy', y.toFixed(1));
+    hoverDot.classList.add('on');
+    const pxX = (x/W) * rect.width;
+    const tipW = 110;
+    let tipLeft = pxX - tipW/2;
+    if (tipLeft < 4) tipLeft = 4;
+    if (tipLeft + tipW > rect.width - 4) tipLeft = rect.width - tipW - 4;
+    tip.style.left = tipLeft+'px';
+    tip.style.top = Math.max(4, (y/H)*rect.height - 42)+'px';
+    tip.style.width = tipW+'px';
+    tip.style.textAlign = 'center';
+    tipD.textContent = fmtDate(points[best].date);
+    tipV.textContent = (m.decimals===0?Math.round(points[best].value).toLocaleString('uk-UA'):points[best].value.toFixed(m.decimals)) + (m.unit?' '+m.unit:'');
+    tip.classList.add('on');
+  }
+  function hidePick() {
+    cursor.classList.remove('on');
+    hoverDot.classList.remove('on');
+    tip.classList.remove('on');
+  }
+  svg.addEventListener('touchstart', e => { e.stopPropagation(); pickAtX(e.touches[0].clientX); }, {passive:true});
+  svg.addEventListener('touchmove', e => { e.stopPropagation(); pickAtX(e.touches[0].clientX); }, {passive:true});
+  svg.addEventListener('touchend', () => setTimeout(hidePick, 1500), {passive:true});
+  svg.addEventListener('mousemove', e => pickAtX(e.clientX));
+  svg.addEventListener('mouseleave', hidePick);
 }
 
 // ─── Home: day grid + stats ───────────────────────────────────────────────────
@@ -711,11 +1366,8 @@ function renderDayGrid() {
     </div>`).join('');
 }
 function renderStats() {
-  const sessions=getLogs().sessions||[];
-  document.getElementById('stat-total').textContent=sessions.length;
-  const ws=new Date(); ws.setDate(ws.getDate()-ws.getDay());
-  document.getElementById('stat-week').textContent=sessions.filter(s=>new Date(s.date)>=ws).length;
-  if(sessions.length){const l=sessions[0];document.getElementById('stat-last').textContent=`${l.workout_name} — ${l.date}`;}
+  // Stats now rolled into hero + week row + insights
+  renderTodayHero(); renderWeekRow(); renderDailyNoteCard(); renderInsights();
 }
 
 // ─── Workout ──────────────────────────────────────────────────────────────────
@@ -970,17 +1622,31 @@ async function init(){
 
   // Load workout program
   workoutData=await fetchWorkoutJson();
-  if(workoutData) renderDayGrid();
+  if(workoutData){ renderDayGrid(); renderTodayHero(); }
 
   // Load health data
   healthData=await fetchHealthData();
-  renderHealthSection();
+  renderHealthSection(); renderInsights();
 
   // Auto-sync logs if local empty
   const local=getLogs();
   if(!local.sessions.length){
     const remote=await fetchLogsFromGitHub();
     if(remote?.sessions?.length){saveLogs(remote);renderStats();showToast('Журнал завантажено','success');}
+  }
+
+  // Load daily notes from GitHub (merge with local)
+  const notesRemote = await fetchDailyNotesFromGitHub();
+  if (notesRemote) {
+    const localNotes = getDailyNotes();
+    const byDate = {};
+    for (const n of notesRemote) byDate[n.date] = n;
+    for (const n of localNotes) {
+      const rem = byDate[n.date];
+      if (!rem || (n.updated_at||'') > (rem.updated_at||'')) byDate[n.date] = n;
+    }
+    saveDailyNotes(Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)));
+    renderDailyNoteCard(); renderWeekRow(); renderInsights();
   }
 }
 init();
