@@ -812,7 +812,18 @@ async function fetchJSON(path) {
   try { const res=await fetch(`https://raw.githubusercontent.com/${o}/${r}/main/${path}?t=${Date.now()}`); if(!res.ok) return null; return await res.json(); } catch(e){return null;}
 }
 async function fetchWorkoutJson() {
-  const d=await fetchJSON('workout.json'); if(d){localStorage.setItem('gym_workout_cache',JSON.stringify(d));return d;}
+  const d=await fetchJSON('workout.json');
+  if(d){
+    const cached=localStorage.getItem('gym_workout_cache')?JSON.parse(localStorage.getItem('gym_workout_cache')):null;
+    // Invalidate cache if version changed
+    if(!cached || cached.meta?.version !== d.meta?.version) {
+      localStorage.setItem('gym_workout_cache',JSON.stringify(d));
+    } else {
+      // Use cache if version is same
+      return cached;
+    }
+    return d;
+  }
   const c=localStorage.getItem('gym_workout_cache'); if(c) return JSON.parse(c); return null;
 }
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
