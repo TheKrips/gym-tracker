@@ -291,6 +291,33 @@
     .num-step-btn:active{transform:scale(0.9);background:var(--s3)}
     .num-val{font-size:22px;font-weight:700;min-width:80px;text-align:center;font-variant-numeric:tabular-nums}
     .num-val .unit{font-size:12px;color:var(--t3);margin-left:2px}
+    .hoo-row{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+    .hoo-btn{
+      padding:7px 2px;background:var(--s2);border:var(--bh) solid var(--bd2);border-radius:10px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;
+      min-height:50px;-webkit-tap-highlight-color:transparent;
+      transition:transform 120ms var(--eo3),border-color 180ms ease,background 180ms ease;
+    }
+    .hoo-btn.active{border-color:var(--p);background:var(--pg)}
+    .hoo-btn:active{transform:scale(0.92)}
+    .hoo-num{font-size:16px;font-weight:700;line-height:1}
+    .hoo-lbl{font-size:8px;color:var(--t3);text-align:center;line-height:1.2;font-weight:500}
+    .num-inputs-row{display:flex;gap:8px;margin-bottom:12px}
+    .num-input-group{flex:1;display:flex;flex-direction:column;gap:4px}
+    .num-input-group label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+    .num-input{
+      width:100%;background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t);
+      border-radius:var(--rad-s);padding:9px 4px;font-size:15px;font-weight:700;
+      text-align:center;font-family:inherit;-moz-appearance:textfield;
+    }
+    .num-input:focus{outline:none;border-color:var(--p)}
+    .num-input::-webkit-inner-spin-button,.num-input::-webkit-outer-spin-button{-webkit-appearance:none}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .toggle-label{font-size:14px;font-weight:500}
+    .toggle-switch{width:44px;height:26px;border-radius:13px;background:var(--s3);position:relative;transition:background 200ms ease;flex-shrink:0}
+    .toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--t3);transition:transform 200ms var(--eo3),background 200ms ease}
+    .toggle-switch.on{background:var(--p)}
+    .toggle-switch.on::after{transform:translateX(18px);background:#fff}
 
     /* ── Exercise card ──────────────────────────────────────── */
     .ex-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);margin-bottom:9px;overflow:hidden}
@@ -1079,35 +1106,43 @@ async function fetchDailyNotesFromGitHub() {
   return d && d.notes ? d.notes : null;
 }
 
+function calcHooperScore(n) {
+  const h = n.hooper || {};
+  const sq = h.sleep_quality, st = h.stress, fa = h.fatigue, so = h.soreness;
+  const valid = [sq?6-sq:null, st||null, fa||null, so||null].filter(x=>x!==null);
+  if (valid.length < 3) return null;
+  return valid.reduce((a,b)=>a+b,0);
+}
 function renderDailyNoteCard() {
   const el = document.getElementById('daily-note-card');
   const today = new Date().toISOString().split('T')[0];
   const n = getDailyNote(today);
   if (!n) {
     el.innerHTML = `<div class="note-card" onclick="openDailyNote()">
-      <div class="note-empty-text">+ Додай нотатку за сьогодні (настрій, сон, харчування)</div>
+      <div class="note-empty-text">+ Відмітити відновлення сьогодні (Hooper Index)</div>
     </div>`;
     return;
   }
-  const moodEmoji = ['😞','😕','😐','🙂','😄'][n.mood-1] || '';
+  const hs = calcHooperScore(n);
+  const hsCol = hs===null?'var(--t2)':hs<=8?'var(--g)':hs<=12?'var(--y)':'var(--r)';
   const metrics = [
-    {val:moodEmoji||'—', lbl:'Настрій', emoji:true},
-    {val:n.energy?n.energy+'/5':'—', lbl:'Енергія'},
-    {val:n.sleep_h?n.sleep_h+'h':'—', lbl:'Сон'},
-    {val:n.nutrition?['🥤','🍔','🥗','💎'][n.nutrition-1]||'—':'—', lbl:'Їжа', emoji:true},
+    {val:hs!==null?`${hs}/20`:'—', lbl:'Hooper', color:hsCol},
+    {val:n.sleep_hours?n.sleep_hours.toFixed(1)+'h':'—', lbl:'Сон'},
+    {val:n.nutrition_adherence?n.nutrition_adherence+'/5':'—', lbl:'Їжа'},
+    {val:n.protein_g?n.protein_g+'g':'—', lbl:'Білки'},
   ];
   el.innerHTML = `<div class="note-card" onclick="openDailyNote()">
     <div class="note-hdr-r">
-      <div class="note-title">Сьогодні</div>
+      <div class="note-title">Сьогодні${n.illness?' 🤒':''}</div>
       <div class="note-pill">Редагувати</div>
     </div>
     <div class="note-row">
       ${metrics.map(m=>`<div class="note-m">
-        <div class="${m.emoji?'note-m-emoji':'note-m-val'}">${m.val}</div>
+        <div class="note-m-val" style="${m.color?`color:${m.color}`:''}">${m.val}</div>
         <div class="note-m-lbl">${m.lbl}</div>
       </div>`).join('')}
     </div>
-    ${n.text?`<div class="note-text">${escapeHTML(n.text)}</div>`:''}
+    ${n.notes?`<div class="note-text">${escapeHTML(n.notes)}</div>`:''}
   </div>`;
 }
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -1118,7 +1153,11 @@ let editingNote = null;
 function openDailyNote(dateStr) {
   editingNoteDate = dateStr || new Date().toISOString().split('T')[0];
   const existing = getDailyNote(editingNoteDate);
-  editingNote = existing ? {...existing} : {date:editingNoteDate, mood:0, energy:0, sleep_h:0, nutrition:0, tags:[], text:''};
+  editingNote = existing
+    ? {...existing, hooper:{...(existing.hooper||{})}}
+    : {date:editingNoteDate, hooper:{sleep_quality:0,stress:0,fatigue:0,soreness:0},
+       sleep_hours:0, nutrition_adherence:0, kcal:null, protein_g:null, alcohol_units:0, illness:false, notes:''};
+  if (!editingNote.hooper) editingNote.hooper={sleep_quality:0,stress:0,fatigue:0,soreness:0};
   renderNoteEditor();
   document.getElementById('ov-note-title').textContent = editingNoteDate===new Date().toISOString().split('T')[0] ? 'Сьогодні' : fmtDate(editingNoteDate);
   openOverlay('ov-note');
@@ -1126,34 +1165,47 @@ function openDailyNote(dateStr) {
 function renderNoteEditor() {
   const el = document.getElementById('note-editor');
   const n = editingNote;
-  const moods = ['😞','😕','😐','🙂','😄'];
-  const nutrs = [{e:'🥤',l:'Погано'},{e:'🍔',l:'Фастфуд'},{e:'🥗',l:'Норм'},{e:'💎',l:'Чисто'}];
-  const tagOptions = ['💪 Сила','🔥 Енергія','😴 Втомлений','🤒 Хворію','💊 Кофеїн','🚶 Активний','🧘 Стрес','🍺 Алкоголь','🥩 Високо білка','🚰 Вода +'];
+  const h = n.hooper || {};
+  const hooField = (field, labels) =>
+    `<div class="hoo-row">${labels.map((l,i)=>
+      `<div class="hoo-btn ${h[field]===i+1?'active':''}" onclick="setHooper('${field}',${i+1})">
+        <span class="hoo-num">${i+1}</span><span class="hoo-lbl">${l}</span>
+      </div>`).join('')}</div>`;
   el.innerHTML = `
-    <div class="sec" style="margin-top:4px">Настрій</div>
-    <div class="mood-row">
-      ${moods.map((e,i)=>`<div class="mood-btn ${n.mood===i+1?'active':''}" onclick="setNoteField('mood',${i+1})">${e}</div>`).join('')}
-    </div>
-    <div class="sec">Енергія</div>
-    <div class="mood-row">
-      ${[1,2,3,4,5].map(i=>`<div class="mood-btn ${n.energy===i?'active':''}" style="font-size:13px;font-weight:700;color:var(--t2)" onclick="setNoteField('energy',${i})">${i}</div>`).join('')}
-    </div>
-    <div class="sec">Сон</div>
+    <div class="sec" style="margin-top:4px">😴 Якість сну</div>
+    ${hooField('sleep_quality',['жахл','погано','норм','добре','чудово'])}
+    <div class="sec">🧘 Рівень стресу</div>
+    ${hooField('stress',['немає','трохи','серед','сильн','макс'])}
+    <div class="sec">⚡ Загальна втома</div>
+    ${hooField('fatigue',['свіжий','легка','норм','сильна','виснаж'])}
+    <div class="sec">💪 М'язовий біль</div>
+    ${hooField('soreness',['немає','легк','норм','сильн','дуже'])}
+    <div class="sec">🛌 Тривалість сну</div>
     <div class="num-row">
-      <button class="num-step-btn" onclick="adjNoteSleep(-0.5)">−</button>
-      <div class="num-val">${(n.sleep_h||0).toFixed(1)}<span class="unit"> год</span></div>
-      <button class="num-step-btn" onclick="adjNoteSleep(0.5)">+</button>
+      <button class="num-step-btn" onclick="adjSleepH(-0.5)">−</button>
+      <div class="num-val">${(n.sleep_hours||0).toFixed(1)}<span class="unit"> год</span></div>
+      <button class="num-step-btn" onclick="adjSleepH(0.5)">+</button>
     </div>
-    <div class="sec">Харчування</div>
-    <div class="mood-row" style="grid-template-columns:repeat(4,1fr)">
-      ${nutrs.map((x,i)=>`<div class="mood-btn ${n.nutrition===i+1?'active':''}" style="flex-direction:column;font-size:22px;gap:2px" onclick="setNoteField('nutrition',${i+1})">${x.e}<span style="font-size:9px;color:var(--t3);font-weight:500">${x.l}</span></div>`).join('')}
+    <div class="sec">🥗 Харчування</div>
+    <div class="hoo-row">${['дуже\nпог','погано','норм','добре','ідеал'].map((l,i)=>
+      `<div class="hoo-btn ${n.nutrition_adherence===i+1?'active':''}" onclick="setNoteField('nutrition_adherence',${i+1})">
+        <span class="hoo-num">${i+1}</span><span class="hoo-lbl">${l}</span>
+      </div>`).join('')}</div>
+    <div class="sec">📊 Ккал і білки (опційно)</div>
+    <div class="num-inputs-row">
+      <div class="num-input-group"><label>ккал</label>
+        <input type="number" class="num-input" placeholder="—" value="${n.kcal||''}" oninput="editingNote.kcal=this.value?+this.value:null" inputmode="numeric"></div>
+      <div class="num-input-group"><label>білки г</label>
+        <input type="number" class="num-input" placeholder="—" value="${n.protein_g||''}" oninput="editingNote.protein_g=this.value?+this.value:null" inputmode="numeric"></div>
+      <div class="num-input-group"><label>алкоголь</label>
+        <input type="number" class="num-input" placeholder="0" value="${n.alcohol_units||''}" oninput="editingNote.alcohol_units=this.value?+this.value:0" min="0" inputmode="numeric"></div>
     </div>
-    <div class="sec">Теги</div>
-    <div class="chip-row">
-      ${tagOptions.map(t=>`<div class="chip ${n.tags.includes(t)?'active':''}" onclick="toggleNoteTag('${t.replace(/'/g,"\\'")}')">${t}</div>`).join('')}
+    <div class="toggle-row" onclick="editingNote.illness=!editingNote.illness; preserveTextAndRerender()">
+      <span class="toggle-label">🤒 Я хворію</span>
+      <div class="toggle-switch ${n.illness?'on':''}"></div>
     </div>
     <div class="sec">Нотатка</div>
-    <textarea class="textarea" id="note-text" placeholder="Як почуваєшся? Що зʼїв? Що болить? ..." oninput="editingNote.text=this.value">${escapeHTML(n.text||'')}</textarea>
+    <textarea class="textarea" id="note-text" placeholder="Як почуваєшся? Що зʼїв? Що болить? ..." oninput="editingNote.notes=this.value">${escapeHTML(n.notes||n.text||'')}</textarea>
     ${getDailyNote(editingNoteDate)?`<button class="btn btn-d" style="margin-top:12px" onclick="deleteDailyNote()">Видалити нотатку</button>`:''}
     <div style="height:40px"></div>
   `;
@@ -1164,17 +1216,19 @@ function preserveTextAndRerender(){
   renderNoteEditor();
 }
 function setNoteField(f,v){ editingNote[f] = editingNote[f]===v?0:v; preserveTextAndRerender(); }
-function adjNoteSleep(d){ editingNote.sleep_h = Math.max(0, Math.min(14, (editingNote.sleep_h||0) + d)); preserveTextAndRerender(); }
-function toggleNoteTag(t){
-  if(!editingNote.tags) editingNote.tags=[];
-  const i = editingNote.tags.indexOf(t);
-  if(i>=0) editingNote.tags.splice(i,1); else editingNote.tags.push(t);
+function setHooper(field, val) {
+  if(!editingNote.hooper) editingNote.hooper={};
+  editingNote.hooper[field] = editingNote.hooper[field]===val ? 0 : val;
   preserveTextAndRerender();
 }
+function adjSleepH(d){ editingNote.sleep_hours = Math.max(0, Math.min(14, (editingNote.sleep_hours||0) + d)); preserveTextAndRerender(); }
 async function saveDailyNote() {
   const n = editingNote;
   // Only save if something is set
-  const empty = !n.mood && !n.energy && !n.sleep_h && !n.nutrition && !(n.tags&&n.tags.length) && !(n.text&&n.text.trim());
+  const h = n.hooper||{};
+  const hasHooper = h.sleep_quality||h.stress||h.fatigue||h.soreness;
+  const empty = !hasHooper && !n.sleep_hours && !n.nutrition_adherence && !n.kcal && !n.protein_g && !(n.notes&&n.notes.trim());
+  n.hooper_score = calcHooperScore(n);
   if (empty) { closeOverlay('ov-note'); return; }
   n.updated_at = new Date().toISOString();
   const all = upsertDailyNote(n);
@@ -1258,12 +1312,19 @@ function renderInsights() {
     }
   }
 
-  // Sleep from notes
-  const notes = getDailyNotes().filter(n=>n.sleep_h>0).slice(0,7);
-  if (notes.length >= 3) {
-    const avg = notes.reduce((a,b)=>a+b.sleep_h,0)/notes.length;
+  // Sleep from notes (support both sleep_hours and legacy sleep_h)
+  const recentNotes = getDailyNotes().filter(n=>(n.sleep_hours||n.sleep_h)>0).slice(0,7);
+  if (recentNotes.length >= 3) {
+    const avg = recentNotes.reduce((a,b)=>a+(b.sleep_hours||b.sleep_h||0),0)/recentNotes.length;
     if (avg < 7) insights.push({icon:'😴',kind:'warn',title:`Сон ${avg.toFixed(1)}h/добу`,text:'Сон <7h гальмує відновлення. Ціль: 7.5–8.5h.'});
     else if (avg >= 7.5) insights.push({icon:'🛌',kind:'good',title:`Сон ${avg.toFixed(1)}h/добу`,text:'Відновлення на висоті.'});
+  }
+  // Hooper trend
+  const hooNotes = getDailyNotes().filter(n=>n.hooper_score!=null).slice(0,5);
+  if (hooNotes.length >= 3) {
+    const avg = hooNotes.reduce((a,b)=>a+(b.hooper_score||0),0)/hooNotes.length;
+    if (avg >= 14) insights.push({icon:'⚡',kind:'warn',title:`Hooper ${avg.toFixed(0)}/20 (3 дні)`,text:'Погане відновлення — зменш навантаження або додай день відпочинку.'});
+    else if (avg <= 8) insights.push({icon:'💚',kind:'good',title:`Hooper ${avg.toFixed(0)}/20 (3 дні)`,text:'Відмінне відновлення — можна штурмувати ваги.'});
   }
 
   if (insights.length === 0) { lbl.style.display='none'; el.innerHTML=''; return; }

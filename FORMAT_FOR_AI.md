@@ -48,6 +48,8 @@ This document describes the data formats used in this gym tracking system.
           "id": "bench_press",
           "name": "Exercise name (Ukrainian)",
           "type": "compound | isolation",
+          "primary_muscles": ["chest", "triceps"],
+          "secondary_muscles": ["anterior_deltoid"],
           "warmup": "40 кг × 8 | null",
           "sets": 4,
           "reps": "8",
@@ -63,6 +65,9 @@ This document describes the data formats used in this gym tracking system.
   ]
 }
 ```
+
+### Muscle Group IDs
+`chest`, `triceps`, `biceps`, `brachialis`, `anterior_deltoid`, `lateral_deltoid`, `posterior_deltoid`, `back_lat`, `back_mid`, `traps`, `rhomboids`, `erectors`, `quadriceps`, `hamstrings`, `glutes`, `calves`, `hip_flexors`, `abs`
 
 ### Superset Exercise Type
 
@@ -112,6 +117,9 @@ This file is written by the app. **Do not overwrite it** — only read it.
       "workout_id": "lower_a",
       "workout_name": "Lower A",
       "finished_at": "2026-04-16T18:30:00.000Z",
+      "duration_min": 58,
+      "rpe": 7,
+      "load_au": 406,
       "exercises": [
         {
           "exercise_id": "squat",
@@ -125,6 +133,13 @@ This file is written by the app. **Do not overwrite it** — only read it.
   ]
 }
 ```
+
+Session fields (Phase 1, app will collect post-workout):
+- `duration_min`: workout duration in minutes
+- `rpe`: session RPE on CR-10 scale (0-10), collected after workout
+- `load_au`: training load = duration_min × rpe (arbitrary units)
+
+**Acute:Chronic ratio** = mean(7-day load AU) / mean(28-day load AU). Sweet spot: 0.8–1.3. Above 1.5 = overreach risk.
 
 ### Skipped sessions
 
@@ -173,17 +188,27 @@ Notes:
 
 Written by the app. **Do not overwrite.**
 
+Uses **Hooper Index** framework for recovery assessment.
+
 ```json
 {
   "notes": [
     {
       "date": "2026-04-16",
-      "mood": 4,
-      "energy": 3,
-      "sleep_h": 7.5,
-      "nutrition": 3,
-      "tags": ["💪 Сила", "🚶 Активний"],
-      "text": "Free-form note from the user",
+      "hooper": {
+        "sleep_quality": 4,
+        "stress": 2,
+        "fatigue": 2,
+        "soreness": 1
+      },
+      "hooper_score": 7,
+      "sleep_hours": 7.5,
+      "nutrition_adherence": 4,
+      "kcal": 2300,
+      "protein_g": 135,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Free-form note from the user",
       "updated_at": "2026-04-16T20:00:00Z"
     }
   ]
@@ -191,11 +216,22 @@ Written by the app. **Do not overwrite.**
 ```
 
 Fields:
-- `mood`: 1-5 (1=😞, 2=😕, 3=😐, 4=🙂, 5=😄)
-- `energy`: 1-5
-- `sleep_h`: hours of sleep (0-14)
-- `nutrition`: 1-4 (1=🥤 Погано, 2=🍔 Фастфуд, 3=🥗 Норм, 4=💎 Чисто)
-- `tags`: from predefined list (💪 Сила, 🔥 Енергія, 😴 Втомлений, 🤒 Хворію, 💊 Кофеїн, 🚶 Активний, 🧘 Стрес, 🍺 Алкоголь, 🥩 Високо білка, 🚰 Вода +)
+- `hooper.sleep_quality`: 1-5 (1=жахливо, 5=чудово) — **higher is better**
+- `hooper.stress`: 1-5 (1=немає, 5=екстремальний) — lower is better
+- `hooper.fatigue`: 1-5 (1=свіжий, 5=виснажений) — lower is better
+- `hooper.soreness`: 1-5 (1=немає, 5=дуже боляче) — lower is better
+- `hooper_score`: computed = (6 - sleep_quality) + stress + fatigue + soreness. Range 4-20, **lower = better recovery**
+  - 4-7: optimal | 8-11: good | 12-15: moderate | 16-20: poor
+- `sleep_hours`: objective sleep duration in hours (0-14)
+- `nutrition_adherence`: 1-5 (1=дуже погано, 5=ідеально)
+- `kcal`: daily calories (optional, approximate)
+- `protein_g`: daily protein in grams (optional)
+- `alcohol_units`: standard drink units (0 = none)
+- `illness`: boolean — sick today
+- `notes`: free-form text
+
+### Backwards compatibility
+Old records may have `mood`, `energy`, `sleep_h`, `nutrition`, `tags`, `text` fields. Coach script supports both formats.
 
 ---
 

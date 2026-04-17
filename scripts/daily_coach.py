@@ -223,10 +223,10 @@ def check_progression(exercise, workout_type='upper'):
 
 def assess_recovery():
     """
-    Assess recovery status based on daily notes and health data.
-    Returns (score: 0-100, adjustments: list[str], details: str)
+    Assess recovery using Hooper Index + objective sleep + nutrition + illness/alcohol.
+    Returns (score: 0-100, adjustments: list[str], details: list[str])
     """
-    score = 80  # baseline
+    score = 80
     adjustments = []
     details = []
 
@@ -235,95 +235,109 @@ def assess_recovery():
     note = note_today or note_yesterday
 
     if note:
-        # Sleep assessment
-        sleep = note.get('sleep_h', 0)
-        if sleep > 0:
-            if sleep < 6:
-                score -= 25
-                adjustments.append('reduce_volume')
-                details.append(f'Сон {sleep}h — критично мало. Зменшуємо об\'єм.')
-            elif sleep < 7:
-                score -= 10
-                adjustments.append('reduce_intensity')
-                details.append(f'Сон {sleep}h — замало для повного відновлення.')
-            elif sleep >= 8:
-                score += 5
-                details.append(f'Сон {sleep}h — відмінно.')
+        # ── Hooper Index ──────────────────────────────────────────
+        hooper = note.get('hooper', {})
+        sq = hooper.get('sleep_quality', 0)  # 1=жахливо, 5=чудово (inverted for score)
+        st = hooper.get('stress', 0)         # 1=немає, 5=max (direct)
+        fa = hooper.get('fatigue', 0)        # 1=свіжий, 5=виснажений (direct)
+        so = hooper.get('soreness', 0)       # 1=немає, 5=дуже (direct)
 
-        # Mood assessment
-        mood = note.get('mood', 0)
-        if mood == 1:
+        valid_fields = [f for f in [sq, st, fa, so] if f > 0]
+        if len(valid_fields) >= 3:
+            hooper_score = ((6 - sq) if sq else 0) + (st or 0) + (fa or 0) + (so or 0)
+            stored_score = note.get('hooper_score') or hooper_score
+
+            if stored_score <= 7:
+                score += 10
+                details.append(f'Hooper {stored_score}/20 — відмінне відновлення.')
+            elif stored_score <= 11:
+                details.append(f'Hooper {stored_score}/20 — хороше відновлення.')
+            elif stored_score <= 14:
+                score -= 12
+                adjustments.append('reduce_intensity')
+                details.append(f'Hooper {stored_score}/20 — помірна готовність. Без нових рекордів.')
+            else:
+                score -= 28
+                adjustments.append('reduce_volume')
+                details.append(f'Hooper {stored_score}/20 — погане відновлення. Зменшуємо об\'єм.')
+
+            # Individual signal overrides
+            if sq == 1:
+                score -= 10
+                adjustments.append('reduce_volume')
+                details.append('Якість сну 1/5 — критично. Додатково зменшуємо об\'єм.')
+            if fa >= 4:
+                score -= 8
+                if 'reduce_intensity' not in adjustments:
+                    adjustments.append('reduce_intensity')
+                details.append(f'Втома {fa}/5 — не штурмуй ваги.')
+            if st >= 4:
+                score -= 5
+                details.append(f'Стрес {st}/5 — фокус на техніці.')
+
+        # ── Objective sleep duration ───────────────────────────────
+        sleep_h = note.get('sleep_hours') or note.get('sleep_h', 0)
+        if sleep_h and sleep_h > 0:
+            if sleep_h < 6:
+                score -= 20
+                adjustments.append('reduce_volume')
+                details.append(f'Сон {sleep_h}h — критично мало.')
+            elif sleep_h < 7:
+                score -= 8
+                details.append(f'Сон {sleep_h}h — недостатньо для повного відновлення.')
+            elif sleep_h >= 8:
+                score += 5
+                details.append(f'Сон {sleep_h}h — відмінно.')
+
+        # ── Illness ────────────────────────────────────────────────
+        if note.get('illness'):
+            score -= 35
+            adjustments.append('skip_recommended')
+            details.append('Хворієш — краще пропустити або дуже легко.')
+
+        # ── Alcohol ────────────────────────────────────────────────
+        alcohol = note.get('alcohol_units', 0) or 0
+        if alcohol >= 3:
             score -= 15
             adjustments.append('reduce_intensity')
-            details.append('Настрій 1/5 — зменшуємо інтенсивність.')
-        elif mood == 2:
+            details.append(f'Алкоголь {alcohol} od. — зменшуємо навантаження.')
+        elif alcohol >= 1:
             score -= 5
-            details.append('Настрій 2/5 — помірна обережність.')
-        elif mood >= 4:
-            score += 5
+            details.append(f'Алкоголь {alcohol} od. — легка знижка відновлення.')
 
-        # Energy assessment
-        energy = note.get('energy', 0)
-        if energy == 1:
-            score -= 20
-            adjustments.append('reduce_volume')
-            details.append('Енергія 1/5 — тренування в полегшеному режимі.')
-        elif energy == 2:
+        # ── Nutrition adherence ────────────────────────────────────
+        nutrition = note.get('nutrition_adherence') or note.get('nutrition', 0)
+        if nutrition == 1:
             score -= 10
             adjustments.append('reduce_intensity')
-            details.append('Енергія 2/5 — обережно з вагами.')
-        elif energy >= 4:
-            score += 5
-
-        # Nutrition assessment
-        nutrition = note.get('nutrition', 0)
-        if nutrition == 1:
-            score -= 15
-            adjustments.append('reduce_intensity')
-            details.append('Харчування погане — не час для рекордів.')
-        elif nutrition == 2:
-            score -= 5
+            details.append('Харчування 1/5 — не час для рекордів.')
         elif nutrition >= 4:
-            score += 5
+            score += 3
 
-        # Tags
-        tags = note.get('tags', [])
-        for tag in tags:
-            if '🤒' in tag:
-                score -= 30
-                adjustments.append('skip_recommended')
-                details.append('Хворієш — краще пропустити або легке тренування.')
-            if '🍺' in tag:
-                score -= 15
-                adjustments.append('reduce_intensity')
-                details.append('Алкоголь — зменшуємо навантаження.')
-            if '😴' in tag:
-                score -= 10
-                adjustments.append('reduce_volume')
-                details.append('Втомлений.')
-            if '🧘' in tag:
-                score -= 5
-                details.append('Стрес — зосередься на техніці, не на вагах.')
+        # ── Protein ────────────────────────────────────────────────
+        protein = note.get('protein_g')
+        if protein is not None and protein < 100:
+            details.append(f'Білки {protein}g — мало (ціль: 130g+). Додай протеїн.')
 
-    # Steps trend (low NEAT = worse recovery context)
+    # ── Steps trend ────────────────────────────────────────────────
     if health.get('steps'):
         recent_steps = recent_values(health['steps'], days=3)
         if recent_steps:
             avg_steps = sum(v for _, v in recent_steps) / len(recent_steps)
             if avg_steps < 3000:
                 score -= 5
-                details.append(f'Мало кроків ({int(avg_steps)}/день) — додай прогулянку для відновлення.')
+                details.append(f'Мало кроків ({int(avg_steps)}/день) — додай прогулянку.')
 
-    # Check days since last workout
+    # ── Days since last workout ─────────────────────────────────────
     workout_dates = sorted([s['date'] for s in sessions if not s.get('skipped')], reverse=True)
     if workout_dates:
         days_since = (datetime.now() - datetime.strptime(workout_dates[0], '%Y-%m-%d')).days
-        if days_since >= 5:
+        if days_since >= 7:
+            adjustments.append('deload')
+            details.append(f'{days_since} днів без тренувань — деload -10%.')
+        elif days_since >= 5:
             adjustments.append('reduce_intensity')
             details.append(f'{days_since} днів без тренувань — перший сет розминковий.')
-        elif days_since >= 7:
-            adjustments.append('deload')
-            details.append(f'{days_since} днів перерва — деload -10% на першому тренуванні.')
 
     return (max(0, min(100, score)), list(set(adjustments)), details)
 
