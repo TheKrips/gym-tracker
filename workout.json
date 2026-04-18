@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.3",
+    "version": "3.4",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-17"
+    "updated": "2026-04-18"
   },
   "schedule": [
     {
@@ -36,8 +36,13 @@
           "id": "bench_press",
           "name": "Жим штанги лежачи",
           "type": "compound",
-          "primary_muscles": ["chest", "triceps"],
-          "secondary_muscles": ["anterior_deltoid"],
+          "primary_muscles": [
+            "chest",
+            "triceps"
+          ],
+          "secondary_muscles": [
+            "anterior_deltoid"
+          ],
           "warmup": "40 кг × 8, 57 кг × 4",
           "sets": 4,
           "reps": "8",
@@ -57,8 +62,13 @@
           "id": "lat_pulldown_wide",
           "name": "Тяга верхнього блоку (широкий хват)",
           "type": "compound",
-          "primary_muscles": ["back_lat"],
-          "secondary_muscles": ["biceps", "back_mid"],
+          "primary_muscles": [
+            "back_lat"
+          ],
+          "secondary_muscles": [
+            "biceps",
+            "back_mid"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "8",
@@ -77,8 +87,14 @@
           "id": "db_shoulder_press",
           "name": "Жим гантелей сидячи (плечі)",
           "type": "isolation",
-          "primary_muscles": ["anterior_deltoid", "lateral_deltoid"],
-          "secondary_muscles": ["triceps", "traps"],
+          "primary_muscles": [
+            "anterior_deltoid",
+            "lateral_deltoid"
+          ],
+          "secondary_muscles": [
+            "triceps",
+            "traps"
+          ],
           "warmup": "15 кг × 10",
           "sets": 3,
           "reps": "10",
@@ -96,8 +112,14 @@
           "id": "db_row_one_arm",
           "name": "Тяга гантелі в нахилі (одна рука)",
           "type": "compound",
-          "primary_muscles": ["back_lat", "back_mid"],
-          "secondary_muscles": ["biceps", "posterior_deltoid"],
+          "primary_muscles": [
+            "back_lat",
+            "back_mid"
+          ],
+          "secondary_muscles": [
+            "biceps",
+            "posterior_deltoid"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "10",
@@ -115,8 +137,12 @@
           "id": "lateral_raises",
           "name": "Підйоми гантелей в сторони (бічна дельта)",
           "type": "isolation",
-          "primary_muscles": ["lateral_deltoid"],
-          "secondary_muscles": ["traps"],
+          "primary_muscles": [
+            "lateral_deltoid"
+          ],
+          "secondary_muscles": [
+            "traps"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "15",
@@ -142,8 +168,12 @@
             {
               "id": "bicep_curl_a",
               "name": "Згинання гантелей (біцепс)",
-              "primary_muscles": ["biceps"],
-              "secondary_muscles": ["brachialis"],
+              "primary_muscles": [
+                "biceps"
+              ],
+              "secondary_muscles": [
+                "brachialis"
+              ],
               "sets": 3,
               "reps": "10",
               "weight_kg": 9,
@@ -156,7 +186,9 @@
             {
               "id": "tricep_pushdown_a",
               "name": "Тяга каната вниз (тріцепс)",
-              "primary_muscles": ["triceps"],
+              "primary_muscles": [
+                "triceps"
+              ],
               "secondary_muscles": [],
               "sets": 3,
               "reps": "10",
@@ -181,8 +213,14 @@
           "id": "squat",
           "name": "Присідання зі штангою",
           "type": "compound",
-          "primary_muscles": ["quadriceps", "glutes"],
-          "secondary_muscles": ["hamstrings", "erectors"],
+          "primary_muscles": [
+            "quadriceps",
+            "glutes"
+          ],
+          "secondary_muscles": [
+            "hamstrings",
+            "erectors"
+          ],
           "warmup": "40 кг × 8, 52 кг × 4",
           "sets": 4,
           "reps": "8",
@@ -202,8 +240,13 @@
           "id": "leg_press",
           "name": "Жим ногами в тренажері",
           "type": "compound",
-          "primary_muscles": ["quadriceps", "glutes"],
-          "secondary_muscles": ["hamstrings"],
+          "primary_muscles": [
+            "quadriceps",
+            "glutes"
+          ],
+          "secondary_muscles": [
+            "hamstrings"
+          ],
           "warmup": "70 кг × 10",
           "sets": 3,
           "reps": "6",
@@ -223,7 +266,9 @@
           "id": "leg_extension",
           "name": "Розгинання ніг у тренажері",
           "type": "isolation",
-          "primary_muscles": ["quadriceps"],
+          "primary_muscles": [
+            "quadriceps"
+          ],
           "secondary_muscles": [],
           "warmup": null,
           "sets": 3,
@@ -243,8 +288,12 @@
           "id": "leg_curl_a",
           "name": "Згинання ніг лежачи (хамстрінг)",
           "type": "isolation",
-          "primary_muscles": ["hamstrings"],
-          "secondary_muscles": ["calves"],
+          "primary_muscles": [
+            "hamstrings"
+          ],
+          "secondary_muscles": [
+            "calves"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "10",
@@ -263,8 +312,13 @@
           "id": "hyperextension_a",
           "name": "Гіперекстензія",
           "type": "isolation",
-          "primary_muscles": ["erectors", "glutes"],
-          "secondary_muscles": ["hamstrings"],
+          "primary_muscles": [
+            "erectors",
+            "glutes"
+          ],
+          "secondary_muscles": [
+            "hamstrings"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "10",
@@ -283,7 +337,9 @@
           "id": "calf_raise_a",
           "name": "Підйом на носки (ікри)",
           "type": "isolation",
-          "primary_muscles": ["calves"],
+          "primary_muscles": [
+            "calves"
+          ],
           "secondary_muscles": [],
           "warmup": null,
           "sets": 3,
@@ -311,8 +367,14 @@
           "id": "cable_row",
           "name": "Горизонтальна тяга блоку (сидячи)",
           "type": "compound",
-          "primary_muscles": ["back_lat", "back_mid"],
-          "secondary_muscles": ["biceps", "posterior_deltoid"],
+          "primary_muscles": [
+            "back_lat",
+            "back_mid"
+          ],
+          "secondary_muscles": [
+            "biceps",
+            "posterior_deltoid"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "10",
@@ -332,8 +394,13 @@
           "id": "lat_pulldown_neutral",
           "name": "Тяга верхнього блоку (нейтральний хват)",
           "type": "compound",
-          "primary_muscles": ["back_lat", "back_mid"],
-          "secondary_muscles": ["biceps"],
+          "primary_muscles": [
+            "back_lat",
+            "back_mid"
+          ],
+          "secondary_muscles": [
+            "biceps"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "8",
@@ -351,8 +418,13 @@
           "id": "db_bench_press",
           "name": "Жим гантелей лежачи",
           "type": "compound",
-          "primary_muscles": ["chest", "triceps"],
-          "secondary_muscles": ["anterior_deltoid"],
+          "primary_muscles": [
+            "chest",
+            "triceps"
+          ],
+          "secondary_muscles": [
+            "anterior_deltoid"
+          ],
           "warmup": "15 кг × 10",
           "sets": 3,
           "reps": "10",
@@ -370,8 +442,13 @@
           "id": "face_pull",
           "name": "Face Pull (тяга каната до обличчя)",
           "type": "isolation",
-          "primary_muscles": ["posterior_deltoid", "traps"],
-          "secondary_muscles": ["rhomboids"],
+          "primary_muscles": [
+            "posterior_deltoid",
+            "traps"
+          ],
+          "secondary_muscles": [
+            "rhomboids"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "15",
@@ -391,8 +468,13 @@
           "id": "rear_delt_fly",
           "name": "Зворотні розводки (задня дельта)",
           "type": "isolation",
-          "primary_muscles": ["posterior_deltoid"],
-          "secondary_muscles": ["rhomboids", "traps"],
+          "primary_muscles": [
+            "posterior_deltoid"
+          ],
+          "secondary_muscles": [
+            "rhomboids",
+            "traps"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "12",
@@ -418,8 +500,12 @@
             {
               "id": "bicep_curl_b",
               "name": "Згинання гантелей (біцепс)",
-              "primary_muscles": ["biceps"],
-              "secondary_muscles": ["brachialis"],
+              "primary_muscles": [
+                "biceps"
+              ],
+              "secondary_muscles": [
+                "brachialis"
+              ],
               "sets": 2,
               "reps": "12",
               "weight_kg": 9,
@@ -431,7 +517,9 @@
             {
               "id": "tricep_pushdown_b",
               "name": "Тяга каната вниз (тріцепс)",
-              "primary_muscles": ["triceps"],
+              "primary_muscles": [
+                "triceps"
+              ],
               "secondary_muscles": [],
               "sets": 2,
               "reps": "15",
@@ -455,8 +543,14 @@
           "id": "romanian_deadlift",
           "name": "Румунська тяга (RDL)",
           "type": "compound",
-          "primary_muscles": ["hamstrings", "glutes"],
-          "secondary_muscles": ["erectors", "back_mid"],
+          "primary_muscles": [
+            "hamstrings",
+            "glutes"
+          ],
+          "secondary_muscles": [
+            "erectors",
+            "back_mid"
+          ],
           "warmup": "40 кг × 8",
           "sets": 3,
           "reps": "8",
@@ -477,8 +571,12 @@
           "id": "leg_curl_b",
           "name": "Згинання ніг лежачи (задні стегна)",
           "type": "isolation",
-          "primary_muscles": ["hamstrings"],
-          "secondary_muscles": ["calves"],
+          "primary_muscles": [
+            "hamstrings"
+          ],
+          "secondary_muscles": [
+            "calves"
+          ],
           "warmup": null,
           "sets": 4,
           "reps": "10",
@@ -497,8 +595,13 @@
           "id": "leg_press_b",
           "name": "Жим ногами (стопи вище — акцент сідниці)",
           "type": "compound",
-          "primary_muscles": ["glutes", "hamstrings"],
-          "secondary_muscles": ["quadriceps"],
+          "primary_muscles": [
+            "glutes",
+            "hamstrings"
+          ],
+          "secondary_muscles": [
+            "quadriceps"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "10",
@@ -518,7 +621,9 @@
           "id": "calf_raise_b",
           "name": "Підйом на носки (ікри)",
           "type": "isolation",
-          "primary_muscles": ["calves"],
+          "primary_muscles": [
+            "calves"
+          ],
           "secondary_muscles": [],
           "warmup": null,
           "sets": 3,
@@ -537,8 +642,14 @@
           "id": "plank",
           "name": "Планка",
           "type": "isolation",
-          "primary_muscles": ["abs", "erectors"],
-          "secondary_muscles": ["glutes", "anterior_deltoid"],
+          "primary_muscles": [
+            "abs",
+            "erectors"
+          ],
+          "secondary_muscles": [
+            "glutes",
+            "anterior_deltoid"
+          ],
           "warmup": null,
           "sets": 3,
           "reps": "45",
@@ -558,7 +669,10 @@
           "id": "hanging_knee_raise",
           "name": "Підйом колін у висі",
           "type": "isolation",
-          "primary_muscles": ["abs", "hip_flexors"],
+          "primary_muscles": [
+            "abs",
+            "hip_flexors"
+          ],
           "secondary_muscles": [],
           "warmup": null,
           "sets": 3,
