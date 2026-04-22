@@ -274,6 +274,21 @@
     .stat-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600}
     .stat-val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1}
 
+    /* ── Weekly Volume & A:C ────────────────────────────────── */
+    .vol-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:12px 14px;margin-bottom:16px}
+    .vol-row{display:grid;grid-template-columns:90px 1fr 26px;align-items:center;gap:6px;margin-bottom:6px}
+    .vol-row:last-child{margin-bottom:0}
+    .vol-name{font-size:11.5px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .vol-bar-wrap{background:var(--s2);border-radius:4px;height:6px;overflow:hidden}
+    .vol-bar{height:100%;border-radius:4px;transition:width 400ms ease}
+    .vol-num{font-size:11.5px;font-weight:600;color:var(--t2);text-align:right;font-variant-numeric:tabular-nums}
+    .vol-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .vol-title{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.07em}
+    .ac-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;font-variant-numeric:tabular-nums}
+    .ac-badge.ok{background:rgba(34,197,94,.15);color:#22c55e}
+    .ac-badge.warn{background:rgba(234,179,8,.15);color:#eab308}
+    .ac-badge.danger{background:rgba(248,113,113,.15);color:#f87171}
+
     /* ── Note editor ────────────────────────────────────────── */
     .mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
     .mood-btn{
@@ -548,6 +563,8 @@
 
       <div class="sec" id="insights-sec-label" style="display:none">Інсайти</div>
       <div id="insights-list"></div>
+
+      <div id="metrics-section"></div>
 
       <div class="sec">Програма</div>
       <div class="day-grid" id="day-grid"></div>
@@ -1401,7 +1418,7 @@ async function saveDailyNote() {
   n.updated_at = new Date().toISOString();
   const all = upsertDailyNote(n);
   closeOverlay('ov-note');
-  renderDailyNoteCard(); renderWeekRow(); renderInsights();
+  renderDailyNoteCard(); renderWeekRow(); renderInsights(); renderMetricsSection();
   showToast('Збережено…','');
   const ok = await pushDailyNotesToGitHub(all);
   showToast(ok?'GitHub ✓':'Збережено локально', ok?'success':'');
@@ -1410,7 +1427,7 @@ function deleteDailyNote() {
   if (!confirm('Видалити нотатку за цей день?')) return;
   const arr = getDailyNotes().filter(n=>n.date!==editingNoteDate);
   saveDailyNotes(arr); closeOverlay('ov-note');
-  renderDailyNoteCard(); renderWeekRow(); renderInsights();
+  renderDailyNoteCard(); renderWeekRow(); renderInsights(); renderMetricsSection();
   pushDailyNotesToGitHub(arr);
 }
 
@@ -1505,6 +1522,102 @@ function renderInsights() {
         <div class="insight-text">${i.text}</div>
       </div>
     </div>`).join('');
+}
+
+// ─── Phase 3: Weekly Volume & A:C Ratio ─────────────────────────────────────
+const MUSCLE_UA = {
+  chest:'Груди', triceps:'Трицепс', biceps:'Біцепс', brachialis:'Брахіаліс',
+  anterior_deltoid:'Дельта (пер.)', lateral_deltoid:'Дельта (бок.)', posterior_deltoid:'Дельта (зад.)',
+  back_lat:'Широкий', back_mid:'Середина спини', traps:'Трапеції', rhomboids:'Ромбоподібні',
+  erectors:'Розгинач', quadriceps:'Квадрицепс', hamstrings:'Біцепс ст.', glutes:'Сідниці',
+  calves:'Литки', hip_flexors:'Сгинач ст.', abs:'Прес',
+};
+const MUSCLE_ORDER = ['chest','back_lat','quadriceps','hamstrings','glutes','triceps','biceps','lateral_deltoid','abs'];
+
+function getMuscleGroupsForExercise(exerciseId) {
+  if (!workoutData) return { primary: [], secondary: [] };
+  for (const workout of workoutData.workouts) {
+    for (const ex of workout.exercises) {
+      if (ex.id === exerciseId) return { primary: ex.primary_muscles || [], secondary: ex.secondary_muscles || [] };
+      if (ex.type === 'superset' && ex.exercises) {
+        for (const sub of ex.exercises) {
+          if (sub.id === exerciseId) return { primary: sub.primary_muscles || [], secondary: sub.secondary_muscles || [] };
+        }
+      }
+    }
+  }
+  return { primary: [], secondary: [] };
+}
+
+function computeWeeklyVolume() {
+  const sessions = getLogs().sessions || [];
+  const d = new Date();
+  const daysToMon = d.getDay() === 0 ? 6 : d.getDay() - 1;
+  d.setDate(d.getDate() - daysToMon);
+  const weekStart = d.toISOString().split('T')[0];
+  const vol = {};
+  for (const sess of sessions) {
+    if (sess.date < weekStart || sess.skipped || sess.workout_id === 'cardio') continue;
+    for (const ex of (sess.exercises || [])) {
+      const m = getMuscleGroupsForExercise(ex.exercise_id);
+      const sets = (ex.sets || []).length;
+      if (!sets) continue;
+      for (const mg of m.primary) vol[mg] = (vol[mg] || 0) + sets;
+    }
+  }
+  return vol;
+}
+
+function computeACRatio() {
+  const sessions = (getLogs().sessions || []).filter(s => s.load_au && !s.skipped);
+  if (sessions.length < 3) return null;
+  const today = new Date().toISOString().split('T')[0];
+  let acute = 0, chronic = 0;
+  for (const s of sessions) {
+    const daysAgo = Math.round((new Date(today) - new Date(s.date)) / 86400000);
+    if (daysAgo <= 7) acute += s.load_au;
+    if (daysAgo <= 28) chronic += s.load_au;
+  }
+  if (chronic === 0) return null;
+  return (acute / 7) / (chronic / 28);
+}
+
+function renderMetricsSection() {
+  const el = document.getElementById('metrics-section');
+  if (!el) return;
+  const vol = computeWeeklyVolume();
+  const hasVol = Object.keys(vol).length > 0;
+  const ac = computeACRatio();
+  if (!hasVol && ac === null) { el.innerHTML = ''; return; }
+
+  const maxSets = 20;
+  const volColor = n => n === 0 ? 'var(--s3)' : n < 6 ? '#f87171' : n < 11 ? '#eab308' : '#22c55e';
+
+  let acBadge = '';
+  if (ac !== null) {
+    const cls = ac < 0.7 || ac > 1.5 ? 'danger' : ac > 1.3 ? 'warn' : 'ok';
+    acBadge = `<span class="ac-badge ${cls}" title="Acute:Chronic Ratio">A:C ${ac.toFixed(2)}</span>`;
+  }
+
+  const muscles = MUSCLE_ORDER.filter(m => hasVol);
+  const rows = muscles.map(m => {
+    const n = vol[m] || 0;
+    const w = Math.min(n / maxSets * 100, 100);
+    return `<div class="vol-row">
+      <div class="vol-name">${MUSCLE_UA[m]}</div>
+      <div class="vol-bar-wrap"><div class="vol-bar" style="width:${w}%;background:${volColor(n)}"></div></div>
+      <div class="vol-num">${n}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="sec-row">
+      <div class="sec" style="margin:0">Обсяг / тиждень</div>
+      ${acBadge}
+    </div>
+    <div class="vol-card" style="margin-top:8px">
+      ${rows || '<div style="font-size:12px;color:var(--t3);text-align:center;padding:4px 0">Логуй перший підхід щоб побачити обсяг</div>'}
+    </div>`;
 }
 
 // ─── Metric Detail Page ──────────────────────────────────────────────────────
@@ -1713,7 +1826,7 @@ function renderDayGrid() {
     </div>`).join('');
 }
 function renderStats() {
-  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights();
+  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection();
 }
 
 // ─── Workout ──────────────────────────────────────────────────────────────────
@@ -2536,7 +2649,7 @@ async function init(){
       if (!rem || (n.updated_at||'') > (rem.updated_at||'')) byDate[n.date] = n;
     }
     saveDailyNotes(Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)));
-    renderDailyNoteCard(); renderWeekRow(); renderInsights();
+    renderDailyNoteCard(); renderWeekRow(); renderInsights(); renderMetricsSection();
   }
 }
 init();
