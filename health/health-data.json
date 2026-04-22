@@ -1,6 +1,6 @@
 {
   "generatedBy" : "HealthGitSync",
-  "lastSyncedAt" : "2026-04-22T15:36:10Z",
+  "lastSyncedAt" : "2026-04-22T18:47:46Z",
   "samples" : [
     {
       "endDate" : "2026-03-23T16:38:18Z",
@@ -12221,6 +12221,66 @@
       "type" : "stepCount",
       "unit" : "count",
       "value" : 54
+    },
+    {
+      "endDate" : "2026-04-22T15:47:25Z",
+      "id" : "AF5251EA-2541-44E8-AB0F-F072FF90812A",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T15:37:40Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 115
+    },
+    {
+      "endDate" : "2026-04-22T15:49:48Z",
+      "id" : "7B9A0A51-0C72-4470-AC1E-8AEDC8F87A18",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T15:48:21Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 30
+    },
+    {
+      "endDate" : "2026-04-22T15:51:08Z",
+      "id" : "612BC375-8263-4687-B9BF-E8C31023E25B",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T15:51:05Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 5
+    },
+    {
+      "endDate" : "2026-04-22T16:39:43Z",
+      "id" : "389E84C2-EB88-4060-A28D-B563F492782D",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T16:39:40Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 3
+    },
+    {
+      "endDate" : "2026-04-22T17:10:30Z",
+      "id" : "9C377F04-992B-419A-A62A-778075B9FCDD",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T17:01:03Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 57
+    },
+    {
+      "endDate" : "2026-04-22T18:42:30Z",
+      "id" : "9BDC1729-4CD2-436A-BC53-CCDF1A9B5FCE",
+      "sourceBundle" : "com.apple.health.610CD1BA-BDB7-4B96-863D-B1E28F4E556C",
+      "sourceName" : "iPhone (Roman)",
+      "startDate" : "2026-04-22T18:32:37Z",
+      "type" : "stepCount",
+      "unit" : "count",
+      "value" : 174
     }
   ],
   "settingsSnapshot" : {
