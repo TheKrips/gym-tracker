@@ -289,6 +289,26 @@
     .ac-badge.warn{background:rgba(234,179,8,.15);color:#eab308}
     .ac-badge.danger{background:rgba(248,113,113,.15);color:#f87171}
 
+    /* ── Nutrition progress ─────────────────────────────────── */
+    .nutr-bars{margin-top:10px;padding-top:10px;border-top:var(--bh) solid var(--bd)}
+    .nutr-row{display:grid;grid-template-columns:50px 1fr 54px;align-items:center;gap:8px;margin-bottom:7px}
+    .nutr-row:last-child{margin-bottom:0}
+    .nutr-lbl{font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+    .nutr-bar-wrap{background:var(--s2);border-radius:4px;height:5px;overflow:hidden}
+    .nutr-bar{height:100%;border-radius:4px;transition:width 400ms ease}
+    .nutr-val{font-size:10px;color:var(--t2);text-align:right;font-variant-numeric:tabular-nums}
+
+    /* ── LDL tracker ────────────────────────────────────────── */
+    .ldl-entry{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:var(--bh) solid var(--bd)}
+    .ldl-entry:last-child{border-bottom:none}
+    .ldl-date{font-size:12px;color:var(--t3)}
+    .ldl-val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+    .ldl-note{font-size:11px;color:var(--t3);margin-top:2px}
+    .ldl-zone{font-size:10.5px;font-weight:600}
+    .ldl-zone.ok{color:var(--g)}.ldl-zone.warn{color:var(--y)}.ldl-zone.danger{color:var(--r)}
+    .ldl-form{background:var(--s2);border-radius:var(--rad);padding:14px;margin-bottom:16px}
+    .ldl-targets{background:var(--s2);border-radius:var(--rad-s);padding:10px 12px;margin-bottom:14px;font-size:11.5px;color:var(--t3);line-height:1.7}
+
     /* ── Note editor ────────────────────────────────────────── */
     .mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
     .mood-btn{
@@ -635,6 +655,14 @@
     <input type="number" class="s-inp" id="s-timer" placeholder="90">
     <button class="btn btn-s" onclick="saveTimerDefault()">Зберегти</button>
   </div>
+  <div class="sec">Цілі харчування</div>
+  <div class="card">
+    <div class="s-lbl">Ціль ккал/день</div>
+    <input type="number" class="s-inp" id="s-kcal-target" placeholder="2300" inputmode="numeric">
+    <div class="s-lbl">Ціль білки г/день</div>
+    <input type="number" class="s-inp" id="s-protein-target" placeholder="150" inputmode="numeric">
+    <button class="btn btn-s" onclick="saveNutrTargets()">Зберегти</button>
+  </div>
   <div class="sec">Дані</div>
   <div class="card">
     <button class="btn btn-s" onclick="exportCSV()">Експорт CSV</button>
@@ -703,6 +731,18 @@
     </div>
   </div>
   <div id="rpe-content"></div>
+</div>
+
+<!-- Overlay: LDL tracker -->
+<div class="overlay" id="ov-ldl">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-ldl')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">LDL Холестерин</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="ldl-content"></div>
 </div>
 
 <!-- Overlay: Functional tests -->
@@ -966,7 +1006,7 @@ function getSetting(k,fb='') { return localStorage.getItem('gym_'+k)||fb; }
 function setSetting(k,v) { localStorage.setItem('gym_'+k,v); }
 function saveSettings() { setSetting('github_token',document.getElementById('s-token').value.trim()); setSetting('github_owner',document.getElementById('s-owner').value.trim()||'TheKrips'); setSetting('github_repo',document.getElementById('s-repo').value.trim()||'gym-tracker'); showToast('Збережено','success'); }
 function saveTimerDefault() { const v=parseInt(document.getElementById('s-timer').value); if(v>0){timerDefault=v;localStorage.setItem('gym_timer_default',v);showToast('Збережено','success');renderTimers();} }
-function loadSettingsPage() { document.getElementById('s-token').value=getSetting('github_token'); document.getElementById('s-owner').value=getSetting('github_owner','TheKrips'); document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker'); document.getElementById('s-timer').value=timerDefault; }
+function loadSettingsPage() { document.getElementById('s-token').value=getSetting('github_token'); document.getElementById('s-owner').value=getSetting('github_owner','TheKrips'); document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker'); document.getElementById('s-timer').value=timerDefault; const kt=document.getElementById('s-kcal-target');const pt=document.getElementById('s-protein-target');if(kt)kt.value=getSetting('kcal_target','')||'';if(pt)pt.value=getSetting('protein_target','')||''; }
 async function testGitHub() { const t=getSetting('github_token'),o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker'); if(!t){showToast('Введи токен','error');return;} try{const res=await fetch(`https://api.github.com/repos/${o}/${r}`,{headers:{'Authorization':`token ${t}`}});res.ok?showToast('OK ✓','success'):showToast('Помилка '+res.status,'error');}catch(e){showToast('Помилка','error');} }
 
 // ─── GitHub API ───────────────────────────────────────────────────────────────
@@ -1063,8 +1103,26 @@ function sparklineSVG(values, color) {
 }
 function renderHealthSection() {
   const grid = document.getElementById('health-grid');
+  const ldlArr = getHealthMarkers().ldl || [];
+  const lastLDL = ldlArr.length ? ldlArr[ldlArr.length-1] : null;
+  const ldlCol = !lastLDL ? 'var(--t2)' : lastLDL.ldl_mgdl<100?'var(--g)':lastLDL.ldl_mgdl<130?'var(--y)':'var(--r)';
+  const ldlDelta = lastLDL && ldlArr.length>1 ? (()=>{const p=ldlArr[ldlArr.length-2];const d=lastLDL.ldl_mgdl-p.ldl_mgdl;const cls=d<0?'trend-down':d>0?'trend-up':'trend-flat';return`<div class="hc-trend ${cls}">${d<0?'↓':'↑'} ${Math.abs(d)}</div>`;})() : '';
+  const ldlSparkVals = ldlArr.slice(-10).map(e=>e.ldl_mgdl);
+  const ldlCard = `<div class="health-card" style="grid-column:1/-1" onclick="openLDL()">
+    <div style="flex:1">
+      <div class="hc-label">LDL Холестерин</div>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <div class="hc-value" style="color:${ldlCol}">${lastLDL?lastLDL.ldl_mgdl:'—'}</div>
+        <div class="hc-unit">мг/дл${lastLDL?' · '+fmtDate(lastLDL.date):''}</div>
+      </div>
+      ${!lastLDL?`<div style="font-size:11px;color:var(--t3);margin-top:3px">+ Додати перше вимірювання</div>`:''}
+    </div>
+    ${ldlDelta}
+    ${ldlSparkVals.length>=2?sparklineSVG(ldlSparkVals,'var(--y)'):''}
+  </div>`;
+
   if (!healthData) {
-    grid.innerHTML = `<div style="grid-column:1/-1;font-size:12px;color:var(--t3);padding:8px 0">Health data буде тут після підключення Apple Health</div>`;
+    grid.innerHTML = `<div style="grid-column:1/-1;font-size:12px;color:var(--t3);padding:8px 0">Health data буде тут після підключення Apple Health</div>${ldlCard}`;
     return;
   }
   const h = healthData;
@@ -1100,7 +1158,7 @@ function renderHealthSection() {
       ${c.trend}
       ${c.spark}
     </div>
-  `).join('');
+  `).join('') + ldlCard;
 }
 
 // ─── Today Hero ─────────────────────────────────────────────────────────────
@@ -1284,6 +1342,19 @@ function renderDailyNoteCard() {
     {val:n.nutrition_adherence?n.nutrition_adherence+'/5':'—', lbl:'Їжа'},
     {val:n.protein_g?n.protein_g+'g':'—', lbl:'Білки'},
   ];
+  const kcalTarget = parseInt(getSetting('kcal_target','0'))||0;
+  const protTarget = parseInt(getSetting('protein_target','0'))||0;
+  const nutrBars = [];
+  if (kcalTarget>0 && n.kcal) {
+    const pct=Math.min(n.kcal/kcalTarget*100,100);
+    const col=pct>=90?'var(--g)':pct>=60?'var(--y)':'var(--r)';
+    nutrBars.push(`<div class="nutr-row"><div class="nutr-lbl">Ккал</div><div class="nutr-bar-wrap"><div class="nutr-bar" style="width:${pct.toFixed(0)}%;background:${col}"></div></div><div class="nutr-val">${n.kcal}/${kcalTarget}</div></div>`);
+  }
+  if (protTarget>0 && n.protein_g) {
+    const pct=Math.min(n.protein_g/protTarget*100,100);
+    const col=pct>=90?'var(--g)':pct>=60?'var(--y)':'var(--r)';
+    nutrBars.push(`<div class="nutr-row"><div class="nutr-lbl">Білки</div><div class="nutr-bar-wrap"><div class="nutr-bar" style="width:${pct.toFixed(0)}%;background:${col}"></div></div><div class="nutr-val">${n.protein_g}/${protTarget}г</div></div>`);
+  }
   el.innerHTML = `<div class="note-card" onclick="openDailyNote()">
     <div class="note-hdr-r">
       <div class="note-title">Сьогодні${n.illness?' 🤒':''}</div>
@@ -1295,6 +1366,7 @@ function renderDailyNoteCard() {
         <div class="note-m-lbl">${m.lbl}</div>
       </div>`).join('')}
     </div>
+    ${nutrBars.length?`<div class="nutr-bars">${nutrBars.join('')}</div>`:''}
     ${n.notes?`<div class="note-text">${escapeHTML(n.notes)}</div>`:''}
   </div>`;
 }
@@ -1610,6 +1682,24 @@ function renderMetricsSection() {
     </div>`;
   }).join('');
 
+  // VO2 proxy trend
+  const ftests = getFuncTests().tests || [];
+  const vo2pts = ftests.filter(t=>+t.vo2_speed_kmh>0).slice(-6);
+  let vo2Section = '';
+  if (vo2pts.length >= 2) {
+    const latest = vo2pts[vo2pts.length-1], prev2 = vo2pts[vo2pts.length-2];
+    const delta = (latest.vo2_speed_kmh - prev2.vo2_speed_kmh).toFixed(1);
+    const deltaCls = delta>0?'good':delta<0?'warn':'info';
+    const trend = vo2pts.map(t=>`${fmtDate(t.date).split(' ').slice(0,2).join(' ')}: ${t.vo2_speed_kmh} км/год`).join(' → ');
+    vo2Section = `<div class="insight-card" style="margin-bottom:0;margin-top:8px">
+      <div class="insight-icon ${deltaCls}">🫀</div>
+      <div class="insight-body">
+        <div class="insight-title">VO₂ Proxy Zone 2</div>
+        <div class="insight-text">${trend}<br>Зміна: ${delta>0?'+':''}${delta} км/год проти попереднього тесту</div>
+      </div>
+    </div>`;
+  }
+
   el.innerHTML = `
     <div class="sec-row">
       <div class="sec" style="margin:0">Обсяг / тиждень</div>
@@ -1617,7 +1707,8 @@ function renderMetricsSection() {
     </div>
     <div class="vol-card" style="margin-top:8px">
       ${rows || '<div style="font-size:12px;color:var(--t3);text-align:center;padding:4px 0">Логуй перший підхід щоб побачити обсяг</div>'}
-    </div>`;
+    </div>
+    ${vo2Section}`;
 }
 
 // ─── Metric Detail Page ──────────────────────────────────────────────────────
@@ -2524,7 +2615,28 @@ function renderFuncTestContent(){
       <textarea class="textarea" id="ft-notes" placeholder="Як почувався...">${escapeHTML(t.notes||'')}</textarea>
     </div>
     <button class="btn btn-p" onclick="saveFuncTest()">Зберегти результати</button>
-    <div style="height:20px"></div>
+    ${(()=>{
+      const prev=getFuncTests().tests.filter(x=>x.date!==t.date).slice(-3).reverse();
+      if(!prev.length)return'<div style="height:20px"></div>';
+      return`<div class="sec" style="margin-top:16px">Попередні результати</div>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+        <table style="width:100%;font-size:11px;border-collapse:collapse">
+          <thead><tr style="color:var(--t3)">
+            <td style="padding:0 0 6px">Дата</td><td style="text-align:center;padding:0 4px 6px">СВ</td>
+            <td style="text-align:center;padding:0 4px 6px">Бал-Л</td><td style="text-align:center;padding:0 4px 6px">Бал-П</td>
+            <td style="text-align:center;padding:0 4px 6px">HR</td><td style="text-align:center;padding:0 4px 6px">VO₂</td>
+          </tr></thead>
+          <tbody>${prev.map(p=>`<tr style="border-top:var(--bh) solid var(--bd)">
+            <td style="padding:7px 0;color:var(--t2)">${fmtDate(p.date)}</td>
+            <td style="text-align:center;font-weight:600;padding:0 4px">${p.sts_reps||'—'}</td>
+            <td style="text-align:center;padding:0 4px">${p.balance_left_sec?p.balance_left_sec+'с':'—'}</td>
+            <td style="text-align:center;padding:0 4px">${p.balance_right_sec?p.balance_right_sec+'с':'—'}</td>
+            <td style="text-align:center;padding:0 4px">${p.resting_hr||'—'}</td>
+            <td style="text-align:center;padding:0 4px">${p.vo2_speed_kmh||'—'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div><div style="height:20px"></div>`;
+    })()}
   `;
 }
 function toggleFTCue(key){
@@ -2601,6 +2713,92 @@ async function saveFuncTest(){
   editingFuncTest=null;
 }
 
+// ─── LDL Tracker ─────────────────────────────────────────────────────────────
+function getHealthMarkers(){try{return JSON.parse(localStorage.getItem('gym_health_markers')||'{"ldl":[]}')}catch(e){return{ldl:[]};}}
+function saveHealthMarkersLocal(d){localStorage.setItem('gym_health_markers',JSON.stringify(d));}
+async function fetchHealthMarkersFromGitHub(){const d=await fetchJSON('health-markers.json');return d&&d.ldl?d:null;}
+async function pushHealthMarkersToGitHub(data){
+  const token=getSetting('github_token'); if(!token)return false;
+  const o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker');
+  try{
+    const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/health-markers.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    const sha=hr.ok?(await hr.json()).sha:undefined;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    const body={message:`markers: ${new Date().toISOString().split('T')[0]}`,content};
+    if(sha)body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/health-markers.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    return res.ok;
+  }catch(e){return false;}
+}
+function openLDL(){renderLDLContent();openOverlay('ov-ldl');}
+function renderLDLContent(){
+  const data=getHealthMarkers();
+  const entries=(data.ldl||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+  const today=new Date().toISOString().split('T')[0];
+  const ldlZone=v=>v<100?{cls:'ok',lbl:'Ціль досягнута'}:v<130?{cls:'warn',lbl:'Прийнятно'}:v<160?{cls:'warn',lbl:'Підвищений'}:{cls:'danger',lbl:'Високий'};
+  const histHTML=entries.slice(0,8).map((e,i)=>{
+    const next=entries[i+1];
+    const delta=next?e.ldl_mgdl-next.ldl_mgdl:null;
+    const z=ldlZone(e.ldl_mgdl);
+    const col=z.cls==='ok'?'var(--g)':z.cls==='warn'?'var(--y)':'var(--r)';
+    return`<div class="ldl-entry">
+      <div><div class="ldl-date">${fmtDate(e.date)}</div>${e.notes?`<div class="ldl-note">${escapeHTML(e.notes)}</div>`:''}</div>
+      <div style="text-align:right">
+        <div class="ldl-val" style="color:${col}">${e.ldl_mgdl}</div>
+        <div class="ldl-zone ${z.cls}">${z.lbl}${delta!==null?` · ${delta>0?'+':''}${delta}`:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ldl-content').innerHTML=`
+    <div class="ldl-targets">
+      <strong style="color:var(--t)">Цільові значення:</strong><br>
+      &lt;100 мг/дл — оптимально · &lt;130 — прийнятно · &lt;160 — підвищений<br>
+      Ваш прогрес: Квіт 2025: <strong style="color:var(--r)">188</strong> → Серп 2025: <strong style="color:var(--y)">130</strong> → Ціль: <strong style="color:var(--g)">&lt;100</strong>
+    </div>
+    <div class="ldl-form">
+      <div class="sec" style="margin-top:0">Нове вимірювання</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <div style="font-size:10px;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">LDL (мг/дл)</div>
+          <input type="number" id="ldl-val-inp" class="num-input" placeholder="мг/дл" inputmode="numeric" style="font-size:20px;font-weight:700;text-align:center">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Дата</div>
+          <input type="date" id="ldl-date-inp" class="num-input" value="${today}" style="font-size:13px;text-align:center">
+        </div>
+      </div>
+      <textarea class="textarea" id="ldl-note-inp" placeholder="Умови, дієта, препарати..." style="margin-bottom:10px"></textarea>
+      <button class="btn btn-p" onclick="saveLDLEntry()">Зберегти</button>
+    </div>
+    ${entries.length?`<div class="sec">Історія</div>${histHTML}`:''}
+    <div style="height:30px"></div>`;
+}
+async function saveLDLEntry(){
+  const valEl=document.getElementById('ldl-val-inp'),dateEl=document.getElementById('ldl-date-inp'),noteEl=document.getElementById('ldl-note-inp');
+  const val=parseInt(valEl?.value||'0');
+  if(!val||val<30||val>500){showToast('Введи коректне значення LDL','error');return;}
+  const entry={date:dateEl?.value||new Date().toISOString().split('T')[0],ldl_mgdl:val,notes:noteEl?.value||''};
+  const data=getHealthMarkers();
+  data.ldl=(data.ldl||[]).filter(e=>e.date!==entry.date);
+  data.ldl.push(entry);
+  data.ldl.sort((a,b)=>a.date.localeCompare(b.date));
+  saveHealthMarkersLocal(data);
+  renderLDLContent();
+  renderHealthSection();
+  showToast('Збережено…','');
+  const ok=await pushHealthMarkersToGitHub(data);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+}
+
+// ─── Nutrition targets ────────────────────────────────────────────────────────
+function saveNutrTargets(){
+  const k=document.getElementById('s-kcal-target'),p=document.getElementById('s-protein-target');
+  if(k)setSetting('kcal_target',k.value||'0');
+  if(p)setSetting('protein_target',p.value||'0');
+  showToast('Цілі збережено','success');
+  renderDailyNoteCard();
+}
+
 // ─── Toast ────────────────────────────────────────────────────────────────────
 let toastT=null;
 function showToast(msg,type=''){
@@ -2636,7 +2834,11 @@ async function init(){
 
   // Load functional tests from GitHub
   const ftRemote = await fetchFuncTestsFromGitHub();
-  if (ftRemote) { saveFuncTestsLocal(ftRemote); renderFuncTestBanner(); }
+  if (ftRemote) { saveFuncTestsLocal(ftRemote); renderFuncTestBanner(); renderMetricsSection(); }
+
+  // Load health markers (LDL) from GitHub
+  const markersRemote = await fetchHealthMarkersFromGitHub();
+  if (markersRemote) { saveHealthMarkersLocal(markersRemote); renderHealthSection(); }
 
   // Load daily notes from GitHub (merge with local)
   const notesRemote = await fetchDailyNotesFromGitHub();
