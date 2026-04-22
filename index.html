@@ -494,6 +494,13 @@
     .ft-bal-label{font-size:11px;color:var(--t3);margin-bottom:6px}
     .ft-bal-time{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-bottom:8px;min-height:34px}
     .ft-bal-time.running{color:var(--r)}.ft-bal-time.done{color:var(--g)}
+
+    /* ── Cardio button ───────────────────────────────────────── */
+    .cardio-btn{width:100%;background:var(--s1);border:var(--bh) dashed var(--bd2);border-radius:var(--rad);padding:11px 14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;color:var(--t2);font-size:13px;font-weight:500;margin-top:8px;transition:border-color 200ms ease,background 200ms ease,color 200ms ease}
+    .cardio-btn:active{background:var(--s2);color:var(--t)}
+
+    /* ── Edit session ────────────────────────────────────────── */
+    .edit-set-row{display:grid;grid-template-columns:22px 1fr 1fr;gap:5px;align-items:center;margin-bottom:5px}
   </style>
 </head>
 <body>
@@ -544,6 +551,7 @@
 
       <div class="sec">Програма</div>
       <div class="day-grid" id="day-grid"></div>
+      <button class="cardio-btn" onclick="openCardio()"><span style="font-size:17px">🏃</span><span>Додати кардіо</span></button>
     </div>
 
     <!-- PAGE 1: WORKOUT -->
@@ -576,7 +584,7 @@
     <div class="overlay-header-inner">
       <button class="icon-btn" onclick="closeOverlay('ov-session')" aria-label="Close">&#8592;</button>
       <span class="overlay-title" id="ov-session-title">Тренування</span>
-      <div style="width:32px"></div>
+      <button class="icon-btn" onclick="editCurrentSession()" aria-label="Edit" style="font-size:15px">✏️</button>
     </div>
   </div>
   <div id="session-detail"></div>
@@ -644,6 +652,30 @@
   <div id="note-editor"></div>
 </div>
 
+<!-- Overlay: Cardio -->
+<div class="overlay" id="ov-cardio">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-cardio')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">Кардіо</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="cardio-content"></div>
+</div>
+
+<!-- Overlay: Edit session -->
+<div class="overlay" id="ov-edit-session">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-edit-session')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title" id="ov-edit-session-title">Редагувати</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="edit-session-content"></div>
+</div>
+
 <!-- Overlay: Post-workout RPE -->
 <div class="overlay" id="ov-rpe">
   <div class="overlay-header">
@@ -693,6 +725,9 @@ let ftStsInterval = null, ftStsCountdown = 30, ftStsState = 'idle';
 let ftBalInterval = {left:null, right:null};
 let ftBalSecs = {left:0, right:0};
 let ftBalState = {left:'idle', right:'idle'};
+let editingCardio = null;
+let viewingSessionIdx = null;
+let editingSession = null, editingSessionIdx = null;
 let curPage = 0;
 let historyTab = 'log';
 
@@ -938,7 +973,7 @@ async function fetchWorkoutJson() {
 }
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
 async function fetchHealthData() {
-  const raw = await fetchJSON('health-data.json');
+  const raw = await fetchJSON('health/health-data.json');
   if (!raw || !raw.samples) return null;
   // Aggregate raw Apple Health samples into daily maps
   const stepsByDay = {}, weightByDay = {}, fatByDay = {}, bmiByDay = {};
@@ -1825,9 +1860,22 @@ function renderHistoryLog() {
   const list=document.getElementById('history-log');
   if(!sessions.length){list.innerHTML=`<div class="empty"><div class="empty-ico">📋</div><div>Тренувань ще немає</div></div>`;return;}
   list.innerHTML=sessions.map((s,i)=>{
-    const exC=s.exercises?s.exercises.length:0;
-    const setC=s.exercises?s.exercises.reduce((a,e)=>a+(e.sets?e.sets.length:0),0):0;
-    return `<div class="sess-card" onclick="showSession(${i})"><div class="sess-date">${fmtDate(s.date)}</div><div class="sess-name">${s.workout_name||s.workout_id}</div><div class="sess-sum">${exC} вправ · ${setC} підходів</div></div>`;
+    let sum, ico='';
+    if(s.workout_id==='cardio'){
+      ico='🏃 ';
+      const p=[];
+      if(s.duration_min)p.push(s.duration_min+' хв');
+      if(s.cardio_speed_kmh)p.push(s.cardio_speed_kmh+' км/год');
+      if(s.cardio_avg_hr)p.push('❤️ '+s.cardio_avg_hr);
+      sum=p.join(' · ')||'—';
+    }else if(s.skipped){
+      ico='⏭ '; sum='Пропущено';
+    }else{
+      const exC=s.exercises?s.exercises.length:0;
+      const setC=s.exercises?s.exercises.reduce((a,e)=>a+(e.sets?e.sets.length:0),0):0;
+      sum=`${exC} вправ · ${setC} підходів`;
+    }
+    return `<div class="sess-card" onclick="showSession(${i})"><div class="sess-date">${fmtDate(s.date)}</div><div class="sess-name">${ico}${s.workout_name||s.workout_id}</div><div class="sess-sum">${sum}</div></div>`;
   }).join('');
 }
 
@@ -1898,10 +1946,28 @@ function renderProgressView() {
 
 function showSession(i){
   const session=getLogs().sessions[i]; if(!session) return;
+  viewingSessionIdx=i;
   let html=`<div style="margin-bottom:12px"><div style="font-size:12px;color:var(--t3);margin-bottom:2px">${fmtDate(session.date)}</div><div style="font-size:19px;font-weight:700;letter-spacing:-.02em">${session.workout_name||session.workout_id}</div></div>`;
-  for(const ex of(session.exercises||[])){
-    const sets=(ex.sets||[]).map(s=>`<div class="det-set">${s.set}. ${s.weight>0?s.weight+'кг':'—'} × ${s.reps}</div>`).join('');
-    html+=`<div class="det-ex"><div class="det-ex-name">${exName(ex.exercise_id)}</div><div class="det-sets">${sets||'—'}</div></div>`;
+  if(session.workout_id==='cardio'){
+    const dist=session.cardio_speed_kmh&&session.duration_min?(session.cardio_speed_kmh*session.duration_min/60).toFixed(1):null;
+    const items=[
+      {l:'Тривалість',v:session.duration_min?session.duration_min+' хв':'—'},
+      {l:'Тип',v:session.cardio_type==='run'?'🏃 Біг':'🚶 Ходьба'},
+      {l:'Пульс avg',v:session.cardio_avg_hr?session.cardio_avg_hr+' уд/хв':'—'},
+      {l:'Швидкість',v:session.cardio_speed_kmh?session.cardio_speed_kmh+' км/год':'—'},
+      {l:'Підйом',v:session.cardio_elevation_m?session.cardio_elevation_m+' м':'—'},
+    ];
+    if(dist) items.push({l:'Дистанція',v:dist+' км'});
+    if(session.rpe) items.push({l:'RPE',v:session.rpe+'/10'});
+    html+=`<div class="stats-grid">${items.map(it=>`<div class="stat-card"><div class="stat-lbl">${it.l}</div><div class="stat-val">${it.v}</div></div>`).join('')}</div>`;
+  }else if(session.skipped){
+    html+=`<div style="color:var(--t3);font-size:13px;padding:8px 0">Пропущено</div>`;
+  }else{
+    for(const ex of(session.exercises||[])){
+      const sets=(ex.sets||[]).map(s=>`<div class="det-set">${s.set}. ${s.weight>0?s.weight+'кг':'—'} × ${s.reps}</div>`).join('');
+      html+=`<div class="det-ex"><div class="det-ex-name">${exName(ex.exercise_id)}</div><div class="det-sets">${sets||'—'}</div></div>`;
+    }
+    if(session.duration_min||session.rpe) html+=`<div style="font-size:11px;color:var(--t3);margin-top:10px;display:flex;gap:12px">${session.duration_min?'<span>⏱ '+session.duration_min+' хв</span>':''}${session.rpe?'<span>RPE '+session.rpe+'/10</span>':''}</div>`;
   }
   if(session.notes) html+=`<div style="font-size:11px;color:var(--t3);margin-top:8px;padding:7px 9px;background:var(--s2);border-radius:8px;font-style:italic">${session.notes}</div>`;
   document.getElementById('session-detail').innerHTML=html;
@@ -1920,6 +1986,249 @@ function exportCSV(){
   showToast('Готово','success');
 }
 function clearLocalData(){if(!confirm('Видалити всі локальні дані?'))return;localStorage.removeItem('gym_logs');renderStats();showToast('Очищено','');}
+
+// ─── Cardio ───────────────────────────────────────────────────────────────────
+function openCardio(dateStr) {
+  editingCardio={date:dateStr||new Date().toISOString().split('T')[0],cardio_type:'run',duration_min:30,cardio_avg_hr:0,cardio_speed_kmh:0,cardio_elevation_m:0,rpe:0};
+  renderCardioContent();
+  openOverlay('ov-cardio');
+}
+function renderCardioContent() {
+  const c=editingCardio;
+  const today=new Date().toISOString().split('T')[0];
+  const isToday=c.date===today;
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const isYest=c.date===yesterday.toISOString().split('T')[0];
+  const dateLbl=isToday?'Сьогодні':isYest?'Вчора':fmtDate(c.date);
+  const dist=c.cardio_speed_kmh&&c.duration_min?(c.cardio_speed_kmh*c.duration_min/60).toFixed(1):null;
+  const rpeCol=(c.rpe||0)===0?'var(--t3)':(c.rpe||0)<=3?'var(--g)':(c.rpe||0)<=6?'var(--y)':'var(--r)';
+  const pct=(c.rpe||0)/10*100;
+  document.getElementById('cardio-content').innerHTML=`
+    <div class="note-date-nav">
+      <button class="note-date-nav-btn" onclick="cardioNavDate(-1)">‹</button>
+      <div class="note-date-center"><div class="note-date-label">${dateLbl}</div><div class="note-date-sub">‹ › змінити день</div></div>
+      <button class="note-date-nav-btn" onclick="cardioNavDate(1)" ${isToday?'disabled':''}>›</button>
+    </div>
+    <div class="sec">Тип активності</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="chip ${c.cardio_type==='run'?'active':''}" onclick="setCardioType('run')">🏃 Біг</button>
+      <button class="chip ${c.cardio_type==='walk'?'active':''}" onclick="setCardioType('walk')">🚶 Ходьба</button>
+    </div>
+    <div class="sec">Тривалість</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjCardio('duration_min',-5)">−</button>
+      <div class="num-val">${c.duration_min}<span class="unit">хв</span></div>
+      <button class="num-step-btn" onclick="adjCardio('duration_min',5)">+</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div>
+        <div class="sec" style="margin-bottom:6px">Пульс (avg)</div>
+        <div class="num-row" style="margin-bottom:0;gap:4px">
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjCardio('cardio_avg_hr',-1)">−</button>
+          <div class="num-val" style="font-size:16px;min-width:52px">${c.cardio_avg_hr||'—'}<span class="unit" style="font-size:9px"> уд</span></div>
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjCardio('cardio_avg_hr',1)">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="sec" style="margin-bottom:6px">Швидкість${dist?' <span style="color:var(--t2);font-weight:400;text-transform:none">('+dist+' км)</span>':''}</div>
+        <div class="num-row" style="margin-bottom:0;gap:4px">
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjCardio('cardio_speed_kmh',-0.5)">−</button>
+          <div class="num-val" style="font-size:16px;min-width:52px">${c.cardio_speed_kmh||'—'}<span class="unit" style="font-size:9px"> км/год</span></div>
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjCardio('cardio_speed_kmh',0.5)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="sec">Підйом</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjCardio('cardio_elevation_m',-10)">−</button>
+      <div class="num-val">${c.cardio_elevation_m||'—'}<span class="unit">м</span></div>
+      <button class="num-step-btn" onclick="adjCardio('cardio_elevation_m',10)">+</button>
+    </div>
+    <div class="sec">Зусилля RPE (необов'язково)</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:22px;font-weight:700;color:${rpeCol}">${c.rpe||0}</span>
+    </div>
+    <input type="range" class="rpe-slider" min="0" max="10" step="1" value="${c.rpe||0}"
+      style="background:linear-gradient(to right,${rpeCol} ${pct}%,var(--s3) ${pct}%)"
+      onchange="adjCardio('rpe',this.value-editingCardio.rpe)">
+    <div class="rpe-marks" style="margin-bottom:20px"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+    <button class="btn btn-p" onclick="saveCardio()">Зберегти</button>
+    <div style="height:20px"></div>
+  `;
+}
+function cardioNavDate(delta){const d=new Date(editingCardio.date+'T12:00:00');d.setDate(d.getDate()+delta);const nd=d.toISOString().split('T')[0];if(nd>new Date().toISOString().split('T')[0])return;editingCardio.date=nd;renderCardioContent();}
+function setCardioType(t){editingCardio.cardio_type=t;renderCardioContent();}
+function adjCardio(field,delta){
+  const mins={duration_min:5,cardio_avg_hr:0,cardio_speed_kmh:0,cardio_elevation_m:0,rpe:0};
+  const maxs={rpe:10};
+  let v=Math.max(mins[field]??0,(+(editingCardio[field]||0))+Number(delta));
+  if(maxs[field]!==undefined)v=Math.min(maxs[field],v);
+  if(field==='cardio_speed_kmh')v=Math.round(v*10)/10;
+  editingCardio[field]=v;
+  renderCardioContent();
+}
+async function saveCardio(){
+  if(!editingCardio)return;
+  const sess={
+    date:editingCardio.date,
+    workout_id:'cardio',
+    workout_name:editingCardio.cardio_type==='run'?'Кардіо: Біг':'Кардіо: Ходьба',
+    finished_at:new Date().toISOString(),
+    duration_min:editingCardio.duration_min||null,
+    rpe:editingCardio.rpe||null,
+    load_au:editingCardio.rpe&&editingCardio.duration_min?Math.round(editingCardio.duration_min*editingCardio.rpe):null,
+    cardio_type:editingCardio.cardio_type,
+    cardio_avg_hr:editingCardio.cardio_avg_hr||null,
+    cardio_speed_kmh:editingCardio.cardio_speed_kmh||null,
+    cardio_elevation_m:editingCardio.cardio_elevation_m||null,
+    exercises:[]
+  };
+  const logs=addSession(sess);
+  closeOverlay('ov-cardio');
+  renderStats();renderHistory();
+  showToast('Кардіо збережено…','');
+  const ok=await pushLogsToGitHub(logs);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+  editingCardio=null;
+}
+
+// ─── Edit Session ─────────────────────────────────────────────────────────────
+function editCurrentSession(){if(viewingSessionIdx===null)return;editSession(viewingSessionIdx);}
+function editSession(i){
+  const logs=getLogs(); const sess=logs.sessions[i]; if(!sess)return;
+  editingSessionIdx=i;
+  editingSession=JSON.parse(JSON.stringify(sess));
+  document.getElementById('ov-edit-session-title').textContent=sess.workout_name||'Тренування';
+  renderEditSessionContent();
+  openOverlay('ov-edit-session');
+}
+function renderEditSessionContent(){
+  const s=editingSession;
+  const isCardio=s.workout_id==='cardio';
+  const today=new Date().toISOString().split('T')[0];
+  const isToday=s.date===today;
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const isYest=s.date===yesterday.toISOString().split('T')[0];
+  const dateLbl=isToday?'Сьогодні':isYest?'Вчора':fmtDate(s.date);
+  let body=`<div class="note-date-nav">
+    <button class="note-date-nav-btn" onclick="editSessNavDate(-1)">‹</button>
+    <div class="note-date-center"><div class="note-date-label">${dateLbl}</div><div class="note-date-sub">‹ › змінити дату</div></div>
+    <button class="note-date-nav-btn" onclick="editSessNavDate(1)" ${isToday?'disabled':''}>›</button>
+  </div>`;
+  if(isCardio){
+    const dist=s.cardio_speed_kmh&&s.duration_min?(s.cardio_speed_kmh*s.duration_min/60).toFixed(1):null;
+    const rpeCol=(s.rpe||0)<=0?'var(--t3)':(s.rpe||0)<=3?'var(--g)':(s.rpe||0)<=6?'var(--y)':'var(--r)';
+    const pct=(s.rpe||0)/10*100;
+    body+=`<div class="sec">Тип</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="chip ${s.cardio_type==='run'?'active':''}" onclick="setEditSessField('cardio_type','run');renderEditSessionContent()">🏃 Біг</button>
+      <button class="chip ${s.cardio_type==='walk'?'active':''}" onclick="setEditSessField('cardio_type','walk');renderEditSessionContent()">🚶 Ходьба</button>
+    </div>
+    <div class="sec">Тривалість</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjEditSess('duration_min',-5)">−</button>
+      <div class="num-val">${s.duration_min||0}<span class="unit">хв</span></div>
+      <button class="num-step-btn" onclick="adjEditSess('duration_min',5)">+</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div>
+        <div class="sec" style="margin-bottom:6px">Пульс (avg)</div>
+        <div class="num-row" style="margin-bottom:0;gap:4px">
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjEditSess('cardio_avg_hr',-1)">−</button>
+          <div class="num-val" style="font-size:16px;min-width:52px">${s.cardio_avg_hr||'—'}<span class="unit" style="font-size:9px"> уд</span></div>
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjEditSess('cardio_avg_hr',1)">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="sec" style="margin-bottom:6px">Швидкість${dist?' ('+dist+'км)':''}</div>
+        <div class="num-row" style="margin-bottom:0;gap:4px">
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjEditSess('cardio_speed_kmh',-0.5)">−</button>
+          <div class="num-val" style="font-size:16px;min-width:52px">${s.cardio_speed_kmh||'—'}<span class="unit" style="font-size:9px"> км/год</span></div>
+          <button class="num-step-btn" style="width:34px;height:34px" onclick="adjEditSess('cardio_speed_kmh',0.5)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="sec">Підйом</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjEditSess('cardio_elevation_m',-10)">−</button>
+      <div class="num-val">${s.cardio_elevation_m||'—'}<span class="unit">м</span></div>
+      <button class="num-step-btn" onclick="adjEditSess('cardio_elevation_m',10)">+</button>
+    </div>
+    <div class="sec">RPE</div>
+    <div style="margin-bottom:4px"><span style="font-size:22px;font-weight:700;color:${rpeCol}">${s.rpe||0}</span></div>
+    <input type="range" class="rpe-slider" min="0" max="10" step="1" value="${s.rpe||0}"
+      style="background:linear-gradient(to right,${rpeCol} ${pct}%,var(--s3) ${pct}%)"
+      onchange="setEditSessRPE(this.value)">
+    <div class="rpe-marks" style="margin-bottom:20px"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>`;
+  }else{
+    body+=`<div class="sec">Тривалість</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjEditSess('duration_min',-5)">−</button>
+      <div class="num-val">${s.duration_min||'—'}<span class="unit">хв</span></div>
+      <button class="num-step-btn" onclick="adjEditSess('duration_min',5)">+</button>
+    </div>
+    <div class="sec">RPE</div>
+    <div class="num-row" style="margin-bottom:14px">
+      <button class="num-step-btn" onclick="adjEditSess('rpe',-1)">−</button>
+      <div class="num-val">${s.rpe||'—'}</div>
+      <button class="num-step-btn" onclick="adjEditSess('rpe',1)">+</button>
+    </div>`;
+    if(s.exercises&&s.exercises.length){
+      body+=`<div class="sec">Підходи</div>`;
+      for(let ei=0;ei<s.exercises.length;ei++){
+        const ex=s.exercises[ei];
+        body+=`<div style="margin-bottom:12px"><div class="det-ex-name">${exName(ex.exercise_id)}</div>`;
+        for(let si=0;si<(ex.sets||[]).length;si++){
+          const set=ex.sets[si];
+          body+=`<div class="edit-set-row">
+            <div class="set-n">${si+1}</div>
+            <div class="inp-wrap"><input type="number" class="set-inp" id="es-w-${ei}-${si}" value="${set.weight>0?set.weight:''}" placeholder="кг" step="0.5" min="0" inputmode="decimal"><span class="set-unit">кг</span></div>
+            <div class="inp-wrap"><input type="number" class="set-inp" id="es-r-${ei}-${si}" value="${set.reps||''}" placeholder="rep" min="1" inputmode="numeric"><span class="set-unit">rep</span></div>
+          </div>`;
+        }
+        body+=`</div>`;
+      }
+    }
+  }
+  body+=`<button class="btn btn-p" onclick="saveEditSession()">Зберегти</button><div style="height:20px"></div>`;
+  document.getElementById('edit-session-content').innerHTML=body;
+}
+function editSessNavDate(delta){const d=new Date(editingSession.date+'T12:00:00');d.setDate(d.getDate()+delta);const nd=d.toISOString().split('T')[0];if(nd>new Date().toISOString().split('T')[0])return;editingSession.date=nd;renderEditSessionContent();}
+function setEditSessField(f,v){editingSession[f]=v;}
+function setEditSessRPE(v){editingSession.rpe=+v;renderEditSessionContent();}
+function adjEditSess(field,delta){
+  let v=+(editingSession[field]||0)+Number(delta);
+  if(field==='rpe')v=Math.max(0,Math.min(10,v));
+  else if(field==='duration_min')v=Math.max(0,v);
+  else if(field==='cardio_speed_kmh')v=Math.round(Math.max(0,v)*10)/10;
+  else v=Math.max(0,v);
+  editingSession[field]=v;
+  renderEditSessionContent();
+}
+async function saveEditSession(){
+  if(editingSessionIdx===null||!editingSession)return;
+  if(editingSession.workout_id==='cardio'){
+    editingSession.workout_name=editingSession.cardio_type==='run'?'Кардіо: Біг':'Кардіо: Ходьба';
+  }else{
+    for(let ei=0;ei<(editingSession.exercises||[]).length;ei++){
+      for(let si=0;si<(editingSession.exercises[ei].sets||[]).length;si++){
+        const w=document.getElementById(`es-w-${ei}-${si}`);
+        const r=document.getElementById(`es-r-${ei}-${si}`);
+        if(w)editingSession.exercises[ei].sets[si].weight=parseFloat(w.value)||0;
+        if(r)editingSession.exercises[ei].sets[si].reps=parseInt(r.value)||0;
+      }
+    }
+  }
+  const logs=getLogs();
+  logs.sessions[editingSessionIdx]=editingSession;
+  saveLogs(logs);
+  closeOverlay('ov-edit-session');
+  renderHistory();
+  showToast('Збережено…','');
+  const ok=await pushLogsToGitHub(logs);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+  editingSession=null;editingSessionIdx=null;
+}
 
 // ─── RPE Overlay ──────────────────────────────────────────────────────────────
 function renderRPEContent() {
