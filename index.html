@@ -461,6 +461,39 @@
     .empty-ico{font-size:30px;margin-bottom:9px;opacity:.5}
     input[type=number]{-moz-appearance:textfield}
     input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+
+    /* ── Funtest banner ──────────────────────────────────────── */
+    .funtest-banner{background:linear-gradient(135deg,rgba(234,179,8,.14),rgba(234,179,8,.04));border:var(--bh) solid rgba(234,179,8,.35);border-radius:var(--rad);padding:12px 14px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px;transition:transform 140ms var(--eo3)}
+    .funtest-banner:active{transform:scale(0.985)}
+    .funtest-ico{font-size:22px;flex-shrink:0}
+    .funtest-body{flex:1;min-width:0}
+    .funtest-title{font-size:13px;font-weight:700;color:var(--y);margin-bottom:2px}
+    .funtest-sub{font-size:11px;color:var(--t3);line-height:1.35}
+
+    /* ── RPE overlay ─────────────────────────────────────────── */
+    .rpe-big{font-size:64px;font-weight:800;letter-spacing:-.04em;line-height:1;text-align:center;font-variant-numeric:tabular-nums;margin-bottom:4px}
+    .rpe-lbl{font-size:14px;color:var(--t2);text-align:center;margin-bottom:18px;min-height:20px}
+    .rpe-slider{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;outline:none;margin:8px 0 4px}
+    .rpe-slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--p);cursor:pointer;border:3px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+    .rpe-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--p);cursor:pointer;border:3px solid var(--bg)}
+    .rpe-marks{display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:20px;font-variant-numeric:tabular-nums;padding:0 2px}
+    .rpe-load{text-align:center;font-size:12px;color:var(--t3);margin-bottom:24px}
+    .rpe-load span{color:var(--t);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+
+    /* ── Functional test overlay ─────────────────────────────── */
+    .ft-sec-title{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:10px}
+    .ft-timer-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .ft-timer-btn{height:44px;border-radius:var(--rad-s);padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;border:var(--bh) solid var(--bd2);background:var(--s2);color:var(--t);-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--eo3),background 120ms ease;flex-shrink:0}
+    .ft-timer-btn:active{transform:scale(0.96);background:var(--s3)}
+    .ft-timer-btn.running{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--r)}
+    .ft-timer-btn.done{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--g)}
+    .ft-timer-disp{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;flex:1}
+    .ft-timer-disp.running{color:var(--r)}.ft-timer-disp.done{color:var(--g)}
+    .ft-bal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+    .ft-bal-side{text-align:center}
+    .ft-bal-label{font-size:11px;color:var(--t3);margin-bottom:6px}
+    .ft-bal-time{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-bottom:8px;min-height:34px}
+    .ft-bal-time.running{color:var(--r)}.ft-bal-time.done{color:var(--g)}
   </style>
 </head>
 <body>
@@ -500,6 +533,8 @@
       <div id="health-section">
         <div class="health-grid" id="health-grid"></div>
       </div>
+
+      <div id="funtest-banner"></div>
 
       <div class="sec">Нотатка за сьогодні</div>
       <div id="daily-note-card"></div>
@@ -609,6 +644,30 @@
   <div id="note-editor"></div>
 </div>
 
+<!-- Overlay: Post-workout RPE -->
+<div class="overlay" id="ov-rpe">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="skipRPE()" aria-label="Skip">&#8592;</button>
+      <span class="overlay-title">Як пройшло?</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="rpe-content"></div>
+</div>
+
+<!-- Overlay: Functional tests -->
+<div class="overlay" id="ov-funtest">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-funtest')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">Функціональні тести</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="funtest-content"></div>
+</div>
+
 <!-- Bottom nav -->
 <nav class="nav" id="nav">
   <button class="nav-item active" data-page="0" onclick="swipeTo(0)">
@@ -628,6 +687,12 @@
 let workoutData = null;
 let healthData = null;
 let currentSession = null;
+let pendingSession = null, pendingDuration = 60, pendingRPE = 6;
+let editingFuncTest = null;
+let ftStsInterval = null, ftStsCountdown = 30, ftStsState = 'idle';
+let ftBalInterval = {left:null, right:null};
+let ftBalSecs = {left:0, right:0};
+let ftBalState = {left:'idle', right:'idle'};
 let curPage = 0;
 let historyTab = 'log';
 
@@ -774,7 +839,7 @@ document.addEventListener('touchend', e=>{
     ovSwipeEl.style.transform='translateX(100%)';
     ovSwipeEl.style.opacity='';
     const el=ovSwipeEl; ovSwipeEl=null;
-    setTimeout(()=>{ el.classList.remove('visible'); el.style.transform=''; el.style.transition=''; el.style.opacity=''; },300);
+    setTimeout(()=>{ el.classList.remove('visible'); el.style.transform=''; el.style.transition=''; el.style.opacity=''; if(el.id==='ov-rpe'&&pendingSession)skipRPE(false); },300);
   } else {
     ovSwipeEl.style.transition='transform 280ms cubic-bezier(0.23,1,0.32,1),opacity 200ms ease';
     ovSwipeEl.style.transform=''; ovSwipeEl.style.opacity='';
@@ -1612,15 +1677,14 @@ function renderDayGrid() {
     </div>`).join('');
 }
 function renderStats() {
-  // Stats now rolled into hero + week row + insights
-  renderTodayHero(); renderWeekRow(); renderDailyNoteCard(); renderInsights();
+  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights();
 }
 
 // ─── Workout ──────────────────────────────────────────────────────────────────
 function startWorkout(wid) {
   if(!workoutData) return;
   const w=workoutData.workouts.find(x=>x.id===wid); if(!w) return;
-  currentSession={date:new Date().toISOString().split('T')[0],workout_id:wid,workout_name:w.name,exercises:[]};
+  currentSession={date:new Date().toISOString().split('T')[0],workout_id:wid,workout_name:w.name,exercises:[],started_at:new Date().toISOString()};
   const wc=document.getElementById('workout-content');
   wc.innerHTML=`
     <div id="timer-workout"></div>
@@ -1724,19 +1788,22 @@ function updateProg(workout){
   for(const ex of workout.exercises){if(ex.type==='superset'){for(const sub of ex.exercises){tot+=sub.sets;dn+=document.querySelectorAll(`[id^="sb-${sub.id}-"].done`).length;}}else{tot+=ex.sets;dn+=document.querySelectorAll(`[id^="sb-${ex.id}-"].done`).length;}}
   const bar=document.getElementById('wkt-prog');if(bar)bar.style.width=(tot>0?Math.round(dn/tot*100):0)+'%';
 }
-async function finishWorkout(){
+function finishWorkout(){
   if(!currentSession)return;
   if(!currentSession.exercises.length){showToast('Залогуй підхід','error');return;}
   currentSession.finished_at=new Date().toISOString();
-  const logs=addSession(currentSession);
-  showToast('Збережено…','');
-  const ok=await pushLogsToGitHub(logs);
-  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
-  currentSession=null;
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   timerRunning=false;timerSecs=timerDefault;timerTotal=timerDefault;
+  // calc auto-duration from started_at
+  const durMs = currentSession.started_at ? Date.now()-new Date(currentSession.started_at).getTime() : 0;
+  pendingDuration = Math.max(5, Math.round(durMs/60000/5)*5) || 60;
+  pendingRPE = 6;
+  pendingSession = currentSession;
+  currentSession = null;
   document.getElementById('workout-content').innerHTML=`<div class="empty" style="margin-top:40px"><div class="empty-ico">&#128170;</div><div>Тренування завершено! 💪</div></div>`;
-  renderTimers();renderStats();swipeTo(0);
+  renderTimers(); renderStats(); swipeTo(0);
+  renderRPEContent();
+  openOverlay('ov-rpe');
 }
 
 // ─── History + Progress ───────────────────────────────────────────────────────
@@ -1854,6 +1921,219 @@ function exportCSV(){
 }
 function clearLocalData(){if(!confirm('Видалити всі локальні дані?'))return;localStorage.removeItem('gym_logs');renderStats();showToast('Очищено','');}
 
+// ─── RPE Overlay ──────────────────────────────────────────────────────────────
+function renderRPEContent() {
+  const labels=['Відпочинок','Дуже легко','Легко','Помірно','Трохи важко','Важко','Важко+','Дуже важко','Дуже важко+','Майже макс','Максимум'];
+  const col=pendingRPE<=3?'var(--g)':pendingRPE<=6?'var(--y)':'var(--r)';
+  const loadAU=Math.round(pendingDuration*pendingRPE);
+  const pct=pendingRPE/10*100;
+  document.getElementById('rpe-content').innerHTML=`
+    <div style="padding:24px 0 8px;text-align:center">
+      <div class="rpe-big" style="color:${col}">${pendingRPE}</div>
+      <div class="rpe-lbl">${labels[pendingRPE]}</div>
+    </div>
+    <div style="padding:0 4px">
+      <input type="range" class="rpe-slider" min="0" max="10" step="1" value="${pendingRPE}"
+        style="background:linear-gradient(to right,${col} ${pct}%,var(--s3) ${pct}%)"
+        oninput="setRPE(+this.value)" onchange="setRPE(+this.value)">
+      <div class="rpe-marks"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+    </div>
+    <div class="sec" style="margin-top:4px">Тривалість</div>
+    <div class="num-row" style="margin-bottom:8px">
+      <button class="num-step-btn" onclick="adjDur(-5)">−</button>
+      <div class="num-val">${pendingDuration}<span class="unit">хв</span></div>
+      <button class="num-step-btn" onclick="adjDur(5)">+</button>
+    </div>
+    <div class="rpe-load">Навантаження: <span>${loadAU} AU</span></div>
+    <button class="btn btn-p" onclick="saveRPE()">Зберегти</button>
+    <button class="btn btn-s" style="margin-top:8px" onclick="skipRPE()">Пропустити</button>
+  `;
+}
+function setRPE(v){pendingRPE=v;renderRPEContent();}
+function adjDur(d){pendingDuration=Math.max(5,pendingDuration+d);renderRPEContent();}
+async function saveRPE(){
+  if(!pendingSession)return;
+  pendingSession.duration_min=pendingDuration;
+  pendingSession.rpe=pendingRPE;
+  pendingSession.load_au=Math.round(pendingDuration*pendingRPE);
+  const sess=pendingSession; pendingSession=null;
+  closeOverlay('ov-rpe');
+  const logs=addSession(sess);
+  showToast('Збережено…','');
+  const ok=await pushLogsToGitHub(logs);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+}
+async function skipRPE(doClose=true){
+  if(!pendingSession)return;
+  const sess=pendingSession; pendingSession=null;
+  if(doClose)closeOverlay('ov-rpe');
+  const logs=addSession(sess);
+  showToast('Збережено…','');
+  const ok=await pushLogsToGitHub(logs);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+}
+
+// ─── Functional Tests ─────────────────────────────────────────────────────────
+function getFuncTests(){try{return JSON.parse(localStorage.getItem('gym_func_tests')||'{"tests":[]}')}catch(e){return{tests:[]};}}
+function saveFuncTestsLocal(d){localStorage.setItem('gym_func_tests',JSON.stringify(d));}
+async function fetchFuncTestsFromGitHub(){const d=await fetchJSON('functional-tests.json');return d&&d.tests?d:null;}
+async function pushFuncTestsToGitHub(data){
+  const token=getSetting('github_token'); if(!token)return false;
+  const o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker');
+  try{
+    const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/functional-tests.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    const sha=hr.ok?(await hr.json()).sha:undefined;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    const body={message:`funtest: ${new Date().toISOString().split('T')[0]}`,content};
+    if(sha)body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/functional-tests.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    return res.ok;
+  }catch(e){return false;}
+}
+function renderFuncTestBanner(){
+  const el=document.getElementById('funtest-banner'); if(!el)return;
+  const tests=getFuncTests().tests||[];
+  const today=new Date().toISOString().split('T')[0];
+  const last=tests.length?tests[tests.length-1].date:null;
+  if(last===today){el.innerHTML='';return;}
+  const daysSince=last?Math.floor((new Date(today)-new Date(last))/86400000):999;
+  if(daysSince<28){el.innerHTML='';return;}
+  const sub=last?`${daysSince} днів тому — пора повторити`:'Ще не проходив — пора розпочати';
+  el.innerHTML=`<div class="funtest-banner" onclick="openFuncTest()">
+    <div class="funtest-ico">🏃</div>
+    <div class="funtest-body">
+      <div class="funtest-title">Місячний функціональний тест</div>
+      <div class="funtest-sub">${sub}</div>
+    </div>
+    <div style="color:var(--y);font-size:20px">›</div>
+  </div>`;
+}
+function openFuncTest(){
+  if(ftStsInterval){clearInterval(ftStsInterval);ftStsInterval=null;}
+  if(ftBalInterval.left){clearInterval(ftBalInterval.left);ftBalInterval.left=null;}
+  if(ftBalInterval.right){clearInterval(ftBalInterval.right);ftBalInterval.right=null;}
+  ftStsCountdown=30;ftStsState='idle';
+  ftBalSecs={left:0,right:0};ftBalState={left:'idle',right:'idle'};
+  const today=new Date().toISOString().split('T')[0];
+  const ex=getFuncTests().tests.find(t=>t.date===today);
+  editingFuncTest=ex?{...ex}:{date:today,sts_reps:0,balance_left_sec:0,balance_right_sec:0,resting_hr:0,notes:''};
+  renderFuncTestContent();
+  openOverlay('ov-funtest');
+}
+function renderFuncTestContent(){
+  const t=editingFuncTest;
+  const stsDisp=ftStsState==='done'?'0:00':fmt(ftStsCountdown);
+  const stsBtnLbl=ftStsState==='idle'?'Старт':ftStsState==='running'?'Зупинити':'Скинути';
+  const stsBtnCls=ftStsState!=='idle'?' '+ftStsState:'';
+  document.getElementById('funtest-content').innerHTML=`
+    <div style="margin-bottom:20px">
+      <div class="ft-sec-title">Сідання-вставання за 30 сек</div>
+      <div class="ft-timer-row">
+        <div class="ft-timer-disp ${ftStsState}" id="ft-sts-disp">${stsDisp}</div>
+        <button class="ft-timer-btn${stsBtnCls}" id="ft-sts-btn" onclick="toggleStsTimer()">${stsBtnLbl}</button>
+      </div>
+      <div class="num-row" style="margin-bottom:0">
+        <button class="num-step-btn" onclick="adjFT('sts_reps',-1)">−</button>
+        <div class="num-val"><span id="ft-sts-reps">${t.sts_reps||0}</span><span class="unit">повт</span></div>
+        <button class="num-step-btn" onclick="adjFT('sts_reps',1)">+</button>
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="ft-sec-title">Баланс на одній нозі</div>
+      <div class="ft-bal-grid">
+        <div class="ft-bal-side">
+          <div class="ft-bal-label">Ліва нога</div>
+          <div class="ft-bal-time ${ftBalState.left}" id="ft-bal-disp-left">${fmt(ftBalSecs.left)}</div>
+          <button class="ft-timer-btn${ftBalState.left!=='idle'?' '+ftBalState.left:''}" id="ft-bal-btn-left" style="width:100%" onclick="toggleBalance('left')">${ftBalState.left==='idle'?'Старт':ftBalState.left==='running'?'Стоп':'Скинути'}</button>
+        </div>
+        <div class="ft-bal-side">
+          <div class="ft-bal-label">Права нога</div>
+          <div class="ft-bal-time ${ftBalState.right}" id="ft-bal-disp-right">${fmt(ftBalSecs.right)}</div>
+          <button class="ft-timer-btn${ftBalState.right!=='idle'?' '+ftBalState.right:''}" id="ft-bal-btn-right" style="width:100%" onclick="toggleBalance('right')">${ftBalState.right==='idle'?'Старт':ftBalState.right==='running'?'Стоп':'Скинути'}</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="ft-sec-title">Пульс у спокої</div>
+      <div class="num-row" style="margin-bottom:0">
+        <button class="num-step-btn" onclick="adjFT('resting_hr',-1)">−</button>
+        <div class="num-val"><span id="ft-hr">${t.resting_hr||'—'}</span><span class="unit"> уд/хв</span></div>
+        <button class="num-step-btn" onclick="adjFT('resting_hr',1)">+</button>
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="ft-sec-title">Нотатки</div>
+      <textarea class="textarea" id="ft-notes" placeholder="Як почувався...">${escapeHTML(t.notes||'')}</textarea>
+    </div>
+    <button class="btn btn-p" onclick="saveFuncTest()">Зберегти результати</button>
+    <div style="height:20px"></div>
+  `;
+}
+function toggleStsTimer(){
+  if(ftStsState==='idle'){
+    ftStsCountdown=30;ftStsState='running';
+    ftStsInterval=setInterval(()=>{
+      ftStsCountdown--;
+      if(ftStsCountdown<=0){ftStsCountdown=0;ftStsState='done';clearInterval(ftStsInterval);ftStsInterval=null;if(navigator.vibrate)navigator.vibrate([200,100,400]);}
+      const d=document.getElementById('ft-sts-disp'),b=document.getElementById('ft-sts-btn');
+      if(d){d.textContent=ftStsState==='done'?'0:00':fmt(ftStsCountdown);d.className='ft-timer-disp '+ftStsState;}
+      if(b){b.textContent=ftStsState==='running'?'Зупинити':'Скинути';b.className='ft-timer-btn'+(ftStsState!=='idle'?' '+ftStsState:'');}
+    },1000);
+  }else if(ftStsState==='running'){
+    clearInterval(ftStsInterval);ftStsInterval=null;ftStsState='done';
+  }else{ftStsState='idle';ftStsCountdown=30;}
+  const d=document.getElementById('ft-sts-disp'),b=document.getElementById('ft-sts-btn');
+  if(d){d.textContent=ftStsState==='done'?'0:00':fmt(ftStsCountdown);d.className='ft-timer-disp '+ftStsState;}
+  if(b){b.textContent=ftStsState==='idle'?'Старт':ftStsState==='running'?'Зупинити':'Скинути';b.className='ft-timer-btn'+(ftStsState!=='idle'?' '+ftStsState:'');}
+}
+function toggleBalance(side){
+  const key=side==='left'?'balance_left_sec':'balance_right_sec';
+  if(ftBalState[side]==='idle'){
+    ftBalSecs[side]=0;ftBalState[side]='running';
+    ftBalInterval[side]=setInterval(()=>{
+      ftBalSecs[side]++;
+      editingFuncTest[key]=ftBalSecs[side];
+      const d=document.getElementById(`ft-bal-disp-${side}`);
+      if(d){d.textContent=fmt(ftBalSecs[side]);d.className='ft-bal-time running';}
+    },1000);
+  }else if(ftBalState[side]==='running'){
+    clearInterval(ftBalInterval[side]);ftBalInterval[side]=null;
+    ftBalState[side]='done';editingFuncTest[key]=ftBalSecs[side];
+    const d=document.getElementById(`ft-bal-disp-${side}`),b=document.getElementById(`ft-bal-btn-${side}`);
+    if(d)d.className='ft-bal-time done';
+    if(b){b.textContent='Скинути';b.className='ft-timer-btn done';}
+  }else{
+    ftBalState[side]='idle';ftBalSecs[side]=0;editingFuncTest[key]=0;
+    const d=document.getElementById(`ft-bal-disp-${side}`),b=document.getElementById(`ft-bal-btn-${side}`);
+    if(d){d.textContent=fmt(0);d.className='ft-bal-time';}
+    if(b){b.textContent='Старт';b.className='ft-timer-btn';}
+  }
+}
+function adjFT(field,delta){
+  if(!editingFuncTest)return;
+  editingFuncTest[field]=Math.max(0,(editingFuncTest[field]||0)+delta);
+  const map={sts_reps:'ft-sts-reps',resting_hr:'ft-hr'};
+  const el=document.getElementById(map[field]);
+  if(el)el.textContent=editingFuncTest[field]||'—';
+}
+async function saveFuncTest(){
+  if(!editingFuncTest)return;
+  const ta=document.getElementById('ft-notes');
+  if(ta)editingFuncTest.notes=ta.value;
+  editingFuncTest.saved_at=new Date().toISOString();
+  const data=getFuncTests();
+  data.tests=data.tests.filter(t=>t.date!==editingFuncTest.date);
+  data.tests.push(editingFuncTest);
+  data.tests.sort((a,b)=>a.date.localeCompare(b.date));
+  saveFuncTestsLocal(data);
+  closeOverlay('ov-funtest');
+  renderFuncTestBanner();
+  showToast('Тест збережено…','');
+  const ok=await pushFuncTestsToGitHub(data);
+  showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
+  editingFuncTest=null;
+}
+
 // ─── Toast ────────────────────────────────────────────────────────────────────
 let toastT=null;
 function showToast(msg,type=''){
@@ -1886,6 +2166,10 @@ async function init(){
     const remote=await fetchLogsFromGitHub();
     if(remote?.sessions?.length){saveLogs(remote);renderStats();showToast('Журнал завантажено','success');}
   }
+
+  // Load functional tests from GitHub
+  const ftRemote = await fetchFuncTestsFromGitHub();
+  if (ftRemote) { saveFuncTestsLocal(ftRemote); renderFuncTestBanner(); }
 
   // Load daily notes from GitHub (merge with local)
   const notesRemote = await fetchDailyNotesFromGitHub();
