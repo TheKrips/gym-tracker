@@ -1,6 +1,163 @@
 {
   "sessions": [
     {
+      "date": "2026-04-22",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "exercises": [
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 72,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 72,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 72,
+              "reps": 8
+            },
+            {
+              "set": 4,
+              "weight": 72,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 60,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 60,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 60,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 22,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 20,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 20,
+              "reps": 9
+            }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 27.5,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 27.5,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 27.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 4,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 4,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 4,
+              "reps": 20
+            }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            {
+              "set": 2,
+              "weight": 8,
+              "reps": 10
+            },
+            {
+              "set": 1,
+              "weight": 8,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 8,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            {
+              "set": 2,
+              "weight": 35,
+              "reps": 15
+            },
+            {
+              "set": 1,
+              "weight": 35,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 35,
+              "reps": 15
+            }
+          ]
+        }
+      ],
+      "started_at": "2026-04-22T22:57:30.678Z",
+      "finished_at": "2026-04-22T23:00:12.048Z",
+      "duration_min": 60,
+      "rpe": 5,
+      "load_au": 300
+    },
+    {
       "date": "2026-04-16",
       "workout_id": "lower_a",
       "workout_name": "Lower A",
