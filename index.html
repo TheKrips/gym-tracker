@@ -139,6 +139,17 @@
 
     /* ── Section title ──────────────────────────────────────── */
     .sec{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px;font-weight:600}
+    .sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+    .sec-row .sec{margin-bottom:0}
+    .week-nav{display:flex;align-items:center;gap:4px}
+    .week-nav-lbl{font-size:11px;color:var(--t3);min-width:46px;text-align:center;font-variant-numeric:tabular-nums}
+    .note-date-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 0 14px;border-bottom:var(--bh) solid var(--bd);margin-bottom:14px}
+    .note-date-nav-btn{width:32px;height:32px;border-radius:50%;background:var(--s2);border:var(--bh) solid var(--bd2);color:var(--t2);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:transform 100ms var(--eo3),background 120ms ease;flex-shrink:0}
+    .note-date-nav-btn:active{transform:scale(0.9);background:var(--s3)}
+    .note-date-nav-btn[disabled]{opacity:.3;pointer-events:none}
+    .note-date-center{text-align:center;flex:1}
+    .note-date-label{font-size:15px;font-weight:600;letter-spacing:-.01em}
+    .note-date-sub{font-size:11px;color:var(--t3);margin-top:2px}
     .card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:13px;margin-bottom:10px}
 
     /* ── Day grid ───────────────────────────────────────────── */
@@ -475,7 +486,14 @@
     <div class="swipe-page" id="page-home">
       <div id="today-hero"></div>
 
-      <div class="sec">Тиждень</div>
+      <div class="sec-row">
+        <div class="sec">Тиждень</div>
+        <div class="week-nav">
+          <button class="icon-btn" onclick="shiftWeek(-1)" style="width:28px;height:28px;font-size:15px">‹</button>
+          <span id="week-nav-lbl" class="week-nav-lbl"></span>
+          <button class="icon-btn" id="week-next-btn" onclick="shiftWeek(1)" style="width:28px;height:28px;font-size:15px" disabled>›</button>
+        </div>
+      </div>
       <div class="week-row" id="week-row"></div>
 
       <div class="sec">Здоров'я</div>
@@ -1043,10 +1061,17 @@ async function skipWorkout(wid) {
 }
 
 // ─── Week Row ────────────────────────────────────────────────────────────────
+let weekOffset = 0;
+function shiftWeek(delta) {
+  if (weekOffset + delta > 0) return;
+  weekOffset += delta;
+  renderWeekRow();
+}
 function renderWeekRow() {
   const el = document.getElementById('week-row');
   const today = new Date();
   const d0 = new Date(today); d0.setHours(0,0,0,0);
+  d0.setDate(d0.getDate() + weekOffset * 7);
   // Monday-start week
   const dow = d0.getDay()===0?6:d0.getDay()-1;
   const monday = new Date(d0); monday.setDate(d0.getDate()-dow);
@@ -1070,6 +1095,16 @@ function renderWeekRow() {
     </div>`;
   }
   el.innerHTML = html;
+  // Update week nav controls
+  const lbl = document.getElementById('week-nav-lbl');
+  if (lbl) {
+    if (weekOffset < 0) {
+      const end = new Date(monday); end.setDate(monday.getDate()+6);
+      lbl.textContent = `${monday.getDate()}/${monday.getMonth()+1}`;
+    } else { lbl.textContent = ''; }
+  }
+  const nextBtn = document.getElementById('week-next-btn');
+  if (nextBtn) nextBtn.disabled = weekOffset >= 0;
 }
 function openDayAt(dateStr) {
   const sessions = getLogs().sessions || [];
@@ -1166,12 +1201,25 @@ function renderNoteEditor() {
   const el = document.getElementById('note-editor');
   const n = editingNote;
   const h = n.hooper || {};
+  const today = new Date().toISOString().split('T')[0];
+  const isToday = editingNoteDate === today;
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const isYesterday = editingNoteDate === yesterday.toISOString().split('T')[0];
+  const dateLbl = isToday ? 'Сьогодні' : isYesterday ? 'Вчора' : fmtDate(editingNoteDate);
   const hooField = (field, labels) =>
     `<div class="hoo-row">${labels.map((l,i)=>
       `<div class="hoo-btn ${h[field]===i+1?'active':''}" onclick="setHooper('${field}',${i+1})">
         <span class="hoo-num">${i+1}</span><span class="hoo-lbl">${l}</span>
       </div>`).join('')}</div>`;
   el.innerHTML = `
+    <div class="note-date-nav">
+      <button class="note-date-nav-btn" onclick="noteNavDate(-1)">‹</button>
+      <div class="note-date-center">
+        <div class="note-date-label">${dateLbl}</div>
+        <div class="note-date-sub">‹ › змінити день</div>
+      </div>
+      <button class="note-date-nav-btn" onclick="noteNavDate(1)" ${isToday?'disabled':''}>›</button>
+    </div>
     <div class="sec" style="margin-top:4px">😴 Якість сну</div>
     ${hooField('sleep_quality',['жахл','погано','норм','добре','чудово'])}
     <div class="sec">🧘 Рівень стресу</div>
@@ -1222,6 +1270,25 @@ function setHooper(field, val) {
   preserveTextAndRerender();
 }
 function adjSleepH(d){ editingNote.sleep_hours = Math.max(0, Math.min(14, (editingNote.sleep_hours||0) + d)); preserveTextAndRerender(); }
+function noteNavDate(delta) {
+  const ta = document.getElementById('note-text');
+  if (ta) editingNote.notes = ta.value;
+  const h = editingNote.hooper||{};
+  const hasData = h.sleep_quality||h.stress||h.fatigue||h.soreness||
+    editingNote.sleep_hours||editingNote.nutrition_adherence||
+    editingNote.kcal||editingNote.protein_g||(editingNote.notes&&editingNote.notes.trim());
+  if (hasData) {
+    editingNote.hooper_score = calcHooperScore(editingNote);
+    editingNote.updated_at = new Date().toISOString();
+    upsertDailyNote(editingNote);
+  }
+  const d = new Date(editingNoteDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  const newDate = d.toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
+  if (newDate > today) return;
+  openDailyNote(newDate);
+}
 async function saveDailyNote() {
   const n = editingNote;
   // Only save if something is set
