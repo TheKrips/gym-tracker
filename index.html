@@ -1108,10 +1108,24 @@ async function fetchJSON(path) {
 async function fetchPrivateJSON(path) {
   const token=getSetting('github_token'); if(!token) return null;
   const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return null;
+  const h={'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'};
   try {
-    const res=await fetch(`https://raw.githubusercontent.com/${o}/${pr}/main/${path}?t=${Date.now()}`,{headers:{'Authorization':`token ${token}`}});
-    if(!res.ok) return null;
-    return await res.json();
+    // Try contents API first (works for files ≤ 1 MB)
+    const cr=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:h});
+    if(cr.ok){
+      const cd=await cr.json();
+      if(cd.content&&cd.encoding==='base64') return JSON.parse(atob(cd.content.replace(/\n/g,'')));
+    }
+    // File too large (>1 MB) — find blob SHA via git tree then download via blobs API
+    const tr=await fetch(`https://api.github.com/repos/${o}/${pr}/git/trees/HEAD?recursive=1`,{headers:h});
+    if(!tr.ok) return null;
+    const td=await tr.json();
+    const entry=(td.tree||[]).find(e=>e.path===path&&e.type==='blob');
+    if(!entry) return null;
+    const br=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${entry.sha}`,{headers:h});
+    if(!br.ok) return null;
+    const bd=await br.json();
+    return JSON.parse(atob(bd.content.replace(/\n/g,'')));
   } catch(e){return null;}
 }
 async function pushPrivateFile(path, jsonData, msg) {
@@ -3223,17 +3237,19 @@ init();
     pulling = true; ready = false;
   }, {passive:true});
 
+  // passive:false required to call preventDefault() and block iOS native overscroll
   page.addEventListener('touchmove', e => {
     if (!pulling) return;
     if (page.scrollTop > 2) { pulling = false; ind.style.height = '0'; return; }
     const dy = e.touches[0].clientY - startY;
-    if (dy <= 0) return;
+    if (dy <= 0) { pulling = false; return; }
+    e.preventDefault();
     const h = Math.min(dy * 0.45, 44);
     ind.style.height = h + 'px';
     ready = dy >= THRESHOLD;
     ind.style.color = ready ? 'var(--p)' : 'var(--t3)';
-    ind.textContent = ready ? '↓ Відпустіть для оновлення' : '↓ Потягніть для оновлення';
-  }, {passive:true});
+    ind.textContent = ready ? '↓ Відпустіть' : '↓ Потягни для оновлення';
+  }, {passive:false});
 
   page.addEventListener('touchend', async () => {
     if (!pulling) return;
