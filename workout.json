@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.8",
+    "version": "3.9",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-22"
+    "updated": "2026-04-23"
   },
   "schedule": [
     {
@@ -122,8 +122,8 @@
           ],
           "warmup": null,
           "sets": 3,
-          "reps": "10",
-          "weight_kg": 27.5,
+          "reps": "6",
+          "weight_kg": 30.0,
           "rir": "1-2",
           "rest_sec": 120,
           "jefit_url": "https://www.jefit.com/exercises/78/one-arm-dumbbell-row",
@@ -376,7 +376,7 @@
             "posterior_deltoid"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "10",
           "weight_kg": 60,
           "rir": "1-2",
@@ -402,7 +402,7 @@
             "biceps"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "8",
           "weight_kg": 60,
           "rir": "1-2",
@@ -426,7 +426,7 @@
             "anterior_deltoid"
           ],
           "warmup": "15 кг × 10",
-          "sets": 3,
+          "sets": 2,
           "reps": "10",
           "weight_kg": 22,
           "rir": "1-2",
@@ -450,7 +450,7 @@
             "rhomboids"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "15",
           "weight_kg": 27,
           "rir": "1-2",
@@ -476,7 +476,7 @@
             "traps"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "12",
           "weight_kg": 5,
           "rir": "1-2",
