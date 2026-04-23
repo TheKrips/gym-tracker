@@ -695,6 +695,8 @@
     <input type="text" class="s-inp" id="s-private-repo" placeholder="gym-tracker-private">
     <div class="s-hint">Власник береться з GitHub налаштувань вище. Зберігає: health-data.json, daily-notes.json. Потребує той самий PAT з правами на обидва репозиторії.</div>
     <button class="btn btn-s" onclick="savePrivateRepo()">Зберегти</button>
+    <button class="btn btn-s" style="margin-top:6px" onclick="debugPrivateRepo()">🔍 Діагностика</button>
+    <div id="debug-private-output" style="margin-top:10px;font-size:11px;color:var(--t3);line-height:1.6;font-family:monospace"></div>
   </div>
   <div class="sec">AI провайдер</div>
   <div class="card">
@@ -2933,6 +2935,48 @@ async function saveFuncTest(){
 
 // ─── Phase 5: Weekly AI Report ───────────────────────────────────────────────
 function savePrivateRepo(){const el=document.getElementById('s-private-repo');if(el){setSetting('private_github_repo',el.value.trim());showToast('Приватне репо збережено','success');}}
+async function debugPrivateRepo(){
+  const out=document.getElementById('debug-private-output');
+  const log=(msg,ok)=>{out.innerHTML+=(ok===true?'<span style="color:#22c55e">✓</span>':ok===false?'<span style="color:#ef4444">✗</span>':'·')+' '+msg+'<br>';};
+  out.innerHTML='';
+  const token=getSetting('github_token');
+  const o=getSetting('github_owner','TheKrips');
+  const pr=getSetting('private_github_repo','');
+  log('Token: '+(token?token.slice(0,8)+'…':'(порожній)'), !!token);
+  log('Owner: '+o, true);
+  log('Private repo: '+(pr||'(не задано)'), !!pr);
+  if(!token||!pr){log('→ Налаштуй token і private repo, збережи',false);return;}
+  const h={'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'};
+  // Check repo access
+  const r1=await fetch(`https://api.github.com/repos/${o}/${pr}`,{headers:h});
+  log(`Repo ${o}/${pr}: HTTP ${r1.status}`, r1.ok);
+  if(!r1.ok){log('→ Репо не знайдено або немає прав',false);return;}
+  // Check contents endpoint
+  const r2=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/health/health-data.json`,{headers:h});
+  log(`Contents API: HTTP ${r2.status}`, r2.ok||r2.status===403);
+  if(r2.ok){
+    const d=await r2.json();
+    log(`Size: ${d.size} bytes, sha: ${d.sha?.slice(0,8)}`, true);
+    if(d.content){log('Content inline (≤1MB) — OK',true);}
+    else if(d.sha){
+      log('Файл >1MB, пробуємо blobs API…', null);
+      const r3=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${d.sha}`,{headers:h});
+      log(`Blobs API: HTTP ${r3.status}`, r3.ok);
+      if(r3.ok){const bd=await r3.json();log(`Blob size: ${bd.size} bytes, encoding: ${bd.encoding}`,true);}
+    }
+  } else if(r2.status===403){
+    log('Contents 403 — файл >1MB, пробуємо tree…', null);
+    const r3=await fetch(`https://api.github.com/repos/${o}/${pr}/git/trees/HEAD?recursive=1`,{headers:h});
+    log(`Trees API: HTTP ${r3.status}`, r3.ok);
+    if(r3.ok){
+      const td=await r3.json();
+      const entry=(td.tree||[]).find(e=>e.path==='health/health-data.json');
+      log(entry?`Файл знайдено в tree, sha: ${entry.sha.slice(0,8)}`:'health/health-data.json НЕ знайдено в tree', !!entry);
+    }
+  } else {
+    log(`Файл не знайдено (${r2.status})`, false);
+  }
+}
 function saveAISettings(){
   const ck=document.getElementById('s-claude-key'),ok=document.getElementById('s-openai-key'),prov=document.getElementById('s-ai-provider');
   if(ck&&ck.value.trim())setSetting('claude_api_key',ck.value.trim());
