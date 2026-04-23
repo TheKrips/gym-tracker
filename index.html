@@ -589,6 +589,7 @@
 
     <!-- PAGE 0: HOME -->
     <div class="swipe-page" id="page-home">
+      <div id="ptr-indicator" style="height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:height 180ms ease;font-size:13px;font-weight:500;letter-spacing:-.01em;margin:0 -16px"></div>
       <div id="today-hero"></div>
 
       <div class="sec-row">
@@ -1108,10 +1109,9 @@ async function fetchPrivateJSON(path) {
   const token=getSetting('github_token'); if(!token) return null;
   const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return null;
   try {
-    const res=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    const res=await fetch(`https://raw.githubusercontent.com/${o}/${pr}/main/${path}?t=${Date.now()}`,{headers:{'Authorization':`token ${token}`}});
     if(!res.ok) return null;
-    const data=await res.json();
-    return JSON.parse(atob(data.content.replace(/\n/g,'')));
+    return await res.json();
   } catch(e){return null;}
 }
 async function pushPrivateFile(path, jsonData, msg) {
@@ -1144,7 +1144,8 @@ async function fetchWorkoutJson() {
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
 async function fetchHealthData() {
   const privRepo = getSetting('private_github_repo','');
-  const raw = privRepo ? await fetchPrivateJSON('health/health-data.json') : await fetchJSON('health/health-data.json');
+  let raw = privRepo ? await fetchPrivateJSON('health/health-data.json') : await fetchJSON('health/health-data.json');
+  if (!raw) raw = await fetchJSON('health-data.json');
   if (!raw || !raw.samples) return null;
   // Aggregate raw Apple Health samples into daily maps
   const stepsByDay = {}, weightByDay = {}, fatByDay = {}, bmiByDay = {};
@@ -1181,13 +1182,16 @@ function saveLogs(d) { localStorage.setItem('gym_logs',JSON.stringify(d)); }
 function addSession(s) { const d=getLogs(); d.sessions=d.sessions.filter(x=>!(x.date===s.date&&x.workout_id===s.workout_id)); d.sessions.push(s); d.sessions.sort((a,b)=>b.date.localeCompare(a.date)); saveLogs(d); return d; }
 async function syncFromGitHub() {
   showToast('Синхронізація…','');
-  const r=await fetchLogsFromGitHub();
+  const [r, notesRemote, newHealth] = await Promise.all([
+    fetchLogsFromGitHub(),
+    fetchDailyNotesFromGitHub(),
+    fetchHealthData(),
+  ]);
   if(r){
     const l=getLogs(); const rk=new Set(r.sessions.map(s=>s.date+'_'+s.workout_id));
     for(const s of l.sessions) if(!rk.has(s.date+'_'+s.workout_id)) r.sessions.push(s);
     r.sessions.sort((a,b)=>b.date.localeCompare(a.date)); saveLogs(r);
   }
-  const notesRemote = await fetchDailyNotesFromGitHub();
   if (notesRemote) {
     const local = getDailyNotes();
     const byDate = {};
@@ -1198,6 +1202,7 @@ async function syncFromGitHub() {
     }
     saveDailyNotes(Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)));
   }
+  if (newHealth) { healthData = newHealth; renderHealthSection(); }
   showToast('Синхронізовано ✓','success');
   renderStats();
 }
@@ -1521,12 +1526,13 @@ function renderNoteEditor() {
   el.innerHTML = `
     <div class="note-date-nav">
       <button class="note-date-nav-btn" onclick="noteNavDate(-1)">‹</button>
-      <div class="note-date-center">
-        <div class="note-date-label">${dateLbl}</div>
-        <div class="note-date-sub">‹ › змінити день</div>
-      </div>
+      <label class="note-date-center" for="note-date-picker" style="cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div class="note-date-label">${dateLbl} <span style="font-size:12px;color:var(--p)">📅</span></div>
+        <div class="note-date-sub">‹ › день · 📅 обрати будь-яку</div>
+      </label>
       <button class="note-date-nav-btn" onclick="noteNavDate(1)" ${isToday?'disabled':''}>›</button>
     </div>
+    <input type="date" id="note-date-picker" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px" value="${editingNoteDate}" max="${today}" onchange="notePickDate(this.value)">
     <div class="sec" style="margin-top:4px">😴 Якість сну</div>
     ${hooField('sleep_quality',['жахл','погано','норм','добре','чудово'])}
     <div class="sec">🧘 Рівень стресу</div>
@@ -1595,6 +1601,23 @@ function noteNavDate(delta) {
   const today = new Date().toISOString().split('T')[0];
   if (newDate > today) return;
   openDailyNote(newDate);
+}
+function notePickDate(dateStr) {
+  if (!dateStr) return;
+  const today = new Date().toISOString().split('T')[0];
+  if (dateStr > today) return;
+  const ta = document.getElementById('note-text');
+  if (ta) editingNote.notes = ta.value;
+  const h = editingNote.hooper||{};
+  const hasData = h.sleep_quality||h.stress||h.fatigue||h.soreness||
+    editingNote.sleep_hours||editingNote.nutrition_adherence||
+    editingNote.kcal||editingNote.protein_g||(editingNote.notes&&editingNote.notes.trim());
+  if (hasData) {
+    editingNote.hooper_score = calcHooperScore(editingNote);
+    editingNote.updated_at = new Date().toISOString();
+    upsertDailyNote(editingNote);
+  }
+  openDailyNote(dateStr);
 }
 async function saveDailyNote() {
   const n = editingNote;
@@ -3186,6 +3209,45 @@ async function init(){
   }
 }
 init();
+
+// ─── Pull-to-refresh ──────────────────────────────────────────────────────────
+(function(){
+  const page = document.getElementById('page-home');
+  const ind = document.getElementById('ptr-indicator');
+  const THRESHOLD = 70;
+  let startY = 0, pulling = false, ready = false, refreshing = false;
+
+  page.addEventListener('touchstart', e => {
+    if (refreshing || page.scrollTop > 2) return;
+    startY = e.touches[0].clientY;
+    pulling = true; ready = false;
+  }, {passive:true});
+
+  page.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    if (page.scrollTop > 2) { pulling = false; ind.style.height = '0'; return; }
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) return;
+    const h = Math.min(dy * 0.45, 44);
+    ind.style.height = h + 'px';
+    ready = dy >= THRESHOLD;
+    ind.style.color = ready ? 'var(--p)' : 'var(--t3)';
+    ind.textContent = ready ? '↓ Відпустіть для оновлення' : '↓ Потягніть для оновлення';
+  }, {passive:true});
+
+  page.addEventListener('touchend', async () => {
+    if (!pulling) return;
+    pulling = false;
+    if (!ready) { ind.style.height = '0'; return; }
+    refreshing = true;
+    ind.style.height = '40px';
+    ind.textContent = '⟳ Оновлення…';
+    ind.style.color = 'var(--t2)';
+    await syncFromGitHub();
+    ind.style.height = '0';
+    refreshing = false;
+  });
+})();
 </script>
 </body>
 </html>
