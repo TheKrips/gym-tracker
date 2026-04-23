@@ -1110,22 +1110,28 @@ async function fetchPrivateJSON(path) {
   const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return null;
   const h={'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'};
   try {
-    // Try contents API first (works for files ≤ 1 MB)
+    // Try contents API — works for files ≤ 1 MB, returns sha+no-content for larger
     const cr=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:h});
     if(cr.ok){
       const cd=await cr.json();
+      // Small file: content inline
       if(cd.content&&cd.encoding==='base64') return JSON.parse(atob(cd.content.replace(/\n/g,'')));
+      // Large file: sha returned but no content — use blobs API directly
+      if(cd.sha){
+        const br=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${cd.sha}`,{headers:h});
+        if(br.ok){const bd=await br.json();return JSON.parse(atob(bd.content.replace(/\n/g,'')));}
+      }
     }
-    // File too large (>1 MB) — find blob SHA via git tree then download via blobs API
+    // Final fallback: traverse git tree to find blob sha (handles 403 from contents API)
     const tr=await fetch(`https://api.github.com/repos/${o}/${pr}/git/trees/HEAD?recursive=1`,{headers:h});
     if(!tr.ok) return null;
     const td=await tr.json();
     const entry=(td.tree||[]).find(e=>e.path===path&&e.type==='blob');
     if(!entry) return null;
-    const br=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${entry.sha}`,{headers:h});
-    if(!br.ok) return null;
-    const bd=await br.json();
-    return JSON.parse(atob(bd.content.replace(/\n/g,'')));
+    const br2=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${entry.sha}`,{headers:h});
+    if(!br2.ok) return null;
+    const bd2=await br2.json();
+    return JSON.parse(atob(bd2.content.replace(/\n/g,'')));
   } catch(e){return null;}
 }
 async function pushPrivateFile(path, jsonData, msg) {
@@ -1158,9 +1164,12 @@ async function fetchWorkoutJson() {
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
 async function fetchHealthData() {
   const privRepo = getSetting('private_github_repo','');
-  let raw = privRepo ? await fetchPrivateJSON('health/health-data.json') : await fetchJSON('health/health-data.json');
-  if (!raw) raw = await fetchJSON('health-data.json');
-  if (!raw || !raw.samples) return null;
+  let raw = null;
+  // Private repo is authoritative — always try it first if configured
+  if (privRepo) raw = await fetchPrivateJSON('health/health-data.json');
+  // Public fallback: root health-data.json (skip health/health-data.json — it can be empty from sync)
+  if (!raw || !raw.samples?.length) raw = await fetchJSON('health-data.json');
+  if (!raw || !raw.samples?.length) return null;
   // Aggregate raw Apple Health samples into daily maps
   const stepsByDay = {}, weightByDay = {}, fatByDay = {}, bmiByDay = {};
   for (const s of raw.samples) {
