@@ -1,0 +1,16 @@
+{
+  "generatedBy" : "HealthGitSync",
+  "lastSyncedAt" : "2026-04-23T01:24:09Z",
+  "samples" : [
+
+  ],
+  "settingsSnapshot" : {
+    "metrics" : [
+      "bodyMass",
+      "bodyMassIndex",
+      "bodyFatPercentage",
+      "stepCount"
+    ]
+  },
+  "version" : 1
+}
