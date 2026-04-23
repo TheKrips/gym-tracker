@@ -289,6 +289,28 @@
     .ac-badge.warn{background:rgba(234,179,8,.15);color:#eab308}
     .ac-badge.danger{background:rgba(248,113,113,.15);color:#f87171}
 
+    /* ── Coach log banner ───────────────────────────────────── */
+    .coach-banner{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,197,94,.03));border:var(--bh) solid rgba(34,197,94,.3);border-radius:var(--rad);padding:11px 14px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px;transition:transform 140ms var(--eo3)}
+    .coach-banner:active{transform:scale(0.985)}
+    .coach-log-body{font-size:13px;color:var(--t2);line-height:1.65;padding:4px 0}
+    .coach-h1{font-size:17px;font-weight:700;color:var(--t);margin:16px 0 8px}
+    .coach-h2{font-size:15px;font-weight:600;color:var(--t);margin:14px 0 6px;border-bottom:var(--bh) solid var(--bd);padding-bottom:6px}
+    .coach-h3{font-size:13px;font-weight:600;color:var(--t2);margin:10px 0 4px}
+    .coach-li{padding:2px 0 2px 4px;color:var(--t2)}
+
+    /* ── FT composite score ──────────────────────────────────── */
+    .ft-score-badge{display:inline-flex;align-items:baseline;gap:4px;background:var(--s2);border-radius:20px;padding:4px 12px;margin-bottom:12px}
+    .ft-score-val{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+    .ft-score-lbl{font-size:11px;color:var(--t3);font-weight:600}
+
+    /* ── Week summary (history tab) ─────────────────────────── */
+    .week-sum-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:12px 14px;margin-bottom:12px}
+    .week-sum-title{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px}
+    .week-sum-row{display:flex;gap:16px;flex-wrap:wrap}
+    .week-sum-item{display:flex;flex-direction:column;align-items:center}
+    .week-sum-val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+    .week-sum-lbl{font-size:10px;color:var(--t3);margin-top:2px}
+
     /* ── Weekly AI report ───────────────────────────────────── */
     .report-banner{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(139,92,246,.04));border:var(--bh) solid rgba(139,92,246,.35);border-radius:var(--rad);padding:12px 14px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px;transition:transform 140ms var(--eo3)}
     .report-banner:active{transform:scale(0.985)}
@@ -595,6 +617,7 @@
       <div id="metrics-section"></div>
 
       <div id="weekly-report-banner"></div>
+      <div id="coach-log-banner"></div>
 
       <div class="sec">Програма</div>
       <div class="day-grid" id="day-grid"></div>
@@ -665,12 +688,26 @@
     <input type="number" class="s-inp" id="s-timer" placeholder="90">
     <button class="btn btn-s" onclick="saveTimerDefault()">Зберегти</button>
   </div>
-  <div class="sec">Claude AI</div>
+  <div class="sec">Приватний репозиторій (Phase 2)</div>
   <div class="card">
-    <div class="s-lbl">API ключ (Anthropic)</div>
+    <div class="s-lbl">Назва приватного репо</div>
+    <input type="text" class="s-inp" id="s-private-repo" placeholder="gym-tracker-private">
+    <div class="s-hint">Власник береться з GitHub налаштувань вище. Зберігає: health-data.json, daily-notes.json. Потребує той самий PAT з правами на обидва репозиторії.</div>
+    <button class="btn btn-s" onclick="savePrivateRepo()">Зберегти</button>
+  </div>
+  <div class="sec">AI провайдер</div>
+  <div class="card">
+    <div class="s-lbl">Провайдер</div>
+    <select class="s-inp" id="s-ai-provider" onchange="setSetting('ai_provider',this.value)">
+      <option value="claude">Claude (Anthropic)</option>
+      <option value="openai">OpenAI (GPT-4o-mini)</option>
+    </select>
+    <div class="s-lbl" style="margin-top:10px">Claude API ключ</div>
     <input type="password" class="s-inp" id="s-claude-key" placeholder="sk-ant-xxxxxxxxxxxx" autocomplete="off">
-    <div class="s-hint">Ключ зберігається <strong style="color:var(--t2)">тільки на пристрої</strong>, ніколи не потрапляє в репозиторій.<br>console.anthropic.com → API Keys</div>
-    <button class="btn btn-s" onclick="saveClaudeKey()">Зберегти</button>
+    <div class="s-lbl" style="margin-top:8px">OpenAI API ключ</div>
+    <input type="password" class="s-inp" id="s-openai-key" placeholder="sk-xxxxxxxxxxxx" autocomplete="off">
+    <div class="s-hint">Ключі зберігаються <strong style="color:var(--t2)">тільки на пристрої</strong>, ніколи не потрапляють в репозиторій.</div>
+    <button class="btn btn-s" onclick="saveAISettings()">Зберегти ключі</button>
     <button class="btn btn-p" style="margin-top:6px" onclick="openWeeklyReport()">Тижневий звіт →</button>
   </div>
   <div class="sec">Цілі харчування</div>
@@ -749,6 +786,18 @@
     </div>
   </div>
   <div id="rpe-content"></div>
+</div>
+
+<!-- Overlay: AI Coach log -->
+<div class="overlay" id="ov-coach-log">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-coach-log')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">AI Coach</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="coach-log-content"></div>
 </div>
 
 <!-- Overlay: Weekly AI report -->
@@ -1036,13 +1085,46 @@ function getSetting(k,fb='') { return localStorage.getItem('gym_'+k)||fb; }
 function setSetting(k,v) { localStorage.setItem('gym_'+k,v); }
 function saveSettings() { setSetting('github_token',document.getElementById('s-token').value.trim()); setSetting('github_owner',document.getElementById('s-owner').value.trim()||'TheKrips'); setSetting('github_repo',document.getElementById('s-repo').value.trim()||'gym-tracker'); showToast('Збережено','success'); }
 function saveTimerDefault() { const v=parseInt(document.getElementById('s-timer').value); if(v>0){timerDefault=v;localStorage.setItem('gym_timer_default',v);showToast('Збережено','success');renderTimers();} }
-function loadSettingsPage() { document.getElementById('s-token').value=getSetting('github_token'); document.getElementById('s-owner').value=getSetting('github_owner','TheKrips'); document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker'); document.getElementById('s-timer').value=timerDefault; const kt=document.getElementById('s-kcal-target');const pt=document.getElementById('s-protein-target');if(kt)kt.value=getSetting('kcal_target','')||'';if(pt)pt.value=getSetting('protein_target','')||''; const ck=document.getElementById('s-claude-key');if(ck)ck.value=getSetting('claude_api_key','')||''; }
+function loadSettingsPage() {
+  document.getElementById('s-token').value=getSetting('github_token');
+  document.getElementById('s-owner').value=getSetting('github_owner','TheKrips');
+  document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker');
+  document.getElementById('s-timer').value=timerDefault;
+  const kt=document.getElementById('s-kcal-target');const pt=document.getElementById('s-protein-target');
+  if(kt)kt.value=getSetting('kcal_target','')||'';if(pt)pt.value=getSetting('protein_target','')||'';
+  const ck=document.getElementById('s-claude-key');if(ck)ck.value=getSetting('claude_api_key','')||'';
+  const ok=document.getElementById('s-openai-key');if(ok)ok.value=getSetting('openai_api_key','')||'';
+  const pr=document.getElementById('s-private-repo');if(pr)pr.value=getSetting('private_github_repo','')||'';
+  const prov=document.getElementById('s-ai-provider');if(prov)prov.value=getSetting('ai_provider','claude');
+}
 async function testGitHub() { const t=getSetting('github_token'),o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker'); if(!t){showToast('Введи токен','error');return;} try{const res=await fetch(`https://api.github.com/repos/${o}/${r}`,{headers:{'Authorization':`token ${t}`}});res.ok?showToast('OK ✓','success'):showToast('Помилка '+res.status,'error');}catch(e){showToast('Помилка','error');} }
 
 // ─── GitHub API ───────────────────────────────────────────────────────────────
 async function fetchJSON(path) {
   const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
   try { const res=await fetch(`https://raw.githubusercontent.com/${o}/${r}/main/${path}?t=${Date.now()}`); if(!res.ok) return null; return await res.json(); } catch(e){return null;}
+}
+async function fetchPrivateJSON(path) {
+  const token=getSetting('github_token'); if(!token) return null;
+  const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return null;
+  try {
+    const res=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    if(!res.ok) return null;
+    const data=await res.json();
+    return JSON.parse(atob(data.content.replace(/\n/g,'')));
+  } catch(e){return null;}
+}
+async function pushPrivateFile(path, jsonData, msg) {
+  const token=getSetting('github_token'); if(!token) return false;
+  const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return false;
+  try {
+    const hr=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
+    const sha=hr.ok?(await hr.json()).sha:undefined;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(jsonData,null,2))));
+    const body={message:msg||`update: ${path}`,content}; if(sha)body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    return res.ok;
+  } catch(e){return false;}
 }
 async function fetchWorkoutJson() {
   const d=await fetchJSON('workout.json');
@@ -1061,7 +1143,8 @@ async function fetchWorkoutJson() {
 }
 async function fetchLogsFromGitHub() { return await fetchJSON('logs.json'); }
 async function fetchHealthData() {
-  const raw = await fetchJSON('health/health-data.json');
+  const privRepo = getSetting('private_github_repo','');
+  const raw = privRepo ? await fetchPrivateJSON('health/health-data.json') : await fetchJSON('health/health-data.json');
   if (!raw || !raw.samples) return null;
   // Aggregate raw Apple Health samples into daily maps
   const stepsByDay = {}, weightByDay = {}, fatByDay = {}, bmiByDay = {};
@@ -1330,6 +1413,8 @@ function upsertDailyNote(n) {
   saveDailyNotes(arr); return arr;
 }
 async function pushDailyNotesToGitHub(notes) {
+  const privRepo = getSetting('private_github_repo','');
+  if (privRepo) return await pushPrivateFile('daily-notes.json', {notes}, `note: ${new Date().toISOString().split('T')[0]}`);
   const token=getSetting('github_token'); if(!token) return false;
   const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
   try {
@@ -1343,6 +1428,8 @@ async function pushDailyNotesToGitHub(notes) {
   } catch(e){return false;}
 }
 async function fetchDailyNotesFromGitHub() {
+  const privRepo = getSetting('private_github_repo','');
+  if (privRepo) { const d = await fetchPrivateJSON('daily-notes.json'); return d && d.notes ? d.notes : null; }
   const d = await fetchJSON('daily-notes.json');
   return d && d.notes ? d.notes : null;
 }
@@ -1599,6 +1686,14 @@ function renderInsights() {
     }
   }
 
+  // A:C ratio insight
+  const acr = computeACRatio();
+  if (acr !== null) {
+    if (acr > 1.5) insights.push({icon:'⚡',kind:'warn',title:`A:C Ratio: ${acr.toFixed(2)} — ризик перетренованості`,text:'Гостре навантаження різко перевищило хронічне. Скороти обсяг або додай день відпочинку.'});
+    else if (acr < 0.7) insights.push({icon:'💤',kind:'info',title:`A:C Ratio: ${acr.toFixed(2)} — недотренованість`,text:'Активність нижче хронічного рівня. Поступово нарощуй навантаження.'});
+    else if (acr >= 0.8 && acr <= 1.3) insights.push({icon:'✅',kind:'good',title:`A:C Ratio: ${acr.toFixed(2)} — зелена зона`,text:'Тренувальне навантаження збалансоване (ціль 0.8–1.3).'});
+  }
+
   // Sleep from notes (support both sleep_hours and legacy sleep_h)
   const recentNotes = getDailyNotes().filter(n=>(n.sleep_hours||n.sleep_h)>0).slice(0,7);
   if (recentNotes.length >= 3) {
@@ -1730,6 +1825,22 @@ function renderMetricsSection() {
     </div>`;
   }
 
+  // Cardio this week
+  const dMon = new Date(); const dow = dMon.getDay(); dMon.setDate(dMon.getDate()-(dow===0?6:dow-1));
+  const weekStartStr = dMon.toISOString().split('T')[0];
+  const cardioSess = (getLogs().sessions||[]).filter(s=>s.date>=weekStartStr&&s.workout_id==='cardio'&&!s.skipped);
+  let cardioSection = '';
+  if (cardioSess.length > 0) {
+    const totalDist = cardioSess.reduce((a,s)=>a+(s.cardio_speed_kmh&&s.duration_min?s.cardio_speed_kmh*s.duration_min/60:0),0);
+    const hrSess = cardioSess.filter(s=>s.cardio_avg_hr);
+    const avgHR = hrSess.length?Math.round(hrSess.reduce((a,s)=>a+s.cardio_avg_hr,0)/hrSess.length):0;
+    const totalMin = cardioSess.reduce((a,s)=>a+(s.duration_min||0),0);
+    cardioSection = `<div class="stats-grid" style="margin-bottom:8px">
+      <div class="stat-card"><div class="stat-lbl">Кардіо (тиждень)</div><div class="stat-val">${cardioSess.length} сес · ${totalMin}хв</div></div>
+      <div class="stat-card"><div class="stat-lbl">Дистанція / пульс</div><div class="stat-val">${totalDist>0?totalDist.toFixed(1)+'км':'—'}${avgHR?' · ❤️'+avgHR:''}</div></div>
+    </div>`;
+  }
+
   el.innerHTML = `
     <div class="sec-row">
       <div class="sec" style="margin:0">Обсяг / тиждень</div>
@@ -1737,7 +1848,9 @@ function renderMetricsSection() {
     </div>
     <div class="vol-card" style="margin-top:8px">
       ${rows || '<div style="font-size:12px;color:var(--t3);text-align:center;padding:4px 0">Логуй перший підхід щоб побачити обсяг</div>'}
+      ${hasVol?`<div style="font-size:10px;color:var(--t3);margin-top:8px;text-align:right">🟡 6–10 · 🟢 11–20 · ціль 6–20 сет/м'яз/тижд.</div>`:''}
     </div>
+    ${cardioSection}
     ${vo2Section}`;
 }
 
@@ -1947,7 +2060,7 @@ function renderDayGrid() {
     </div>`).join('');
 }
 function renderStats() {
-  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection(); renderWeeklyReportBanner();
+  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection(); renderWeeklyReportBanner(); renderCoachLogBanner();
 }
 
 // ─── Workout ──────────────────────────────────────────────────────────────────
@@ -2094,8 +2207,31 @@ function renderHistoryLog() {
   const sessions=getLogs().sessions||[];
   const list=document.getElementById('history-log');
   if(!sessions.length){list.innerHTML=`<div class="empty"><div class="empty-ico">📋</div><div>Тренувань ще немає</div></div>`;return;}
-  list.innerHTML=sessions.map((s,i)=>{
-    let sum, ico='';
+
+  // Week summary
+  const dMon2=new Date(); const dow2=dMon2.getDay(); dMon2.setDate(dMon2.getDate()-(dow2===0?6:dow2-1));
+  const wk2=dMon2.toISOString().split('T')[0];
+  const wkSess=sessions.filter(s=>s.date>=wk2);
+  const wkGym=wkSess.filter(s=>!s.skipped&&s.workout_id!=='cardio').length;
+  const wkCardio=wkSess.filter(s=>s.workout_id==='cardio').length;
+  const wkSets=wkSess.filter(s=>!s.skipped&&s.workout_id!=='cardio').reduce((a,s)=>a+(s.exercises||[]).reduce((b,e)=>b+(e.sets||[]).length,0),0);
+  const wkRPEs=wkSess.filter(s=>s.rpe);
+  const wkRPEavg=wkRPEs.length?(wkRPEs.reduce((a,s)=>a+s.rpe,0)/wkRPEs.length).toFixed(1):null;
+  const wkTotalMin=wkSess.reduce((a,s)=>a+(s.duration_min||0),0);
+  const weekSummary=wkSess.length?`<div class="week-sum-card">
+    <div class="week-sum-title">Цей тиждень</div>
+    <div class="week-sum-row">
+      <div class="week-sum-item"><div class="week-sum-val">${wkGym}</div><div class="week-sum-lbl">зал</div></div>
+      ${wkCardio?`<div class="week-sum-item"><div class="week-sum-val">${wkCardio}</div><div class="week-sum-lbl">кардіо</div></div>`:''}
+      <div class="week-sum-item"><div class="week-sum-val">${wkSets}</div><div class="week-sum-lbl">підходів</div></div>
+      ${wkTotalMin?`<div class="week-sum-item"><div class="week-sum-val">${wkTotalMin}</div><div class="week-sum-lbl">хвилин</div></div>`:''}
+      ${wkRPEavg?`<div class="week-sum-item"><div class="week-sum-val">${wkRPEavg}</div><div class="week-sum-lbl">avg RPE</div></div>`:''}
+    </div>
+  </div>`:'';
+
+  list.innerHTML=weekSummary+[...sessions].reverse().map((s,ri)=>{
+    const i=sessions.length-1-ri;
+    let sum,ico='';
     if(s.workout_id==='cardio'){
       ico='🏃 ';
       const p=[];
@@ -2108,7 +2244,7 @@ function renderHistoryLog() {
     }else{
       const exC=s.exercises?s.exercises.length:0;
       const setC=s.exercises?s.exercises.reduce((a,e)=>a+(e.sets?e.sets.length:0),0):0;
-      sum=`${exC} вправ · ${setC} підходів`;
+      sum=`${exC} вправ · ${setC} підходів${s.rpe?' · RPE '+s.rpe:''}`;
     }
     return `<div class="sess-card" onclick="showSession(${i})"><div class="sess-date">${fmtDate(s.date)}</div><div class="sess-name">${ico}${s.workout_name||s.workout_id}</div><div class="sess-sum">${sum}</div></div>`;
   }).join('');
@@ -2541,11 +2677,14 @@ function renderFuncTestBanner(){
   if(last===today){el.innerHTML='';return;}
   const daysSince=last?Math.floor((new Date(today)-new Date(last))/86400000):999;
   if(daysSince<28){el.innerHTML='';return;}
+  const lastTest = tests.length ? tests[tests.length-1] : null;
+  const score = computeFTScore(lastTest);
+  const scoreCol = !score?'var(--t3)':score>=70?'var(--g)':score>=45?'var(--y)':'var(--r)';
   const sub=last?`${daysSince} днів тому — пора повторити`:'Ще не проходив — пора розпочати';
   el.innerHTML=`<div class="funtest-banner" onclick="openFuncTest()">
     <div class="funtest-ico">🏃</div>
     <div class="funtest-body">
-      <div class="funtest-title">Місячний функціональний тест</div>
+      <div class="funtest-title">Місячний функціональний тест${score!==null?` <span style="color:${scoreCol};font-size:12px;font-weight:700;margin-left:6px">${score}/100</span>`:''}</div>
       <div class="funtest-sub">${sub}</div>
     </div>
     <div style="color:var(--y);font-size:20px">›</div>
@@ -2569,7 +2708,10 @@ function renderFuncTestContent(){
   const stsDisp=ftStsState==='done'?'0:00':fmt(ftStsCountdown);
   const stsBtnLbl=ftStsState==='idle'?'Старт':ftStsState==='running'?'Зупинити':'Скинути';
   const stsBtnCls=ftStsState!=='idle'?' '+ftStsState:'';
+  const ftScore=computeFTScore(t);
+  const ftScoreCol=!ftScore?'var(--t3)':ftScore>=70?'var(--g)':ftScore>=45?'var(--y)':'var(--r)';
   document.getElementById('funtest-content').innerHTML=`
+    ${ftScore!==null?`<div style="text-align:center;margin-bottom:16px"><div class="ft-score-badge"><span class="ft-score-val" style="color:${ftScoreCol}">${ftScore}</span><span class="ft-score-lbl">/ 100 балів</span></div><div style="font-size:10.5px;color:var(--t3)">СВ ×40 · Баланс ×30 · HR ×30</div></div>`:''}
     <div style="margin-bottom:20px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div class="ft-sec-title" style="margin-bottom:0">Сідання-вставання за 30 сек</div>
@@ -2744,7 +2886,14 @@ async function saveFuncTest(){
 }
 
 // ─── Phase 5: Weekly AI Report ───────────────────────────────────────────────
-function saveClaudeKey(){const k=document.getElementById('s-claude-key');if(k){setSetting('claude_api_key',k.value.trim());showToast('API ключ збережено','success');}}
+function savePrivateRepo(){const el=document.getElementById('s-private-repo');if(el){setSetting('private_github_repo',el.value.trim());showToast('Приватне репо збережено','success');}}
+function saveAISettings(){
+  const ck=document.getElementById('s-claude-key'),ok=document.getElementById('s-openai-key'),prov=document.getElementById('s-ai-provider');
+  if(ck&&ck.value.trim())setSetting('claude_api_key',ck.value.trim());
+  if(ok&&ok.value.trim())setSetting('openai_api_key',ok.value.trim());
+  if(prov)setSetting('ai_provider',prov.value);
+  showToast('AI налаштування збережено','success');
+}
 function openWeeklyReport(){
   const saved=getSetting('weekly_report','');
   const el=document.getElementById('weekly-report-content');
@@ -2779,8 +2928,9 @@ function renderWeeklyReportBanner(){
   }catch(e){el.innerHTML='';}
 }
 async function generateWeeklyReport(){
-  const key=getSetting('claude_api_key','');
-  if(!key){showToast('Додай Claude API ключ у Налаштуваннях','error');return;}
+  const provider=getSetting('ai_provider','claude');
+  const key=provider==='openai'?getSetting('openai_api_key',''):getSetting('claude_api_key','');
+  if(!key){showToast(`Додай ${provider==='openai'?'OpenAI':'Claude'} API ключ у Налаштуваннях`,'error');return;}
   const el=document.getElementById('weekly-report-content');
   if(el)el.innerHTML=`<div class="empty" style="padding:40px 0"><div class="empty-ico" style="animation:spin 1s linear infinite;display:inline-block">⏳</div><div style="margin-top:8px">Генерую звіт...</div></div>`;
   if(!document.getElementById('ov-weekly-report').classList.contains('visible'))openOverlay('ov-weekly-report');
@@ -2824,15 +2974,19 @@ ${lastLDL?`LDL: ${lastLDL.ldl_mgdl} мг/дл (${fmtDate(lastLDL.date)}), ціл
 Напиши ~200 слів українською. Структура: 1) Головне за тиждень 2) Що добре 3) Що підтягнути 4) Акцент на наступний тиждень. Тон дружній і мотивуючий. Без вступних фраз.`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,messages:[{role:'user',content:prompt}]})
-    });
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'Порожня відповідь';
-    setSetting('weekly_report',JSON.stringify({date:today,text}));
+    let text;
+    if(provider==='openai'){
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:1024,messages:[{role:'user',content:prompt}]})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();
+      text=data.choices?.[0]?.message?.content||'Порожня відповідь';
+    }else{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,messages:[{role:'user',content:prompt}]})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();
+      text=data.content?.[0]?.text||'Порожня відповідь';
+    }
+    setSetting('weekly_report',JSON.stringify({date:today,text,provider}));
     if(el)el.innerHTML=reportHTML(text,today);
     renderWeeklyReportBanner();
   }catch(e){
@@ -2917,6 +3071,52 @@ async function saveLDLEntry(){
   showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
 }
 
+// ─── Coach Log Viewer ────────────────────────────────────────────────────────
+let coachLogText = '';
+async function fetchCoachLog() {
+  const o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker');
+  try{const res=await fetch(`https://raw.githubusercontent.com/${o}/${r}/main/coach-log.md?t=${Date.now()}`);if(!res.ok)return null;return await res.text();}catch(e){return null;}
+}
+function renderCoachLogBanner() {
+  const el=document.getElementById('coach-log-banner'); if(!el) return;
+  if(!coachLogText){el.innerHTML='';return;}
+  const dateMatch=coachLogText.match(/##?\s*(\d{4}-\d{2}-\d{2})/);
+  const dateStr=dateMatch?dateMatch[1]:'';
+  const preview=coachLogText.split('\n').find(l=>l.trim()&&!l.startsWith('#')&&!l.startsWith('*Generated'))||'';
+  el.innerHTML=`<div class="coach-banner" onclick="openCoachLog()">
+    <div style="font-size:20px">📋</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:600;color:var(--t)">AI Coach${dateStr?' · '+fmtDate(dateStr):''}</div>
+      <div style="font-size:11.5px;color:var(--t3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${escapeHTML(preview.replace(/[*_#`]/g,'').trim().slice(0,80))}</div>
+    </div>
+    <div style="color:var(--t3);font-size:20px">›</div>
+  </div>`;
+}
+function openCoachLog(){renderCoachLogContent();openOverlay('ov-coach-log');}
+function renderCoachLogContent(){
+  const el=document.getElementById('coach-log-content'); if(!el) return;
+  if(!coachLogText){el.innerHTML='<div class="empty" style="padding:40px 0"><div class="empty-ico">📋</div><div>Лог тренера не завантажено</div></div>';return;}
+  const html=coachLogText
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<div class="coach-h3">$1</div>')
+    .replace(/^## (.+)$/gm,'<div class="coach-h2">$1</div>')
+    .replace(/^# (.+)$/gm,'<div class="coach-h1">$1</div>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--t)">$1</strong>')
+    .replace(/`(.+?)`/g,'<code style="background:var(--s3);border-radius:4px;padding:1px 5px;font-size:12px">$1</code>')
+    .replace(/^[-*•] (.+)$/gm,'<div class="coach-li">· $1</div>')
+    .replace(/\n{2,}/g,'<br><br>').replace(/\n(?!<)/g,'<br>');
+  el.innerHTML=`<div class="coach-log-body">${html}</div><div style="height:30px"></div>`;
+}
+
+// ─── Functional Test Composite Score ─────────────────────────────────────────
+function computeFTScore(test) {
+  if(!test) return null;
+  const sts=Math.min((test.sts_reps||0)/25*40,40);
+  const bal=Math.min(((test.balance_left_sec||0)+(test.balance_right_sec||0))/2/60*30,30);
+  const hr=test.resting_hr>0?Math.max(0,Math.min(30,(100-(test.resting_hr||70))/50*30)):0;
+  return Math.round(sts+bal+hr);
+}
+
 // ─── Nutrition targets ────────────────────────────────────────────────────────
 function saveNutrTargets(){
   const k=document.getElementById('s-kcal-target'),p=document.getElementById('s-protein-target');
@@ -2966,6 +3166,10 @@ async function init(){
   // Load health markers (LDL) from GitHub
   const markersRemote = await fetchHealthMarkersFromGitHub();
   if (markersRemote) { saveHealthMarkersLocal(markersRemote); renderHealthSection(); }
+
+  // Load AI coach log from GitHub
+  const cl = await fetchCoachLog();
+  if (cl) { coachLogText = cl; renderCoachLogBanner(); }
 
   // Load daily notes from GitHub (merge with local)
   const notesRemote = await fetchDailyNotesFromGitHub();
