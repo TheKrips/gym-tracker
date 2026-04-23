@@ -289,6 +289,14 @@
     .ac-badge.warn{background:rgba(234,179,8,.15);color:#eab308}
     .ac-badge.danger{background:rgba(248,113,113,.15);color:#f87171}
 
+    /* ── Weekly AI report ───────────────────────────────────── */
+    .report-banner{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(139,92,246,.04));border:var(--bh) solid rgba(139,92,246,.35);border-radius:var(--rad);padding:12px 14px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px;transition:transform 140ms var(--eo3)}
+    .report-banner:active{transform:scale(0.985)}
+    .report-body{flex:1;min-width:0}
+    .report-title{font-size:13px;font-weight:600;color:var(--t);margin-bottom:2px}
+    .report-sub{font-size:11.5px;color:var(--t3);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .report-text{font-size:13.5px;color:var(--t2);line-height:1.65;white-space:pre-wrap;padding:4px 0}
+
     /* ── Nutrition progress ─────────────────────────────────── */
     .nutr-bars{margin-top:10px;padding-top:10px;border-top:var(--bh) solid var(--bd)}
     .nutr-row{display:grid;grid-template-columns:50px 1fr 54px;align-items:center;gap:8px;margin-bottom:7px}
@@ -586,6 +594,8 @@
 
       <div id="metrics-section"></div>
 
+      <div id="weekly-report-banner"></div>
+
       <div class="sec">Програма</div>
       <div class="day-grid" id="day-grid"></div>
       <button class="cardio-btn" onclick="openCardio()"><span style="font-size:17px">🏃</span><span>Додати кардіо</span></button>
@@ -654,6 +664,14 @@
     <div class="s-lbl">Відпочинок (сек)</div>
     <input type="number" class="s-inp" id="s-timer" placeholder="90">
     <button class="btn btn-s" onclick="saveTimerDefault()">Зберегти</button>
+  </div>
+  <div class="sec">Claude AI</div>
+  <div class="card">
+    <div class="s-lbl">API ключ (Anthropic)</div>
+    <input type="password" class="s-inp" id="s-claude-key" placeholder="sk-ant-xxxxxxxxxxxx" autocomplete="off">
+    <div class="s-hint">Ключ зберігається <strong style="color:var(--t2)">тільки на пристрої</strong>, ніколи не потрапляє в репозиторій.<br>console.anthropic.com → API Keys</div>
+    <button class="btn btn-s" onclick="saveClaudeKey()">Зберегти</button>
+    <button class="btn btn-p" style="margin-top:6px" onclick="openWeeklyReport()">Тижневий звіт →</button>
   </div>
   <div class="sec">Цілі харчування</div>
   <div class="card">
@@ -731,6 +749,18 @@
     </div>
   </div>
   <div id="rpe-content"></div>
+</div>
+
+<!-- Overlay: Weekly AI report -->
+<div class="overlay" id="ov-weekly-report">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-weekly-report')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">Тижневий звіт</span>
+      <button class="icon-btn" id="ov-report-gen-btn" onclick="generateWeeklyReport()" aria-label="Regenerate" style="width:auto;padding:0 12px;font-size:12px;border-radius:16px">↻ Оновити</button>
+    </div>
+  </div>
+  <div id="weekly-report-content"></div>
 </div>
 
 <!-- Overlay: LDL tracker -->
@@ -1006,7 +1036,7 @@ function getSetting(k,fb='') { return localStorage.getItem('gym_'+k)||fb; }
 function setSetting(k,v) { localStorage.setItem('gym_'+k,v); }
 function saveSettings() { setSetting('github_token',document.getElementById('s-token').value.trim()); setSetting('github_owner',document.getElementById('s-owner').value.trim()||'TheKrips'); setSetting('github_repo',document.getElementById('s-repo').value.trim()||'gym-tracker'); showToast('Збережено','success'); }
 function saveTimerDefault() { const v=parseInt(document.getElementById('s-timer').value); if(v>0){timerDefault=v;localStorage.setItem('gym_timer_default',v);showToast('Збережено','success');renderTimers();} }
-function loadSettingsPage() { document.getElementById('s-token').value=getSetting('github_token'); document.getElementById('s-owner').value=getSetting('github_owner','TheKrips'); document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker'); document.getElementById('s-timer').value=timerDefault; const kt=document.getElementById('s-kcal-target');const pt=document.getElementById('s-protein-target');if(kt)kt.value=getSetting('kcal_target','')||'';if(pt)pt.value=getSetting('protein_target','')||''; }
+function loadSettingsPage() { document.getElementById('s-token').value=getSetting('github_token'); document.getElementById('s-owner').value=getSetting('github_owner','TheKrips'); document.getElementById('s-repo').value=getSetting('github_repo','gym-tracker'); document.getElementById('s-timer').value=timerDefault; const kt=document.getElementById('s-kcal-target');const pt=document.getElementById('s-protein-target');if(kt)kt.value=getSetting('kcal_target','')||'';if(pt)pt.value=getSetting('protein_target','')||''; const ck=document.getElementById('s-claude-key');if(ck)ck.value=getSetting('claude_api_key','')||''; }
 async function testGitHub() { const t=getSetting('github_token'),o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker'); if(!t){showToast('Введи токен','error');return;} try{const res=await fetch(`https://api.github.com/repos/${o}/${r}`,{headers:{'Authorization':`token ${t}`}});res.ok?showToast('OK ✓','success'):showToast('Помилка '+res.status,'error');}catch(e){showToast('Помилка','error');} }
 
 // ─── GitHub API ───────────────────────────────────────────────────────────────
@@ -1917,7 +1947,7 @@ function renderDayGrid() {
     </div>`).join('');
 }
 function renderStats() {
-  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection();
+  renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection(); renderWeeklyReportBanner();
 }
 
 // ─── Workout ──────────────────────────────────────────────────────────────────
@@ -2711,6 +2741,103 @@ async function saveFuncTest(){
   const ok=await pushFuncTestsToGitHub(data);
   showToast(ok?'GitHub ✓':'Збережено локально',ok?'success':'');
   editingFuncTest=null;
+}
+
+// ─── Phase 5: Weekly AI Report ───────────────────────────────────────────────
+function saveClaudeKey(){const k=document.getElementById('s-claude-key');if(k){setSetting('claude_api_key',k.value.trim());showToast('API ключ збережено','success');}}
+function openWeeklyReport(){
+  const saved=getSetting('weekly_report','');
+  const el=document.getElementById('weekly-report-content');
+  if(saved){try{const r=JSON.parse(saved);el.innerHTML=reportHTML(r.text,r.date);}catch(e){el.innerHTML='';}}
+  else{el.innerHTML=`<div class="empty" style="padding:40px 0"><div class="empty-ico">📊</div><div>Натисни ↻ для генерації звіту</div></div>`;}
+  openOverlay('ov-weekly-report');
+}
+function reportHTML(text,date){
+  return`<div style="padding:4px 0 8px"><div style="font-size:11px;color:var(--t3);margin-bottom:12px">${date?fmtDate(date)+' · ':''}<span onclick="generateWeeklyReport()" style="color:var(--p);cursor:pointer">Оновити →</span></div><div class="report-text">${escapeHTML(text)}</div></div><div style="height:30px"></div>`;
+}
+function renderWeeklyReportBanner(){
+  const el=document.getElementById('weekly-report-banner');if(!el)return;
+  const saved=getSetting('weekly_report','');
+  if(!getSetting('claude_api_key','')){el.innerHTML='';return;}
+  if(!saved){
+    el.innerHTML=`<div class="report-banner" onclick="openWeeklyReport()">
+      <div style="font-size:22px">🤖</div>
+      <div class="report-body"><div class="report-title">Тижневий AI звіт</div><div class="report-sub">Натисни для генерації персонального аналізу тижня</div></div>
+      <div style="color:var(--p);font-size:20px">›</div>
+    </div>`;
+    return;
+  }
+  try{
+    const r=JSON.parse(saved);
+    const days=Math.floor((Date.now()-new Date(r.date).getTime())/86400000);
+    const preview=r.text.replace(/\n+/g,' ').slice(0,120)+'…';
+    el.innerHTML=`<div class="report-banner" onclick="openWeeklyReport()">
+      <div style="font-size:22px">🤖</div>
+      <div class="report-body"><div class="report-title">AI звіт · ${days===0?'сьогодні':days===1?'вчора':days+' дн. тому'}</div><div class="report-sub">${escapeHTML(preview)}</div></div>
+      <div style="color:var(--p);font-size:20px">›</div>
+    </div>`;
+  }catch(e){el.innerHTML='';}
+}
+async function generateWeeklyReport(){
+  const key=getSetting('claude_api_key','');
+  if(!key){showToast('Додай Claude API ключ у Налаштуваннях','error');return;}
+  const el=document.getElementById('weekly-report-content');
+  if(el)el.innerHTML=`<div class="empty" style="padding:40px 0"><div class="empty-ico" style="animation:spin 1s linear infinite;display:inline-block">⏳</div><div style="margin-top:8px">Генерую звіт...</div></div>`;
+  if(!document.getElementById('ov-weekly-report').classList.contains('visible'))openOverlay('ov-weekly-report');
+
+  const today=new Date().toISOString().split('T')[0];
+  const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);
+  const weekStr=weekAgo.toISOString().split('T')[0];
+
+  const sessions=(getLogs().sessions||[]).filter(s=>s.date>=weekStr&&!s.skipped);
+  const notes=getDailyNotes().filter(n=>n.date>=weekStr).slice(0,7);
+  const ldlArr=getHealthMarkers().ldl||[];
+  const lastLDL=ldlArr.length?ldlArr[ldlArr.length-1]:null;
+
+  const hdWeights=healthData?(healthData.weight_kg||[]).filter(x=>x.date>=weekStr):[];
+  const hdSteps=healthData?(healthData.steps||[]).filter(x=>x.date>=weekStr):[];
+  const stepsAvg=hdSteps.length?Math.round(hdSteps.reduce((a,b)=>a+b.value,0)/hdSteps.length):0;
+  const wLatest=hdWeights.length?hdWeights[hdWeights.length-1].value:null;
+
+  const sessLine=s=>`${s.date}: ${s.workout_name}${s.duration_min?`, ${s.duration_min}хв`:''}${s.rpe?`, RPE ${s.rpe}`:''}${s.load_au?`, ${s.load_au}AU`:''}`;
+  const noteLine=n=>`${n.date}: Hooper ${n.hooper_score??'?'}/20, сон ${n.sleep_hours??'?'}год${n.protein_g?`, білки ${n.protein_g}г`:''}${n.kcal?`, ${n.kcal}ккал`:''}${n.notes?`, "${n.notes.slice(0,60)}"`:''}`;
+
+  const ac=computeACRatio();
+  const vol=computeWeeklyVolume();
+  const topMuscles=Object.entries(vol).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([m,s])=>`${MUSCLE_UA[m]||m}:${s}сет`).join(', ');
+
+  const prompt=`Ти персональний тренер-аналітик. Зроби короткий щотижневий звіт для Романа.
+
+ПРОФІЛЬ: 35р, 177см, ${wLatest?wLatest.toFixed(1):'~65'}кг, ціль — набір маси, 3 міс. досвіду після перерви, 4x/тижд.
+
+ТРЕНУВАННЯ ЗА 7 ДНІВ (${sessions.length} сесій):
+${sessions.map(sessLine).join('\n')||'Тренувань не було'}
+
+ВІДНОВЛЕННЯ/НОТАТКИ:
+${notes.map(noteLine).join('\n')||'Нотаток немає'}
+
+ОБСЯГ ПО М'ЯЗАХ: ${topMuscles||'немає даних'}
+${ac?`A:C RATIO: ${ac.toFixed(2)} (ціль 0.8–1.3)`:''}
+${stepsAvg?`КРОКИ: ~${stepsAvg}/день`:''}
+${lastLDL?`LDL: ${lastLDL.ldl_mgdl} мг/дл (${fmtDate(lastLDL.date)}), ціль <100`:''}
+
+Напиши ~200 слів українською. Структура: 1) Головне за тиждень 2) Що добре 3) Що підтягнути 4) Акцент на наступний тиждень. Тон дружній і мотивуючий. Без вступних фраз.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Порожня відповідь';
+    setSetting('weekly_report',JSON.stringify({date:today,text}));
+    if(el)el.innerHTML=reportHTML(text,today);
+    renderWeeklyReportBanner();
+  }catch(e){
+    if(el)el.innerHTML=`<div class="insight-card" style="margin-top:16px"><div class="insight-icon warn">⚠️</div><div class="insight-body"><div class="insight-title">Помилка API</div><div class="insight-text">${escapeHTML(e.message)}</div></div></div>`;
+  }
 }
 
 // ─── LDL Tracker ─────────────────────────────────────────────────────────────
