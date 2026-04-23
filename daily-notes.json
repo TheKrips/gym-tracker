@@ -1,0 +1,99 @@
+{
+  "notes": [
+    {
+      "date": "2026-04-23",
+      "hooper": {
+        "sleep_quality": 2,
+        "stress": 3,
+        "fatigue": 2,
+        "soreness": 1
+      },
+      "sleep_hours": 5.5,
+      "nutrition_adherence": 4,
+      "kcal": 2300,
+      "protein_g": 160,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Пізно дуже ліг, десь о 3:30-4 ранку, тому мало поспав\nВ залі трохи було відчутно, складнувато було.\nНастрій 4/10, через роботу в співбесіду, якось усе неочевидно і складно там. Хоч мене в взяли наче в натнорм зп, але навіть я не радів тк складно, багато невідомих і це на на постійно а тільки 3 місяці, тобто проблема сильно не вирішена зі стабільним доходом",
+      "text": "",
+      "hooper_score": 10,
+      "updated_at": "2026-04-23T02:01:41.404Z"
+    },
+    {
+      "date": "2026-04-20",
+      "hooper": {
+        "sleep_quality": 2,
+        "stress": 2,
+        "fatigue": 4,
+        "soreness": 2
+      },
+      "sleep_hours": 6.5,
+      "nutrition_adherence": 4,
+      "kcal": 2000,
+      "protein_g": 130,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Вчора була вечірка, я після неї заснув о 4 ранку, поспав 6,5 годин і був наче з похмілля півдня - квадратна голова, по ходу тиск високий.\nПерша половина дня була прямо тяжка, потім ок..ну в через це вкінці дня відчувається втома\nПоїв 3 рази без перекусів, тому не добрав.. проснувся пізно тому пізно був перший прийом їжі",
+      "text": "",
+      "hooper_score": 12,
+      "updated_at": "2026-04-22T15:26:44.988Z"
+    },
+    {
+      "date": "2026-04-19",
+      "hooper": {
+        "sleep_quality": 2,
+        "stress": 2,
+        "fatigue": 4,
+        "soreness": 2
+      },
+      "sleep_hours": 6.5,
+      "nutrition_adherence": 3,
+      "kcal": null,
+      "protein_g": null,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "",
+      "text": "",
+      "hooper_score": 12,
+      "updated_at": "2026-04-22T15:26:47.439Z"
+    },
+    {
+      "date": "2026-04-18",
+      "hooper": {
+        "sleep_quality": 4,
+        "stress": 3,
+        "fatigue": 3,
+        "soreness": 2
+      },
+      "sleep_hours": 7.5,
+      "nutrition_adherence": 2,
+      "kcal": 2200,
+      "protein_g": 115,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Трохи сумбурний день по їжі, оскільки снідав о 12, а потім був на вечірці і їв чисто закуски і декілька креветок, прийшлося замовити даблчізбургер меню з МакДональдс щоб добити ккал",
+      "text": "",
+      "hooper_score": 10,
+      "updated_at": "2026-04-22T15:26:47.307Z"
+    },
+    {
+      "date": "2026-04-17",
+      "hooper": {
+        "sleep_quality": 5,
+        "stress": 1,
+        "fatigue": 2,
+        "soreness": 3
+      },
+      "sleep_hours": 7.5,
+      "nutrition_adherence": 3,
+      "kcal": 2100,
+      "protein_g": 100,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Сьогодні було 2 повноцінних прийомів їжі замість 3х + шейк тому що проснувся достатньо пізно. Тому по ккал і білку не добрав точно \nТакож сьогодні було кардіо 38хв в зоні 2 - швидка хода ",
+      "text": "",
+      "hooper_score": 7,
+      "updated_at": "2026-04-22T15:26:47.140Z"
+    }
+  ]
+}
