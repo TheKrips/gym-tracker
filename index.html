@@ -2936,6 +2936,8 @@ async function saveFuncTest(){
 // ─── Phase 5: Weekly AI Report ───────────────────────────────────────────────
 function savePrivateRepo(){const el=document.getElementById('s-private-repo');if(el){setSetting('private_github_repo',el.value.trim());showToast('Приватне репо збережено','success');}}
 async function debugPrivateRepo(){
+  // Auto-save private repo field before running test
+  savePrivateRepo();
   const out=document.getElementById('debug-private-output');
   const log=(msg,ok)=>{out.innerHTML+=(ok===true?'<span style="color:#22c55e">✓</span>':ok===false?'<span style="color:#ef4444">✗</span>':'·')+' '+msg+'<br>';};
   out.innerHTML='';
