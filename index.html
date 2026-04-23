@@ -1631,18 +1631,22 @@ function notePickDate(dateStr) {
   if (!dateStr) return;
   const today = new Date().toISOString().split('T')[0];
   if (dateStr > today) return;
+  if (dateStr === editingNoteDate) return;
   const ta = document.getElementById('note-text');
   if (ta) editingNote.notes = ta.value;
-  const h = editingNote.hooper||{};
-  const hasData = h.sleep_quality||h.stress||h.fatigue||h.soreness||
-    editingNote.sleep_hours||editingNote.nutrition_adherence||
-    editingNote.kcal||editingNote.protein_g||(editingNote.notes&&editingNote.notes.trim());
-  if (hasData) {
-    editingNote.hooper_score = calcHooperScore(editingNote);
-    editingNote.updated_at = new Date().toISOString();
-    upsertDailyNote(editingNote);
-  }
-  openDailyNote(dateStr);
+  // Remove note from old date, reassign to new date
+  const arr = getDailyNotes().filter(x => x.date !== editingNoteDate);
+  saveDailyNotes(arr);
+  editingNote.date = dateStr;
+  editingNoteDate = dateStr;
+  editingNote.hooper_score = calcHooperScore(editingNote);
+  editingNote.updated_at = new Date().toISOString();
+  upsertDailyNote(editingNote);
+  // Update header title and re-render editor with new date
+  const isToday = dateStr === today;
+  document.getElementById('ov-note-title').textContent = isToday ? 'Сьогодні' : fmtDate(dateStr);
+  renderNoteEditor();
+  showToast('Дату змінено на ' + fmtDate(dateStr), 'success');
 }
 async function saveDailyNote() {
   const n = editingNote;
