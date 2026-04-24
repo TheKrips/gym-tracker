@@ -7,10 +7,6 @@
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
     "updated": "2026-04-24"
   },
-  "override_today": {
-    "date": "2026-04-25",
-    "workout_id": "upper_b"
-  },
   "schedule": [
     {
       "day": "Понеділок",

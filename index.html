@@ -152,19 +152,42 @@
     .note-date-sub{font-size:11px;color:var(--t3);margin-top:2px}
     .card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:13px;margin-bottom:10px}
 
-    /* ── Day grid ───────────────────────────────────────────── */
-    .day-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+    /* ── Workout Queue ───────────────────────────────────────── */
+    .queue-hero{margin-bottom:8px}
+    .queue-rest{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
     .day-card{
       background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:13px 11px;
       cursor:pointer;-webkit-tap-highlight-color:transparent;
       transition:transform 140ms var(--eo3),box-shadow 200ms ease,border-color 200ms ease;
+      animation:card-in .28s ease-out both;
     }
     .day-card:active{transform:scale(0.96)}
-    .day-card.today{border-color:rgba(139,92,246,.35);box-shadow:0 0 14px var(--pg)}
+    .queue-hero .day-card{padding:16px 14px}
+    .queue-hero .day-card-name{font-size:16px}
+    .queue-rest .day-card{padding:10px 9px}
+    .queue-rest .day-card-name{font-size:12px}
+    .queue-rest .day-card-focus{font-size:10px}
+    .day-card.next-up{
+      border-color:rgba(139,92,246,.5);
+      background:rgba(139,92,246,.05);
+      animation:card-in .28s ease-out both,border-pulse 2.5s ease-in-out .3s infinite;
+    }
+    @keyframes card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes border-pulse{
+      0%,100%{border-color:rgba(139,92,246,.35);box-shadow:0 0 0 0 rgba(139,92,246,0)}
+      50%{border-color:rgba(139,92,246,.65);box-shadow:0 0 12px rgba(139,92,246,.15)}
+    }
+    .queue-rest .day-card:nth-child(1){animation-delay:.07s}
+    .queue-rest .day-card:nth-child(2){animation-delay:.13s}
+    .queue-rest .day-card:nth-child(3){animation-delay:.19s}
+    .seq-num{font-size:9px;color:var(--t3);margin-bottom:2px;letter-spacing:.04em;text-transform:uppercase}
     .day-card-day{font-size:10px;color:var(--t3);margin-bottom:2px}
     .day-card-name{font-size:14px;font-weight:700;margin-bottom:2px;letter-spacing:-.01em}
     .day-card-focus{font-size:11px;color:var(--t3);line-height:1.35}
     .today-pill{font-size:9px;background:var(--p);color:#fff;padding:1px 6px;border-radius:20px;margin-left:4px;font-weight:600;vertical-align:middle}
+    @media(prefers-reduced-motion:reduce){
+      .day-card,.day-card.next-up{animation:none}
+    }
 
     /* ── Health dashboard ───────────────────────────────────── */
     .health-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
@@ -490,6 +513,54 @@
     .btn-d{background:rgba(239,68,68,.1);color:var(--r);border:var(--bh) solid rgba(239,68,68,.2)}
     .back-btn{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--p);cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;background:none;border:none;padding:0}
     .fin{margin-top:14px;padding-top:13px;border-top:var(--bh) solid var(--bd)}
+    /* ── Add Exercise button ─────────────────────────────────── */
+    .add-ex-btn{
+      width:100%;margin:12px 0 0;padding:12px;
+      background:transparent;border:1.5px dashed var(--bd2);
+      border-radius:var(--rad);color:var(--t3);font-size:13px;font-weight:500;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:border-color 150ms ease,color 150ms ease;
+      min-height:44px;
+    }
+    .add-ex-btn:active{transform:scale(0.97);border-color:var(--p);color:var(--p)}
+    @media(hover:hover){.add-ex-btn:hover{border-color:var(--p);color:var(--p)}}
+    /* ── Exercise picker bottom sheet ───────────────────────── */
+    #ex-picker-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90;
+      opacity:0;pointer-events:none;transition:opacity 250ms ease;
+    }
+    #ex-picker-backdrop.open{opacity:1;pointer-events:all}
+    #ex-picker-sheet{
+      position:fixed;bottom:0;left:0;right:0;
+      background:var(--s1);border-radius:18px 18px 0 0;
+      padding:0 0 env(safe-area-inset-bottom,16px);
+      max-height:82vh;display:flex;flex-direction:column;
+      z-index:91;
+      transform:translateY(100%);
+      transition:transform .32s cubic-bezier(0.16,1,0.3,1);
+    }
+    #ex-picker-sheet.open{transform:translateY(0)}
+    .sheet-handle{width:36px;height:4px;background:var(--bd2);border-radius:2px;margin:10px auto 0;flex-shrink:0}
+    .sheet-title{font-size:13px;font-weight:700;padding:10px 16px 6px;flex-shrink:0;color:var(--t2)}
+    #ex-search{
+      margin:0 16px 8px;padding:9px 12px;border-radius:8px;
+      background:var(--s2);border:var(--bh) solid var(--bd2);
+      color:var(--t1);font-size:16px;outline:none;flex-shrink:0;
+    }
+    #ex-picker-list{overflow-y:auto;padding:0 8px 16px;-webkit-overflow-scrolling:touch}
+    .picker-group-lbl{
+      font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--t3);padding:10px 8px 4px;
+    }
+    .picker-item{
+      padding:11px 10px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;
+      transition:background 120ms ease;min-height:44px;justify-content:center;
+    }
+    .picker-item:active{background:rgba(139,92,246,.1)}
+    @media(hover:hover){.picker-item:hover{background:var(--s2)}}
+    .picker-item-name{font-size:13px;font-weight:600;color:var(--t1)}
+    .picker-item-meta{font-size:11px;color:var(--t3);margin-top:1px}
+    .picker-item.hidden{display:none}
 
     /* ── History ─────────────────────────────────────────────── */
     .sess-card{background:var(--s1);border:var(--bh) solid var(--bd2);border-radius:var(--rad);padding:11px 13px;margin-bottom:7px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 140ms var(--eo3)}
@@ -621,7 +692,8 @@
       <div id="coach-log-banner"></div>
 
       <div class="sec">Програма</div>
-      <div class="day-grid" id="day-grid"></div>
+      <div class="queue-hero" id="queue-hero"></div>
+      <div class="queue-rest" id="queue-rest"></div>
       <button class="cardio-btn" onclick="openCardio()"><span style="font-size:17px">🏃</span><span>Додати кардіо</span></button>
     </div>
 
@@ -1307,7 +1379,7 @@ function renderHealthSection() {
 // ─── Today Hero ─────────────────────────────────────────────────────────────
 function renderTodayHero() {
   const el = document.getElementById('today-hero');
-  const todId = getDayId();
+  const todId = nextWorkoutId();
   const todayStr = new Date().toISOString().split('T')[0];
   const sessions = getLogs().sessions || [];
   const didToday = sessions.some(s => s.date === todayStr);
@@ -2093,40 +2165,120 @@ function drawMetricChart(points, m) {
   svg.addEventListener('mouseleave', hidePick);
 }
 
-// ─── Home: day grid + stats ───────────────────────────────────────────────────
-function getDayId() {
-  const today = new Date().toISOString().split('T')[0];
-  if (workoutData?.override_today?.date===today) return workoutData.override_today.workout_id;
-  // New schedule: Mon=upper_a, Tue=lower_a, Thu=upper_b, Fri=lower_b
-  return ({1:'upper_a',2:'lower_a',4:'upper_b',5:'lower_b'})[new Date().getDay()]||null;
-}
-function renderDayGrid() {
-  const grid=document.getElementById('day-grid');
-  if(!workoutData){grid.innerHTML='<p style="font-size:12px;color:var(--t3)">Завантаження…</p>';return;}
-  const today=new Date().toISOString().split('T')[0];
-  const tod=getDayId();
-  let overrideCard='';
-  const ov=workoutData.override_today;
-  if(ov&&ov.date>today){
-    const ovW=workoutData.workouts.find(x=>x.id===ov.workout_id);
-    if(ovW){
-      const ovDate=new Date(ov.date+'T12:00:00');
-      const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-      const isTmrw=ov.date===tomorrow.toISOString().split('T')[0];
-      const dayLbl=ovDate.toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'short'});
-      overrideCard=`<div class="day-card" style="border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.06)" onclick="startWorkout('${ovW.id}')">
-        <div class="day-card-day">${dayLbl}<span class="today-pill" style="background:var(--t3)">${isTmrw?'Завтра':'Заплановано'}</span></div>
-        <div class="day-card-name">${ovW.name}</div>
-        <div class="day-card-focus">${ovW.focus}</div>
-      </div>`;
+// ─── Abs exercises (for exercise picker) ─────────────────────────────────────
+const ABS_EXERCISES=[
+  {id:'abs_crunch',name:'Скручування (Crunches)',type:'isolation',primary_muscles:['abs'],secondary_muscles:[],
+   sets:3,reps:'15',weight_kg:0,rir:'1-2',rest_sec:60,warmup:null,jefit_url:null,
+   cues:['Лягай на спину, руки за голову — не тягни шию','Скорочуй прес, підводь лопатки від підлоги','Видих при підйомі, вдих при опусканні'],note:null},
+  {id:'abs_hollow',name:'Берізка (Hollow Body Hold)',type:'isolation',primary_muscles:['abs'],secondary_muscles:['hip_flexors'],
+   sets:3,reps:'30с',weight_kg:0,rir:'1-2',rest_sec:60,warmup:null,jefit_url:null,
+   cues:['Лягай, підніми ноги і лопатки від підлоги','Поперек ПРИТИСНУТИЙ до підлоги — це ключ','Утримуй позицію, дихай рівномірно'],note:null},
+  {id:'abs_leg_raise_lying',name:'Підйом ніг лежачи',type:'isolation',primary_muscles:['abs'],secondary_muscles:['hip_flexors'],
+   sets:3,reps:'12',weight_kg:0,rir:'1-2',rest_sec:60,warmup:null,jefit_url:null,
+   cues:['Руки під сідницями, поперек притиснутий','Підніми прямі ноги до 90° — не відривай поперек','Повільно опускай, не торкаючись підлоги'],note:null},
+  {id:'abs_leg_raise_hang',name:'Підйом ніг у висі',type:'isolation',primary_muscles:['abs'],secondary_muscles:['hip_flexors'],
+   sets:3,reps:'10',weight_kg:0,rir:'1-2',rest_sec:90,warmup:null,jefit_url:null,
+   cues:['Вис на перекладині, плечі активні — не провисай','Підніми ноги до прямого кута або вище','Контрольно опускай — не розгойдуйся'],note:null},
+  {id:'abs_plank',name:'Планка',type:'isolation',primary_muscles:['abs'],secondary_muscles:['erectors','glutes'],
+   sets:3,reps:'45с',weight_kg:0,rir:'1-2',rest_sec:60,warmup:null,jefit_url:null,
+   cues:['Лікті під плечима, тіло — пряма лінія','Стискай прес і сідниці — не прогинай поперек','Дихай рівномірно, не затримуй дихання'],note:null},
+];
+
+function buildPickerList(query='') {
+  const q=query.toLowerCase().trim();
+  const allEx=[];
+  if(workoutData) for(const w of workoutData.workouts){
+    for(const ex of w.exercises){
+      if(ex.type==='superset') for(const sub of ex.exercises) allEx.push({...sub,_from:w.name});
+      else allEx.push({...ex,_from:w.name});
     }
   }
-  grid.innerHTML=workoutData.workouts.map(w=>`
-    <div class="day-card ${w.id===tod?'today':''}" onclick="startWorkout('${w.id}')">
-      <div class="day-card-day">${w.day}${w.id===tod?'<span class="today-pill">Сьогодні</span>':''}</div>
+  function rowHtml(ex){
+    const meta=ex._from||((ex.primary_muscles||[]).join(', '));
+    const hidden=q&&!ex.name.toLowerCase().includes(q)?'hidden':'';
+    const exJson=JSON.stringify(ex).replace(/"/g,'&quot;');
+    return `<div class="picker-item ${hidden}" onclick="addExerciseToSession('${exJson}')">
+      <div class="picker-item-name">${ex.name}</div>
+      <div class="picker-item-meta">${meta}</div>
+    </div>`;
+  }
+  const absFiltered=ABS_EXERCISES.filter(e=>!q||e.name.toLowerCase().includes(q));
+  const allFiltered=allEx.filter(e=>!q||e.name.toLowerCase().includes(q));
+  let html='';
+  if(absFiltered.length) html+=`<div class="picker-group-lbl">Прес</div>`+ABS_EXERCISES.map(rowHtml).join('');
+  if(allFiltered.length) html+=`<div class="picker-group-lbl">Усі вправи</div>`+allEx.map(rowHtml).join('');
+  if(!absFiltered.length&&!allFiltered.length) html=`<div style="padding:24px;text-align:center;color:var(--t3);font-size:13px">Нічого не знайдено</div>`;
+  const el=document.getElementById('ex-picker-list'); if(el) el.innerHTML=html;
+}
+function openExercisePicker(){
+  const sheet=document.getElementById('ex-picker-sheet');
+  const bd=document.getElementById('ex-picker-backdrop');
+  const inp=document.getElementById('ex-search');
+  if(!sheet||!bd) return;
+  buildPickerList();
+  if(inp) inp.value='';
+  bd.classList.add('open');
+  requestAnimationFrame(()=>sheet.classList.add('open'));
+}
+function closeExercisePicker(){
+  document.getElementById('ex-picker-sheet')?.classList.remove('open');
+  document.getElementById('ex-picker-backdrop')?.classList.remove('open');
+}
+function filterExercises(q){ buildPickerList(q); }
+function addExerciseToSession(exJson){
+  closeExercisePicker();
+  let ex; try{ex=JSON.parse(exJson.replace(/&quot;/g,'"'));}catch(e){return;}
+  if(!ex||!ex.id) return;
+  const list=document.getElementById('ex-list'); if(!list) return;
+  const n=list.querySelectorAll('.ex-card').length+1;
+  const html=renderEx(ex,n);
+  const tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  const card=tmp.firstElementChild;
+  card.style.cssText='opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease';
+  list.appendChild(card);
+  requestAnimationFrame(()=>{card.style.opacity='1';card.style.transform='translateY(0)';});
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(currentSession&&workoutData){const wk=workoutData.workouts.find(x=>x.id===currentSession.workout_id);if(wk)updateProg(wk);}
+}
+
+// ─── Home: workout queue + stats ─────────────────────────────────────────────
+function nextWorkoutId() {
+  const cycle=['upper_a','lower_a','upper_b','lower_b'];
+  const today=new Date().toISOString().split('T')[0];
+  if(workoutData?.override_today?.date===today) return workoutData.override_today.workout_id;
+  const sessions=(getLogs().sessions||[]).filter(s=>!s.skipped);
+  if(!sessions.length) return cycle[0];
+  const last=sessions[0];
+  const idx=cycle.indexOf(last.workout_id);
+  return cycle[idx<0?0:(idx+1)%cycle.length];
+}
+function renderDayGrid() {
+  const hero=document.getElementById('queue-hero');
+  const rest=document.getElementById('queue-rest');
+  if(!hero||!rest) return;
+  if(!workoutData){hero.innerHTML='<p style="font-size:12px;color:var(--t3)">Завантаження…</p>';rest.innerHTML='';return;}
+  const nextId=nextWorkoutId();
+  const cycle=['upper_a','lower_a','upper_b','lower_b'];
+  const nextIdx=cycle.indexOf(nextId);
+  const ordered=[...cycle.slice(nextIdx),...cycle.slice(0,nextIdx)];
+  const [first,...others]=ordered;
+  const wFirst=workoutData.workouts.find(x=>x.id===first);
+  if(!wFirst){hero.innerHTML='';rest.innerHTML='';return;}
+  hero.innerHTML=`<div class="day-card next-up" onclick="startWorkout('${wFirst.id}')">
+    <div class="day-card-day"><span class="today-pill">Наступне</span></div>
+    <div class="day-card-name">${wFirst.name}</div>
+    <div class="day-card-focus">${wFirst.focus}</div>
+  </div>`;
+  const seqLabels={upper_a:'1 · Upper A',lower_a:'2 · Lower A',upper_b:'3 · Upper B',lower_b:'4 · Lower B'};
+  rest.innerHTML=others.map(id=>{
+    const w=workoutData.workouts.find(x=>x.id===id); if(!w) return '';
+    return `<div class="day-card" onclick="startWorkout('${w.id}')">
+      <div class="seq-num">${seqLabels[id]||id}</div>
       <div class="day-card-name">${w.name}</div>
       <div class="day-card-focus">${w.focus}</div>
-    </div>`).join('')+overrideCard;
+    </div>`;
+  }).join('');
 }
 function renderStats() {
   renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection(); renderWeeklyReportBanner(); renderCoachLogBanner();
@@ -2146,6 +2298,10 @@ function startWorkout(wid) {
       <div class="prog-bar-w"><div class="prog-bar" id="wkt-prog" style="width:0%"></div></div>
     </div>
     <div id="ex-list"></div>
+    <button class="add-ex-btn" onclick="openExercisePicker()" aria-label="Додати вправу">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Додати вправу
+    </button>
     <div class="fin">
       <button class="btn btn-p" onclick="finishWorkout()">Завершити тренування</button>
       <button class="btn btn-s" style="margin-top:6px" onclick="cancelWorkout()">Скасувати</button>
@@ -3340,5 +3496,13 @@ init();
   });
 })();
 </script>
+<!-- Exercise picker bottom sheet -->
+<div id="ex-picker-backdrop" onclick="closeExercisePicker()"></div>
+<div id="ex-picker-sheet" role="dialog" aria-modal="true" aria-label="Вибір вправи">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Додати вправу</div>
+  <input id="ex-search" type="search" placeholder="Пошук..." oninput="filterExercises(this.value)" autocomplete="off">
+  <div id="ex-picker-list"></div>
+</div>
 </body>
 </html>
