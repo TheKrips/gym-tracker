@@ -2103,13 +2103,30 @@ function getDayId() {
 function renderDayGrid() {
   const grid=document.getElementById('day-grid');
   if(!workoutData){grid.innerHTML='<p style="font-size:12px;color:var(--t3)">Завантаження…</p>';return;}
+  const today=new Date().toISOString().split('T')[0];
   const tod=getDayId();
+  let overrideCard='';
+  const ov=workoutData.override_today;
+  if(ov&&ov.date>today){
+    const ovW=workoutData.workouts.find(x=>x.id===ov.workout_id);
+    if(ovW){
+      const ovDate=new Date(ov.date+'T12:00:00');
+      const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+      const isTmrw=ov.date===tomorrow.toISOString().split('T')[0];
+      const dayLbl=ovDate.toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'short'});
+      overrideCard=`<div class="day-card" style="border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.06)" onclick="startWorkout('${ovW.id}')">
+        <div class="day-card-day">${dayLbl}<span class="today-pill" style="background:var(--t3)">${isTmrw?'Завтра':'Заплановано'}</span></div>
+        <div class="day-card-name">${ovW.name}</div>
+        <div class="day-card-focus">${ovW.focus}</div>
+      </div>`;
+    }
+  }
   grid.innerHTML=workoutData.workouts.map(w=>`
     <div class="day-card ${w.id===tod?'today':''}" onclick="startWorkout('${w.id}')">
       <div class="day-card-day">${w.day}${w.id===tod?'<span class="today-pill">Сьогодні</span>':''}</div>
       <div class="day-card-name">${w.name}</div>
       <div class="day-card-focus">${w.focus}</div>
-    </div>`).join('');
+    </div>`).join('')+overrideCard;
 }
 function renderStats() {
   renderTodayHero(); renderWeekRow(); renderFuncTestBanner(); renderDailyNoteCard(); renderInsights(); renderMetricsSection(); renderWeeklyReportBanner(); renderCoachLogBanner();
