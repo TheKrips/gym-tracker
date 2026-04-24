@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.10",
+    "version": "3.11",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-23"
+    "updated": "2026-04-24"
   },
   "override_today": {
     "date": "2026-04-25",
@@ -556,7 +556,7 @@
             "back_mid"
           ],
           "warmup": "40 кг × 8",
-          "sets": 3,
+          "sets": 2,
           "reps": "8",
           "weight_kg": 60,
           "rir": "1-2",
@@ -582,7 +582,7 @@
             "calves"
           ],
           "warmup": null,
-          "sets": 4,
+          "sets": 3,
           "reps": "10",
           "weight_kg": 40,
           "rir": "1-2",
@@ -607,7 +607,7 @@
             "quadriceps"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "10",
           "weight_kg": 95,
           "rir": "2",
@@ -630,7 +630,7 @@
           ],
           "secondary_muscles": [],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "15",
           "weight_kg": 10,
           "rir": "1-2",
@@ -655,7 +655,7 @@
             "anterior_deltoid"
           ],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "45",
           "weight_kg": 0,
           "rir": "1",
@@ -679,7 +679,7 @@
           ],
           "secondary_muscles": [],
           "warmup": null,
-          "sets": 3,
+          "sets": 2,
           "reps": "12",
           "weight_kg": 0,
           "rir": "1-2",
