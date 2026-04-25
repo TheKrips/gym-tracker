@@ -461,6 +461,69 @@
     .coach-ac-label{font-size:11px;color:var(--t3)}
     .coach-ac-desc{font-size:10.5px;color:var(--t3);margin-top:2px;line-height:1.4}
 
+    /* Performance Triangle */
+    .perf-tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+    .perf-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:12px 10px;text-align:center;position:relative;overflow:hidden}
+    .perf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--p))}
+    .perf-card.recovery{--accent:#22c55e}
+    .perf-card.recovery.warn{--accent:#eab308}
+    .perf-card.recovery.poor{--accent:#f87171}
+    .perf-card.strain{--accent:#3b82f6}
+    .perf-card.tsb{--accent:var(--p)}
+    .perf-card.tsb.fresh{--accent:#22c55e}
+    .perf-card.tsb.tired{--accent:#f87171}
+    .perf-card.tsb.detrain{--accent:#eab308}
+    .perf-lbl{font-size:9.5px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+    .perf-val{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:var(--accent,var(--t));line-height:1}
+    .perf-val small{font-size:11px;font-weight:600;color:var(--t3);margin-left:2px}
+    .perf-sub{font-size:10px;color:var(--t3);margin-top:4px;letter-spacing:.01em;line-height:1.3;min-height:24px}
+
+    /* PMC Chart */
+    .pmc-chart{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px 12px 8px;margin-top:8px}
+    .pmc-legend{display:flex;justify-content:center;gap:14px;font-size:10.5px;color:var(--t3);margin-bottom:6px;flex-wrap:wrap}
+    .pmc-legend span{display:inline-flex;align-items:center;gap:4px}
+    .pmc-legend i{display:inline-block;width:10px;height:2px;border-radius:1px}
+    .pmc-svg{width:100%;height:160px;display:block}
+    .pmc-svg .grid{stroke:rgba(255,255,255,.05);stroke-dasharray:2,3}
+    .pmc-svg text{fill:var(--t3);font-size:9px}
+    .pmc-svg .ctl{fill:none;stroke:#3b82f6;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+    .pmc-svg .atl{fill:none;stroke:#f87171;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+    .pmc-svg .tsb-pos{fill:rgba(34,197,94,.5)}
+    .pmc-svg .tsb-neg{fill:rgba(248,113,113,.5)}
+
+    /* Recovery breakdown */
+    .rec-breakdown{font-size:12px}
+    .rec-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:var(--bh) solid var(--bd)}
+    .rec-row:last-child{border-bottom:none}
+    .rec-row-lbl{color:var(--t2);flex:1;min-width:0}
+    .rec-row-delta{font-variant-numeric:tabular-nums;font-weight:700;font-size:12.5px;letter-spacing:-.01em}
+    .rec-row-delta.neg{color:#f87171}
+    .rec-row-delta.pos{color:#22c55e}
+    .rec-data-quality{font-size:10.5px;color:var(--t3);margin-top:8px;padding-top:8px;border-top:var(--bh) solid var(--bd);text-align:center}
+
+    /* Sleep debt */
+    .sleep-debt{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--s1);border:1px solid var(--bd);border-radius:14px}
+    .sleep-debt-num{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:#f87171}
+    .sleep-debt-num.ok{color:#22c55e}
+    .sleep-debt-info{flex:1;font-size:11.5px;color:var(--t3);line-height:1.45}
+    .sleep-debt-info strong{color:var(--t2);font-size:12px;display:block;margin-bottom:2px}
+
+    /* Foster card */
+    .foster-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px}
+    .foster-cell{background:var(--s2);border-radius:10px;padding:10px;text-align:center}
+    .foster-cell-val{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+    .foster-cell-lbl{font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+    /* Daily Vitals chips (HRV/RHR/temp) */
+    .vitals-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .vital-chip{flex:1;min-width:90px;background:var(--s2);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+    .vital-chip-lbl{font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .vital-chip-val{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+    .vital-chip-sub{font-size:10px;color:var(--t3)}
+    .vital-chip-sub.good{color:#22c55e}
+    .vital-chip-sub.warn{color:#eab308}
+    .vital-chip-sub.poor{color:#f87171}
+
     /* Coach CTA on home */
     .coach-cta{display:flex;align-items:center;gap:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(139,92,246,.12) 0%,rgba(139,92,246,.04) 100%);border:1px solid rgba(139,92,246,.25);border-radius:18px;margin-bottom:14px;cursor:pointer;transition:transform 180ms ease,border-color 180ms ease}
     .coach-cta:active{transform:scale(.985)}
@@ -1818,6 +1881,20 @@ function renderNoteEditor() {
       <div class="num-input-group"><label>алкоголь</label>
         <input type="number" class="num-input" placeholder="0" value="${n.alcohol_units||''}" oninput="editingNote.alcohol_units=this.value?+this.value:0" min="0" inputmode="numeric"></div>
     </div>
+    <div class="sec" style="display:flex;align-items:center;justify-content:space-between">
+      <span>❤️ HRV / RHR <span style="font-size:10px;color:var(--t3);font-weight:500">(Apple Health · ранкове)</span></span>
+    </div>
+    <div class="num-inputs-row">
+      <div class="num-input-group"><label>HRV (ms, rMSSD)</label>
+        <input type="number" class="num-input" placeholder="—" value="${n.hrv_rmssd||''}" oninput="editingNote.hrv_rmssd=this.value?+this.value:null" inputmode="decimal" step="0.1"></div>
+      <div class="num-input-group"><label>Resting HR</label>
+        <input type="number" class="num-input" placeholder="—" value="${n.rhr||''}" oninput="editingNote.rhr=this.value?+this.value:null" inputmode="numeric"></div>
+      <div class="num-input-group"><label>Темп. °C</label>
+        <input type="number" class="num-input" placeholder="—" value="${n.body_temp||''}" oninput="editingNote.body_temp=this.value?+this.value:null" inputmode="decimal" step="0.1"></div>
+    </div>
+    <div style="font-size:10.5px;color:var(--t3);margin-top:-8px;margin-bottom:6px;line-height:1.4">
+      Apple Health → Дихання & Серце → HRV/Пульс у спокої. Або Watch → Mindfulness. Заповнюй ранком після пробудження.
+    </div>
     <div class="toggle-row" onclick="editingNote.illness=!editingNote.illness; preserveTextAndRerender()">
       <span class="toggle-label">🤒 Я хворію</span>
       <div class="toggle-switch ${n.illness?'on':''}"></div>
@@ -1885,7 +1962,7 @@ async function saveDailyNote() {
   // Only save if something is set
   const h = n.hooper||{};
   const hasHooper = h.sleep_quality||h.stress||h.fatigue||h.soreness;
-  const empty = !hasHooper && !n.sleep_hours && !n.nutrition_adherence && !n.kcal && !n.protein_g && !(n.notes&&n.notes.trim());
+  const empty = !hasHooper && !n.sleep_hours && !n.nutrition_adherence && !n.kcal && !n.protein_g && !n.hrv_rmssd && !n.rhr && !n.body_temp && !(n.notes&&n.notes.trim());
   n.hooper_score = calcHooperScore(n);
   if (empty) { closeOverlay('ov-note'); return; }
   n.updated_at = new Date().toISOString();
@@ -3673,8 +3750,11 @@ function liveCoachMetrics(){
   if(noteToday){
     m.hooperScore=calcHooperScore(noteToday);
     m.sleepHours=noteToday.sleep_hours||null;
-    m.stressLevel=noteToday.stress_level||null;
-    m.fatigueLevel=noteToday.fatigue_level||null;
+    m.hrvRmssd=noteToday.hrv_rmssd||null;
+    m.rhr=noteToday.rhr||null;
+    m.bodyTemp=noteToday.body_temp||null;
+    m.illness=!!noteToday.illness;
+    m.alcohol=noteToday.alcohol_units||0;
   }
   // Volume per muscle last 7 days
   const recent=sessions.filter(s=>s.date>=weekStartStr);
@@ -3726,12 +3806,20 @@ function renderCoachLogContent(){
   const el=document.getElementById('coach-log-content'); if(!el) return;
   const parsed=parseCoachData();
   const live=liveCoachMetrics();
-  // Merge: md-parsed takes precedence; fill gaps with live
+  // Use recoveryV2 (composite) over md-parsed when available
+  const recV2=recoveryV2();
   const d={
     date:parsed.date||new Date().toISOString().slice(0,10),
-    recovery:parsed.recovery!=null?parsed.recovery:_computeRecoveryFromNote(),
+    recovery:recV2.score!=null?recV2.score:(parsed.recovery!=null?parsed.recovery:_computeRecoveryFromNote()),
+    recoveryBreakdown:recV2.breakdown,
+    recoveryCompleteness:recV2.completeness,
     hooperScore:parsed.hooperScore??live.hooperScore,
     sleepHours:parsed.sleepHours??live.sleepHours,
+    hrvRmssd:live.hrvRmssd,
+    rhr:live.rhr,
+    bodyTemp:live.bodyTemp,
+    illness:live.illness,
+    alcohol:live.alcohol,
     adjustment:parsed.adjustment,
     sessionsWeek:parsed.sessionsWeek??live.sessionsWeek,
     sessionsTarget:parsed.sessionsTarget||live.sessionsTarget||4,
@@ -3747,7 +3835,14 @@ function renderCoachLogContent(){
     stepsSpark:live.stepsSpark,
     weekSlots:live.weekSlots,
     muscleVolume:live.muscleVolume||{},
-    highlights:parsed.highlights
+    highlights:parsed.highlights,
+    // PMC + advanced
+    pmc:pmcMetrics(60),
+    foster:fosterMetrics(),
+    sleepDebt:sleepDebt14d(),
+    strain:strainScore(),
+    hrvBaseline:hrvBaseline(),
+    rhrBaseline:rhrBaseline()
   };
 
   const status=_recoveryStatus(d.recovery);
@@ -3812,6 +3907,171 @@ function renderCoachLogContent(){
             </div>
           </div>`).join('')}
       </div>
+    </div>`;
+  }
+
+  // Performance Triangle: Recovery / Strain / TSB (Whoop-style trio)
+  {
+    const rec=d.recovery;
+    const recCls=rec==null?'':(rec>=70?'':(rec>=50?'warn':'poor'));
+    const recDesc=rec==null?'Введи нотатку':(rec>=85?'Готовий до піку':(rec>=70?'Свіжий':(rec>=50?'Помірно':(rec>=35?'Втома':'Глибока втома'))));
+    const strain=d.strain||0;
+    const strainDesc=strain===0?'Без навантаження':(strain<8?'Легке':(strain<14?'Помірне':(strain<18?'Інтенсивне':'Все, що маєш')));
+    const tsb=d.pmc&&d.pmc.length?d.pmc[d.pmc.length-1].tsb:null;
+    let tsbCls='', tsbDesc='Нема даних';
+    if(tsb!=null){
+      if(tsb>15){tsbCls='detrain';tsbDesc='Детренуєшся';}
+      else if(tsb>5){tsbCls='fresh';tsbDesc='Свіжий — гарний день для PR';}
+      else if(tsb>-10){tsbCls='';tsbDesc='У формі';}
+      else if(tsb>-20){tsbCls='tired';tsbDesc='Накопичена втома';}
+      else {tsbCls='tired';tsbDesc='Глибока втома';}
+    }
+    html+=`<div class="perf-tri">
+      <div class="perf-card recovery ${recCls}">
+        <div class="perf-lbl">Recovery</div>
+        <div class="perf-val">${rec??'—'}<small>/100</small></div>
+        <div class="perf-sub">${recDesc}</div>
+      </div>
+      <div class="perf-card strain">
+        <div class="perf-lbl">Strain</div>
+        <div class="perf-val">${strain.toFixed(1)}<small>/21</small></div>
+        <div class="perf-sub">${strainDesc}</div>
+      </div>
+      <div class="perf-card tsb ${tsbCls}">
+        <div class="perf-lbl">Form (TSB)</div>
+        <div class="perf-val">${tsb==null?'—':(tsb>0?'+':'')+Math.round(tsb)}</div>
+        <div class="perf-sub">${tsbDesc}</div>
+      </div>
+    </div>`;
+  }
+
+  // Vitals chips (HRV / RHR / Body temp)
+  if(d.hrvRmssd!=null||d.rhr!=null||d.bodyTemp!=null){
+    const chips=[];
+    if(d.hrvRmssd!=null){
+      const bl=d.hrvBaseline;
+      let sub='—', cls='';
+      if(bl){
+        const z=(Math.log(d.hrvRmssd)-bl.logMean)/bl.logSD;
+        sub=`${z>=0?'+':''}${z.toFixed(1)}σ vs ${bl.mean}ms`;
+        cls=z>=0.3?'good':(z>=-0.5?'':(z>=-1.5?'warn':'poor'));
+      }
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">HRV</div><div class="vital-chip-val">${d.hrvRmssd}<small style="font-size:10px;color:var(--t3)">ms</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
+    }
+    if(d.rhr!=null){
+      const bl=d.rhrBaseline;
+      let sub='—', cls='';
+      if(bl){
+        const z=(d.rhr-bl.mean)/Math.max(1,bl.sd);
+        sub=`${z>=0?'+':''}${z.toFixed(1)}σ vs ${bl.mean}bpm`;
+        cls=z<=-0.3?'good':(z<=0.5?'':(z<=1.5?'warn':'poor'));
+      }
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">RHR</div><div class="vital-chip-val">${d.rhr}<small style="font-size:10px;color:var(--t3)">bpm</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
+    }
+    if(d.bodyTemp!=null){
+      const dev=d.bodyTemp-36.6;
+      const cls=Math.abs(dev)<0.3?'good':(Math.abs(dev)<0.6?'':'warn');
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">Темп</div><div class="vital-chip-val">${d.bodyTemp.toFixed(1)}<small style="font-size:10px;color:var(--t3)">°C</small></div><div class="vital-chip-sub ${cls}">${dev>=0?'+':''}${dev.toFixed(1)}° vs 36.6</div></div>`);
+    }
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Вітали (ранок)</div>
+      <div class="vitals-row">${chips.join('')}</div>
+    </div>`;
+  }
+
+  // Recovery breakdown panel (what subtracted from 100)
+  if(d.recoveryBreakdown&&d.recoveryBreakdown.length){
+    const rows=d.recoveryBreakdown.map(b=>`<div class="rec-row">
+      <div class="rec-row-lbl">${b.lbl}</div>
+      <div class="rec-row-delta ${b.delta<0?'neg':'pos'}">${b.delta>0?'+':''}${b.delta}</div>
+    </div>`).join('');
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Recovery — розклад балів</div>
+      <div class="rec-breakdown">
+        ${rows}
+        <div class="rec-data-quality">Повнота даних: ${d.recoveryCompleteness}% · більше даних → точніший аналіз</div>
+      </div>
+    </div>`;
+  }
+
+  // PMC Chart (60-day Performance Manager Chart)
+  if(d.pmc&&d.pmc.length>=14){
+    const pts=d.pmc;
+    const W=300,H=140,PAD=8;
+    const maxY=Math.max(...pts.map(p=>Math.max(p.atl,p.ctl)),50);
+    const minTSB=Math.min(...pts.map(p=>p.tsb),-5);
+    const maxTSB=Math.max(...pts.map(p=>p.tsb),5);
+    const tsbAbs=Math.max(Math.abs(minTSB),Math.abs(maxTSB),20);
+    // Top half: ATL/CTL lines, Bottom half: TSB area
+    const topH=80, botH=50, midY=PAD+topH;
+    const xStep=(W-PAD*2)/(pts.length-1);
+    const yLoad=v=>PAD+topH-(v/maxY)*topH;
+    const yTSB=v=>midY+botH/2-(v/tsbAbs)*(botH/2);
+    const ctlPath=pts.map((p,i)=>`${i?'L':'M'}${(PAD+i*xStep).toFixed(1)},${yLoad(p.ctl).toFixed(1)}`).join(' ');
+    const atlPath=pts.map((p,i)=>`${i?'L':'M'}${(PAD+i*xStep).toFixed(1)},${yLoad(p.atl).toFixed(1)}`).join(' ');
+    // TSB area (split positive/negative for color)
+    const baseY=midY+botH/2;
+    const tsbPosPath=`M${PAD},${baseY} ${pts.map((p,i)=>`L${(PAD+i*xStep).toFixed(1)},${(p.tsb>0?yTSB(p.tsb):baseY).toFixed(1)}`).join(' ')} L${(PAD+(pts.length-1)*xStep).toFixed(1)},${baseY} Z`;
+    const tsbNegPath=`M${PAD},${baseY} ${pts.map((p,i)=>`L${(PAD+i*xStep).toFixed(1)},${(p.tsb<0?yTSB(p.tsb):baseY).toFixed(1)}`).join(' ')} L${(PAD+(pts.length-1)*xStep).toFixed(1)},${baseY} Z`;
+    const lastP=pts[pts.length-1];
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Performance Manager · ${pts.length}д</div>
+      <div class="pmc-chart">
+        <div class="pmc-legend">
+          <span><i style="background:#3b82f6"></i>CTL ${Math.round(lastP.ctl)} (фітнес)</span>
+          <span><i style="background:#f87171"></i>ATL ${Math.round(lastP.atl)} (втома)</span>
+          <span><i style="background:#22c55e"></i>TSB ${lastP.tsb>0?'+':''}${Math.round(lastP.tsb)} (форма)</span>
+        </div>
+        <svg class="pmc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+          <line class="grid" x1="${PAD}" y1="${midY}" x2="${W-PAD}" y2="${midY}"/>
+          <line class="grid" x1="${PAD}" y1="${baseY}" x2="${W-PAD}" y2="${baseY}"/>
+          <path class="tsb-pos" d="${tsbPosPath}"/>
+          <path class="tsb-neg" d="${tsbNegPath}"/>
+          <path class="ctl" d="${ctlPath}"/>
+          <path class="atl" d="${atlPath}"/>
+        </svg>
+      </div>
+    </div>`;
+  }
+
+  // Sleep debt panel
+  if(d.sleepDebt&&d.sleepDebt.days>=3){
+    const sd=d.sleepDebt;
+    const cls=sd.debt<=2?'ok':'';
+    const lvl=sd.debt<=2?'У нормі':(sd.debt<=5?'Помірний':(sd.debt<=10?'Високий':'Критичний'));
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Дефіцит сну · 14д</div>
+      <div class="sleep-debt">
+        <div class="sleep-debt-num ${cls}">${sd.debt}<small style="font-size:14px;color:var(--t3);font-weight:600">h</small></div>
+        <div class="sleep-debt-info">
+          <strong>${lvl}</strong>
+          Особиста ціль: ${sd.need}h/ніч · ${sd.days}/14 ночей записано · кожна година дефіциту знижує recovery на ~3-5%
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Foster monotony / strain
+  if(d.foster&&d.foster.weeklyLoad>0){
+    const f=d.foster;
+    const monCls=f.monotony>=2?'poor':(f.monotony>=1.5?'warn':'good');
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Foster · Тиждень</div>
+      <div class="foster-grid">
+        <div class="foster-cell">
+          <div class="foster-cell-val">${f.weeklyLoad.toLocaleString('uk-UA')}</div>
+          <div class="foster-cell-lbl">Load (AU)</div>
+        </div>
+        <div class="foster-cell">
+          <div class="foster-cell-val" style="color:${f.monotony>=2?'#f87171':(f.monotony>=1.5?'#eab308':'#22c55e')}">${f.monotony||'—'}</div>
+          <div class="foster-cell-lbl">Monotony</div>
+        </div>
+        <div class="foster-cell">
+          <div class="foster-cell-val">${f.strain.toLocaleString('uk-UA')}</div>
+          <div class="foster-cell-lbl">Strain</div>
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:var(--t3);margin-top:8px;line-height:1.4">${f.monotony>=2?'⚠️ Monotony ≥2 — додай легких/важких днів. Однотипне навантаження → плато':'Monotony &lt;2 — здорова варіативність'}</div>
     </div>`;
   }
 
@@ -3944,6 +4204,36 @@ function renderCoachLogContent(){
     </div>`;
   }
 
+  // Data quality / what user can provide for deeper analysis
+  {
+    const missing=[];
+    if(!d.hrvRmssd) missing.push({i:'❤️',t:'HRV (rMSSD, ms)',d:'Apple Health → HRV (ранкове). Найсильніший провісник готовності — додає ±15 балів до Recovery'});
+    if(!d.rhr) missing.push({i:'💓',t:'Resting HR',d:'Apple Health → RHR (ранкове). Підвищений RHR → ознака стресу/хвороби/перетренування'});
+    if(!d.bodyTemp) missing.push({i:'🌡️',t:'Темп. тіла',d:'Ранкова базальна. Відхилення +0.3°C → ознака запалення/хвороби'});
+    const cards=missing.map(m=>`<div class="ai-rec low">
+      <div class="ai-rec-ico">${m.i}</div>
+      <div class="ai-rec-body">
+        <div class="ai-rec-title">${m.t}</div>
+        <div class="ai-rec-text">${m.d}</div>
+        <div class="ai-rec-action">Додай у щоденній нотатці</div>
+      </div>
+    </div>`).join('');
+    if(cards){
+      html+=`<div class="coach-sec">
+        <div class="coach-sec-title">Дані для глибшого аналізу · ${missing.length}</div>
+        <div class="ai-recs">${cards}</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:10px;line-height:1.5">
+          <strong style="color:var(--t2);font-size:11.5px">Що ще зробить аналіз потужнішим:</strong><br>
+          • <b>Тижневий DALDA-lite</b> (12 питань): джерела стресу + симптоми → виявляє нефункц. перевантаження за 1-2 тиж до плато<br>
+          • <b>Місячний POMS-Brief</b> (6 настроїв) → психологічний стан, рання депресія перенавантаження<br>
+          • <b>Локалізована болючість</b> (DOMS 0-10) на кожну групу мʼязів → MAV/MRV per-muscle<br>
+          • <b>Профіль форсилок</b> (1RM, AMRAP) кожні 4 тижні → перевірка прогресу<br>
+          • <b>Lab: фер./віт.D/тестостерон</b> щоквартально → довгий маркер відновлення
+        </div>
+      </div>`;
+    }
+  }
+
   if(!d.recovery&&!d.weightCurrent&&!d.sessionsWeek){
     html+=`<div class="empty" style="padding:30px 0"><div class="empty-ico">📋</div><div>Почни тренуватись і додавати щоденні нотатки — AI Coach побудує аналіз</div></div>`;
   }
@@ -3956,6 +4246,254 @@ function renderCoachLogContent(){
     const fg=el.querySelector('.coach-ring-fg');
     if(fg) fg.style.strokeDashoffset=dashoffset.toFixed(1);
   });
+}
+
+// ─── Coach Engine v2 — Whoop/Oura/Banister-grade analytics ────────────────────
+// Personal sleep need: avg of top 25% sleeps in last 90 days (clamped 7–9h)
+function personalSleepNeed(){
+  const arr=getDailyNotes().filter(n=>n.sleep_hours>0).slice(0,90).map(n=>n.sleep_hours);
+  if(arr.length<10) return 8.0;
+  const sorted=[...arr].sort((a,b)=>b-a);
+  const top=sorted.slice(0,Math.max(3,Math.round(sorted.length*0.25)));
+  const avg=top.reduce((a,b)=>a+b,0)/top.length;
+  return Math.min(9,Math.max(7,+avg.toFixed(1)));
+}
+
+// Rolling 14-day sleep debt (only counts shortfalls)
+function sleepDebt14d(){
+  const need=personalSleepNeed();
+  const today=new Date(); today.setHours(0,0,0,0);
+  const notes=getDailyNotes();
+  let debt=0, days=0;
+  for(let i=0;i<14;i++){
+    const d=new Date(today); d.setDate(today.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const n=notes.find(x=>x.date===ds);
+    if(n&&n.sleep_hours>0){days++;debt+=Math.max(0,need-n.sleep_hours);}
+  }
+  return {debt:+debt.toFixed(1),need,days};
+}
+
+// Banister TRIMP for cardio session (uses HR if avail, else RPE fallback)
+function cardioTRIMP(sess){
+  const dur=sess.duration_min||0; if(!dur) return 0;
+  const hrAvg=sess.cardio_avg_hr;
+  if(!hrAvg) return sess.rpe?dur*sess.rpe:dur*5;
+  const hrMax=185, hrRest=getLatestRHR()||60;
+  const ratio=Math.max(0,Math.min(1,(hrAvg-hrRest)/(hrMax-hrRest)));
+  return Math.round(dur*ratio*0.64*Math.exp(1.92*ratio));
+}
+
+function getLatestRHR(){
+  const notes=getDailyNotes().filter(n=>n.rhr>0);
+  if(notes.length) return notes[0].rhr;
+  const ft=getFuncTests().tests||[];
+  for(let i=ft.length-1;i>=0;i--) if(+ft[i].resting_hr>0) return +ft[i].resting_hr;
+  return null;
+}
+
+// Daily training load (sRPE for strength + TRIMP for cardio)
+function dailyLoad(dateStr){
+  const sess=(getLogs().sessions||[]).filter(s=>s.date===dateStr&&!s.skipped);
+  let strength=0,cardio=0;
+  for(const s of sess){
+    if(s.workout_id==='cardio') cardio+=cardioTRIMP(s);
+    else strength+=(s.load_au||(s.duration_min&&s.rpe?s.duration_min*s.rpe:0));
+  }
+  return {strength,cardio,total:strength+cardio};
+}
+
+// PMC time series: ATL (k=7), CTL (k=42), TSB. Returns last `days` entries.
+function pmcMetrics(days=60){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const seedDays=120;
+  let atl=0, ctl=0;
+  const kAtl=Math.exp(-1/7), kCtl=Math.exp(-1/42);
+  const series=[];
+  for(let i=seedDays-1;i>=0;i--){
+    const d=new Date(today); d.setDate(today.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const load=dailyLoad(ds).total;
+    atl=atl*kAtl+load*(1-kAtl);
+    ctl=ctl*kCtl+load*(1-kCtl);
+    series.push({date:ds,load,atl:+atl.toFixed(1),ctl:+ctl.toFixed(1),tsb:+(ctl-atl).toFixed(1)});
+  }
+  return series.slice(-days);
+}
+
+// EWMA-based ACWR (modern method, replaces simple version)
+function acwrEWMA(){
+  const pmc=pmcMetrics(7);
+  if(!pmc.length) return null;
+  const last=pmc[pmc.length-1];
+  return last.ctl>5?+(last.atl/last.ctl).toFixed(2):null;
+}
+
+// HRV baseline (uses ln rMSSD per Altini)
+function hrvBaseline(){
+  const arr=getDailyNotes().filter(n=>n.hrv_rmssd>0).slice(0,60);
+  if(arr.length<7) return null;
+  const lnvals=arr.map(n=>Math.log(n.hrv_rmssd));
+  const m=lnvals.reduce((a,b)=>a+b,0)/lnvals.length;
+  const sd=Math.sqrt(lnvals.reduce((a,b)=>a+(b-m)**2,0)/lnvals.length);
+  const cv=sd/Math.abs(m);
+  return {logMean:m,logSD:sd,cv:+(cv*100).toFixed(1),mean:+Math.exp(m).toFixed(1),n:arr.length};
+}
+
+function rhrBaseline(){
+  const arr=getDailyNotes().filter(n=>n.rhr>0).slice(0,60);
+  if(arr.length<7) return null;
+  const v=arr.map(n=>n.rhr);
+  const m=v.reduce((a,b)=>a+b,0)/v.length;
+  const sd=Math.sqrt(v.reduce((a,b)=>a+(b-m)**2,0)/v.length);
+  return {mean:+m.toFixed(1),sd:+sd.toFixed(1),n:arr.length};
+}
+
+// Recovery Score v2 — Whoop-inspired composite with z-scores and breakdown
+function recoveryV2(dateStr){
+  dateStr=dateStr||new Date().toISOString().slice(0,10);
+  const note=getDailyNote(dateStr);
+  let score=100;
+  const breakdown=[];
+  let dataAvail=0, dataExpected=0;
+
+  // 1. Hooper subjective (-50 max)
+  if(note){
+    const h=calcHooperScore(note);
+    if(h!==null){
+      const delta=-Math.round((h-4)/16*50);
+      score+=delta;
+      breakdown.push({lbl:`Hooper ${h}/20 (сон+стрес+втома+біль)`,delta,kind:'core'});
+      dataAvail+=2;
+    }
+    dataExpected+=2;
+  } else dataExpected+=2;
+
+  // 2. Sleep duration vs personal need (-20 max)
+  if(note&&note.sleep_hours>0){
+    const need=personalSleepNeed();
+    const diff=note.sleep_hours-need;
+    let d=0;
+    if(diff<-2) d=-20;
+    else if(diff<-1) d=-12;
+    else if(diff<-0.5) d=-6;
+    else if(diff<-0.1) d=-2;
+    if(d){score+=d;breakdown.push({lbl:`Сон ${note.sleep_hours}h vs ціль ${need}h`,delta:d,kind:'core'});}
+    dataAvail++;
+  }
+  dataExpected++;
+
+  // 3. Sleep debt (rolling 14d, -15 max)
+  const sd=sleepDebt14d();
+  if(sd.days>=3){
+    let d=0;
+    if(sd.debt>10) d=-15;
+    else if(sd.debt>5) d=-8;
+    else if(sd.debt>2) d=-3;
+    if(d){score+=d;breakdown.push({lbl:`Дефіцит сну ${sd.debt}h / 14д`,delta:d,kind:'core'});}
+  }
+
+  // 4. ACWR overload (-10 max)
+  const acr=acwrEWMA();
+  if(acr!==null){
+    let d=0;
+    if(acr>1.5) d=-10;
+    else if(acr>1.3) d=-4;
+    if(d){score+=d;breakdown.push({lbl:`A:C ${acr.toFixed(2)} — перевантаження`,delta:d,kind:'load'});}
+  }
+
+  // 5. Illness (-30 flat)
+  if(note&&note.illness){score-=30;breakdown.push({lbl:'Хвороба',delta:-30,kind:'core'});}
+
+  // 6. Alcohol (-5/unit, -15 max)
+  if(note&&note.alcohol_units>0){
+    const d=-Math.min(15,note.alcohol_units*5);
+    score+=d;breakdown.push({lbl:`Алкоголь ${note.alcohol_units}од`,delta:d,kind:'core'});
+  }
+
+  // 7. HRV (advanced, ±15 if user enters it)
+  if(note&&note.hrv_rmssd>0){
+    const bl=hrvBaseline();
+    if(bl){
+      const z=(Math.log(note.hrv_rmssd)-bl.logMean)/bl.logSD;
+      const d=Math.round(Math.max(-15,Math.min(10,z*5)));
+      score+=d;breakdown.push({lbl:`HRV ${note.hrv_rmssd}ms (${z>0?'+':''}${z.toFixed(1)}σ vs baseline)`,delta:d,kind:'hrv'});
+      dataAvail+=2;
+    }
+    dataExpected+=2;
+  } else dataExpected+=2;
+
+  // 8. RHR (advanced, -15 if elevated)
+  if(note&&note.rhr>0){
+    const bl=rhrBaseline();
+    if(bl){
+      const z=(note.rhr-bl.mean)/Math.max(1,bl.sd);
+      if(z>0.8){
+        const d=-Math.round(Math.min(15,z*5));
+        score+=d;breakdown.push({lbl:`RHR ${note.rhr}bpm (+${z.toFixed(1)}σ — підвищ)`,delta:d,kind:'hrv'});
+      }
+      dataAvail++;
+    }
+    dataExpected++;
+  } else dataExpected++;
+
+  return {
+    score:Math.max(0,Math.min(100,Math.round(score))),
+    breakdown,
+    completeness:dataExpected?Math.round(dataAvail/dataExpected*100):0
+  };
+}
+
+// Strain Score (0-21, log-scaled per Whoop). Uses today's load + recovery debt
+function strainScore(dateStr){
+  dateStr=dateStr||new Date().toISOString().slice(0,10);
+  const load=dailyLoad(dateStr).total;
+  if(load===0) return 0;
+  // Anchor: load=600 → strain 21, load=100 → strain ~8
+  return +(21/Math.log(601)*Math.log(load+1)).toFixed(1);
+}
+
+// Hooper trend over last 7 days (returns array of {date, score, components})
+function hooperTrend(days=14){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const out=[];
+  const notes=getDailyNotes();
+  for(let i=days-1;i>=0;i--){
+    const d=new Date(today); d.setDate(today.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const n=notes.find(x=>x.date===ds);
+    out.push({date:ds,score:n?calcHooperScore(n):null,sleep:n?.sleep_hours||null});
+  }
+  return out;
+}
+
+// Detect non-functional overreaching: rising hooper trend + falling performance
+function overreachingFlag(){
+  const ht=hooperTrend(10).filter(x=>x.score!==null);
+  if(ht.length<7) return null;
+  const recent=ht.slice(-3).map(x=>x.score);
+  const baseline=ht.slice(0,-3).map(x=>x.score);
+  if(!recent.length||!baseline.length) return null;
+  const rAvg=recent.reduce((a,b)=>a+b,0)/recent.length;
+  const bAvg=baseline.reduce((a,b)=>a+b,0)/baseline.length;
+  if(rAvg-bAvg>=4&&rAvg>=14) return {recent:rAvg.toFixed(1),baseline:bAvg.toFixed(1),delta:(rAvg-bAvg).toFixed(1)};
+  return null;
+}
+
+// Monotony / Strain (Foster). Weekly load monotony=mean/SD; strain=load*monotony
+function fosterMetrics(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const loads=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(today); d.setDate(today.getDate()-i);
+    loads.push(dailyLoad(d.toISOString().slice(0,10)).total);
+  }
+  const sum=loads.reduce((a,b)=>a+b,0);
+  const mean=sum/7;
+  const sd=Math.sqrt(loads.reduce((a,b)=>a+(b-mean)**2,0)/7);
+  const monotony=sd>0?+(mean/sd).toFixed(2):0;
+  const strain=Math.round(sum*monotony);
+  return {weeklyLoad:Math.round(sum),monotony,strain,loads};
 }
 
 // ─── AI Recommendations Engine ───────────────────────────────────────────────
@@ -3972,6 +4510,53 @@ function aiRecommendations(d){
   const now=new Date(); const today=now.toISOString().slice(0,10);
   const dow=now.getDay(); // 0=Sun..6=Sat
   const daysLeftInWeek=dow===0?0:7-dow; // days until Sunday end
+
+  // 0. NON-FUNCTIONAL OVERREACHING — Hooper rising sustained
+  const overreach=overreachingFlag();
+  if(overreach){
+    recs.push({p:'high',c:'risk',i:'🚨',t:`Ознаки перетренованості (Hooper ${overreach.baseline}→${overreach.recent})`,
+      b:'Hooper Index стабільно зростає протягом останніх 3 днів (+${overreach.delta} vs baseline). Це класичний маркер non-functional overreaching.',
+      a:'5-7 днів деолад: -50% обсягу, без RPE>7. Перевір сон, харчування, стрес.'});
+  }
+
+  // 0.1 TSB / Form (Performance Manager based)
+  const pmc=pmcMetrics(60);
+  if(pmc.length>=14){
+    const last=pmc[pmc.length-1];
+    if(last.tsb<-30){
+      recs.push({p:'high',c:'risk',i:'⚠️',t:`TSB ${last.tsb.toFixed(0)} — глибока втома`,
+        b:`Гостра втома (ATL ${last.atl.toFixed(0)}) набагато вища за фітнес (CTL ${last.ctl.toFixed(0)}). Ризик травми ↑.`,
+        a:'Деолад-тиждень: -40% обсягу. Краще тренуватись 4 тижні з сильним TSB ніж 6 тижнів через травму.'});
+    } else if(last.tsb<-15){
+      recs.push({p:'med',c:'risk',i:'📉',t:`TSB ${last.tsb.toFixed(0)} — накопичена втома`,
+        b:'Ти в зоні навантаження (productive overload). Це OK для прогресу, але стеж за самопочуттям.',
+        a:'Якщо recovery <60 — пропусти або легка сесія. Деолад через 1-2 тижні.'});
+    } else if(last.tsb>15&&last.ctl>30){
+      recs.push({p:'low',c:'progress',i:'🚀',t:`TSB +${last.tsb.toFixed(0)} — пік форми`,
+        b:`Свіжий + натренований (CTL ${last.ctl.toFixed(0)}). Це "форма" в сенсі TrainingPeaks.`,
+        a:'Спробуй PR на головних рухах. Деолад завершився — час пожинати плоди.'});
+    } else if(last.tsb>25){
+      recs.push({p:'med',c:'consistency',i:'💤',t:`TSB +${last.tsb.toFixed(0)} — детренування`,
+        b:'Свіжий, але CTL падає швидше ніж нарощується. Адаптація втрачається.',
+        a:'Поверни обсяг — додай 1 повноцінне тренування цього тижня.'});
+    }
+  }
+
+  // 0.2 Foster Monotony warning
+  const fm=fosterMetrics();
+  if(fm.weeklyLoad>200&&fm.monotony>=2.0){
+    recs.push({p:'med',c:'risk',i:'🔄',t:`Monotony ${fm.monotony} — одноманітність`,
+      b:`Foster Strain ${fm.strain}. Однакові навантаження кожен день не дають тілу відновлюватись між сесіями.`,
+      a:'Чергуй важкий/легкий день. Або вставляй reset-день з 0 навантаженням раз/тиждень.'});
+  }
+
+  // 0.3 Sleep debt (cumulative)
+  const sld=sleepDebt14d();
+  if(sld.debt>=7){
+    recs.push({p:'high',c:'recovery',i:'🌙',t:`Дефіцит сну ${sld.debt}h за 14 днів`,
+      b:`Особистий need ${sld.need}h/ніч. Ти втратив ${sld.debt}h — це еквівалент пропущеної ночі.`,
+      a:'Раніше лягай 5 ночей поспіль (-30хв кожен день). Денна дрімота 20хв.'});
+  }
 
   // 1. RECOVERY signals
   if(d.sleepHours!=null&&d.sleepHours<6){
@@ -3999,21 +4584,18 @@ function aiRecommendations(d){
     }
   }
 
-  // 2. A:C ratio (training load risk)
-  const acr=computeACRatio();
-  if(acr!==null){
-    if(acr>1.5){
-      recs.push({p:'high',c:'risk',i:'⚠️',t:`A:C ${acr.toFixed(2)} — ризик травми`,
-        b:'Гостре навантаження за 7 днів значно перевищило хронічне (28 днів). Тіло не встигає адаптуватися.',
-        a:'Деолад-тиждень: -30% обсягу на 5–7 днів'});
-    } else if(acr>1.3){
-      recs.push({p:'med',c:'risk',i:'📈',t:`A:C ${acr.toFixed(2)} — обсяг зріс різко`,
-        b:'Вище зони безпеки (0.8–1.3). Стеж за суглобами і сухожиллями.',
-        a:'Не нарощуй обсяг більше ніж +10% на наступному тижні'});
-    } else if(acr<0.6){
-      recs.push({p:'med',c:'consistency',i:'💤',t:`A:C ${acr.toFixed(2)} — детренування`,
-        b:'Гостре навантаження сильно нижче хронічного — адаптація втрачається.',
-        a:'Поступово поверни попередній обсяг протягом 2 тижнів'});
+  // 2. HRV trend warning (if user enters HRV)
+  const hrvBl=hrvBaseline();
+  if(d.hrvRmssd&&hrvBl){
+    const z=(Math.log(d.hrvRmssd)-hrvBl.logMean)/hrvBl.logSD;
+    if(z<-1.5){
+      recs.push({p:'high',c:'recovery',i:'💗',t:`HRV ${d.hrvRmssd}ms (${z.toFixed(1)}σ нижче baseline)`,
+        b:`Baseline ${hrvBl.mean}ms (${hrvBl.n}д). Падіння HRV — autonomic stress. Можлива хвороба, недосип, або перетренування.`,
+        a:'Сьогодні легка сесія або прогулянка. Перевір RHR, температуру, симптоми.'});
+    } else if(hrvBl.cv>10){
+      recs.push({p:'med',c:'recovery',i:'📊',t:`HRV CV ${hrvBl.cv}% — нестабільна вегетатика`,
+        b:'Високий coefficient of variation HRV вказує на постійний стрес або поганий sleep hygiene.',
+        a:'Перегляньте режим: фіксований сон, кофеїн до 12:00, медитація 5хв/день'});
     }
   }
 
