@@ -1349,11 +1349,11 @@ async function fetchPrivateJSON(path) {
     if(cr.ok){
       const cd=await cr.json();
       // Small file: content inline
-      if(cd.content&&cd.encoding==='base64') return JSON.parse(atob(cd.content.replace(/\n/g,'')));
+      if(cd.content&&cd.encoding==='base64') return JSON.parse(decodeURIComponent(escape(atob(cd.content.replace(/\n/g,'')))));
       // Large file: sha returned but no content — use blobs API directly
       if(cd.sha){
         const br=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${cd.sha}`,{headers:h});
-        if(br.ok){const bd=await br.json();return JSON.parse(atob(bd.content.replace(/\n/g,'')));}
+        if(br.ok){const bd=await br.json();return JSON.parse(decodeURIComponent(escape(atob(bd.content.replace(/\n/g,'')))));}
       }
     }
     // Final fallback: traverse git tree to find blob sha (handles 403 from contents API)
@@ -1365,7 +1365,7 @@ async function fetchPrivateJSON(path) {
     const br2=await fetch(`https://api.github.com/repos/${o}/${pr}/git/blobs/${entry.sha}`,{headers:h});
     if(!br2.ok) return null;
     const bd2=await br2.json();
-    return JSON.parse(atob(bd2.content.replace(/\n/g,'')));
+    return JSON.parse(decodeURIComponent(escape(atob(bd2.content.replace(/\n/g,'')))));
   } catch(e){return null;}
 }
 async function pushPrivateFile(path, jsonData, msg) {
