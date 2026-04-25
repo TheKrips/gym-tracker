@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.11",
+    "version": "3.12",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-24"
+    "updated": "2026-04-25"
   },
   "schedule": [
     {
@@ -250,7 +250,7 @@
           "warmup": "70 кг × 10",
           "sets": 3,
           "reps": "6",
-          "weight_kg": 105.0,
+          "weight_kg": 110.0,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/29/leg-press",
@@ -273,7 +273,7 @@
           "warmup": null,
           "sets": 3,
           "reps": "10",
-          "weight_kg": 36.0,
+          "weight_kg": 37.0,
           "rir": "1-2",
           "rest_sec": 90,
           "jefit_url": "https://www.jefit.com/exercises/33/leg-extensions",
@@ -296,7 +296,7 @@
           ],
           "warmup": null,
           "sets": 3,
-          "reps": "10",
+          "reps": "11",
           "weight_kg": 40,
           "rir": "1-2",
           "rest_sec": 90,
@@ -343,8 +343,8 @@
           "secondary_muscles": [],
           "warmup": null,
           "sets": 3,
-          "reps": "15",
-          "weight_kg": 10,
+          "reps": "10",
+          "weight_kg": 11.0,
           "rir": "1-2",
           "rest_sec": 60,
           "jefit_url": "https://www.jefit.com/exercises/43/calf-raises",
