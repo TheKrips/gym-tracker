@@ -321,6 +321,121 @@
     .coach-h3{font-size:13px;font-weight:600;color:var(--t2);margin:10px 0 4px}
     .coach-li{padding:2px 0 2px 4px;color:var(--t2)}
 
+    /* ── Rich Coach Page Components ─────────────────────────── */
+    .coach-page{padding:4px 16px 40px;animation:card-in .35s ease-out both}
+    .coach-stagger>*{animation:card-in .4s ease-out both;opacity:0}
+    .coach-stagger>*:nth-child(1){animation-delay:.05s}
+    .coach-stagger>*:nth-child(2){animation-delay:.12s}
+    .coach-stagger>*:nth-child(3){animation-delay:.19s}
+    .coach-stagger>*:nth-child(4){animation-delay:.26s}
+    .coach-stagger>*:nth-child(5){animation-delay:.33s}
+    .coach-stagger>*:nth-child(6){animation-delay:.40s}
+    .coach-stagger>*:nth-child(7){animation-delay:.47s}
+
+    /* Hero ring card */
+    .coach-hero{
+      background:linear-gradient(140deg,rgba(139,92,246,.09),rgba(139,92,246,.02) 60%);
+      border:var(--bh) solid rgba(139,92,246,.22);
+      border-radius:20px;padding:20px 18px 18px;margin-bottom:14px;
+      display:flex;gap:18px;align-items:center;
+    }
+    .coach-ring-wrap{position:relative;width:124px;height:124px;flex-shrink:0}
+    .coach-ring{width:124px;height:124px;transform:rotate(-90deg);overflow:visible}
+    .coach-ring-bg{fill:none;stroke:rgba(255,255,255,.07);stroke-width:8}
+    .coach-ring-fg{fill:none;stroke-width:8;stroke-linecap:round;
+      transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1),stroke .3s ease;
+      filter:drop-shadow(0 0 8px rgba(139,92,246,.35));
+    }
+    .coach-ring-center{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;pointer-events:none;
+    }
+    .coach-ring-value{font-size:34px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+    .coach-ring-max{font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:.05em;text-transform:uppercase}
+    .coach-hero-meta{flex:1;min-width:0}
+    .coach-hero-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px}
+    .coach-hero-title{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--t);margin-bottom:4px}
+    .coach-hero-desc{font-size:12.5px;color:var(--t2);line-height:1.45}
+    .coach-hero-status{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:8px}
+    .coach-hero-status.good{background:rgba(34,197,94,.14);color:#22c55e}
+    .coach-hero-status.okay{background:rgba(234,179,8,.14);color:#eab308}
+    .coach-hero-status.poor{background:rgba(239,68,68,.15);color:#f87171}
+
+    /* Adjustment banner */
+    .coach-adjust{
+      display:flex;align-items:center;gap:12px;
+      background:linear-gradient(135deg,rgba(234,179,8,.12),rgba(234,179,8,.03));
+      border:var(--bh) solid rgba(234,179,8,.3);
+      border-radius:var(--rad);padding:13px 15px;margin-bottom:14px;
+    }
+    .coach-adjust.pos{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(34,197,94,.03));border-color:rgba(34,197,94,.28)}
+    .coach-adjust.neg{background:linear-gradient(135deg,rgba(239,68,68,.11),rgba(239,68,68,.03));border-color:rgba(239,68,68,.25)}
+    .adjust-ico{font-size:22px;line-height:1}
+    .adjust-body{flex:1;min-width:0}
+    .adjust-val{font-size:15px;font-weight:700;color:var(--t);letter-spacing:-.01em}
+    .adjust-desc{font-size:11.5px;color:var(--t2);margin-top:1px}
+
+    /* Section cards */
+    .coach-sec{background:var(--s1);border:var(--bh) solid var(--bd);border-radius:var(--rad);padding:14px 15px;margin-bottom:12px}
+    .coach-sec-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .coach-sec-title::before{content:'';width:3px;height:12px;background:var(--p);border-radius:2px}
+
+    /* Week dots */
+    .week-train{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:2px}
+    .wt-slot{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;background:var(--s2);border-radius:10px;transition:background 200ms ease}
+    .wt-slot.done{background:rgba(34,197,94,.1)}
+    .wt-slot.next{background:rgba(139,92,246,.1);border:var(--bh) solid rgba(139,92,246,.3)}
+    .wt-slot.skip{background:rgba(239,68,68,.08)}
+    .wt-dot{width:28px;height:28px;border-radius:50%;background:var(--s3);position:relative;display:flex;align-items:center;justify-content:center;color:transparent;font-size:14px;transition:background 200ms ease}
+    .wt-slot.done .wt-dot{background:#22c55e;color:#fff}
+    .wt-slot.done .wt-dot::after{content:'✓';position:absolute;color:#fff;font-size:14px;font-weight:700}
+    .wt-slot.next .wt-dot{background:var(--p);animation:dot-pulse 2s ease-in-out infinite}
+    .wt-slot.next .wt-dot::after{content:'→';position:absolute;color:#fff;font-size:14px;font-weight:700}
+    .wt-slot.skip .wt-dot{background:#f87171;color:#fff}
+    .wt-slot.skip .wt-dot::after{content:'✕';position:absolute;color:#fff;font-size:13px;font-weight:700}
+    .wt-lbl{font-size:10px;font-weight:600;color:var(--t2);letter-spacing:-.01em}
+    @keyframes dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.5)}50%{box-shadow:0 0 0 6px rgba(139,92,246,0)}}
+
+    /* Body metrics grid */
+    .body-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .body-card{background:var(--s2);border-radius:12px;padding:12px 13px;display:flex;flex-direction:column;gap:4px}
+    .bc-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+    .bc-val{font-size:22px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+    .bc-val small{font-size:11px;font-weight:600;color:var(--t3);margin-left:3px}
+    .bc-spark{height:22px;margin:2px -4px 0}
+    .bc-delta{font-size:10.5px;font-weight:600;font-variant-numeric:tabular-nums}
+    .bc-delta.up{color:#22c55e}
+    .bc-delta.down{color:#f87171}
+    .bc-delta.flat{color:var(--t3)}
+    .bc-goal{font-size:10px;color:var(--t3);margin-top:2px}
+
+    /* Daily note mini */
+    .dn-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+    .dn-chip{background:var(--s2);border-radius:20px;padding:5px 10px;font-size:11px;color:var(--t2);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+    .dn-chip strong{color:var(--t);font-variant-numeric:tabular-nums}
+
+    /* Volume bars */
+    .vol-row{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12px}
+    .vol-mus{width:82px;color:var(--t2);flex-shrink:0}
+    .vol-bar{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden;position:relative}
+    .vol-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--p2));transition:width 900ms cubic-bezier(.16,1,.3,1)}
+    .vol-fill.low{background:linear-gradient(90deg,#f87171,#ef4444)}
+    .vol-fill.mid{background:linear-gradient(90deg,#eab308,#ca8a04)}
+    .vol-fill.good{background:linear-gradient(90deg,#22c55e,#16a34a)}
+    .vol-num{width:38px;text-align:right;color:var(--t2);font-variant-numeric:tabular-nums;font-weight:600;flex-shrink:0;font-size:11.5px}
+
+    /* Highlights (from markdown) */
+    .coach-highlights{font-size:13px;color:var(--t2);line-height:1.65}
+    .coach-hl-item{display:flex;gap:10px;padding:8px 0;border-bottom:var(--bh) solid var(--bd)}
+    .coach-hl-item:last-child{border-bottom:none}
+    .coach-hl-dot{width:6px;height:6px;border-radius:50%;background:var(--p);margin-top:7px;flex-shrink:0}
+
+    @media(prefers-reduced-motion:reduce){
+      .coach-stagger>*,.wt-slot.next .wt-dot,.coach-hero{animation:none}
+      .coach-ring-fg{transition:none}
+      .vol-fill{transition:none}
+    }
+
     /* ── FT composite score ──────────────────────────────────── */
     .ft-score-badge{display:inline-flex;align-items:baseline;gap:4px;background:var(--s2);border-radius:20px;padding:4px 12px;margin-bottom:12px}
     .ft-score-val{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
@@ -3361,19 +3476,374 @@ function renderCoachLogBanner() {
   </div>`;
 }
 function openCoachLog(){renderCoachLogContent();openOverlay('ov-coach-log');}
+
+// Parse coach-log.md into structured data. Falls back to app state if md missing/partial.
+function parseCoachData(){
+  const md=coachLogText||'';
+  const data={
+    date:null, recovery:null, hooperScore:null, sleepHours:null,
+    adjustment:null, sessionsWeek:null, sessionsTarget:4, skipped:0,
+    weightDelta:null, weightDeltaDays:null, weightCurrent:null,
+    fatDelta:null, stepsAvg:null, stepsTarget:8000,
+    highlights:[]
+  };
+  // date
+  const d=md.match(/##?\s*Coach Log\s*[—\-–]?\s*(\d{4}-\d{2}-\d{2})/i)||md.match(/(\d{4}-\d{2}-\d{2})/);
+  if(d) data.date=d[1];
+  // recovery
+  const rc=md.match(/Recovery(?:\s+Score)?[:\s]+(\d+)\s*\/\s*100/i);
+  if(rc) data.recovery=parseInt(rc[1]);
+  // hooper
+  const hp=md.match(/Hooper[:\s]+(\d+)\s*\/\s*20/i);
+  if(hp) data.hooperScore=parseInt(hp[1]);
+  // sleep
+  const sl=md.match(/Сон[:\s]+([\d.]+)\s*h/i)||md.match(/Сон[:\s]+([\d.]+)\s*год/i);
+  if(sl) data.sleepHours=parseFloat(sl[1]);
+  // adjustment
+  const aj=md.match(/[⚡⚠️✅]?\s*([-+]\d+|нуль)\s*підх/i);
+  if(aj) data.adjustment=aj[1]==='нуль'?0:parseInt(aj[1]);
+  else if(/без коригува|нуль коригува/i.test(md)) data.adjustment=0;
+  // sessions week
+  const sw=md.match(/Тренувань\s+за\s+тиждень[:\s]+(\d+)\s*\/\s*(\d+)/i);
+  if(sw){data.sessionsWeek=parseInt(sw[1]);data.sessionsTarget=parseInt(sw[2]);}
+  const sk=md.match(/Пропущено[:\s]+(\d+)/i);
+  if(sk) data.skipped=parseInt(sk[1]);
+  // weight
+  const w1=md.match(/Вага\s+[↓↑]\s*([\d.]+)\s*кг\s+за\s+(\d+)\s+дн/i);
+  if(w1){data.weightDelta=parseFloat(w1[1])*(/↓/.test(w1[0])?-1:1);data.weightDeltaDays=parseInt(w1[2]);}
+  const w2=md.match(/Зараз[:\s]+([\d.]+)\s*кг/i);
+  if(w2) data.weightCurrent=parseFloat(w2[1]);
+  // fat
+  const f1=md.match(/Жир\s+[↓↑]\s*([\d.]+)\s*%/i);
+  if(f1) data.fatDelta=parseFloat(f1[1])*(/↓/.test(f1[0])?-1:1);
+  // steps
+  const st=md.match(/Кроки[:\s]+(\d[\d\s]*)\s*\/?\s*день/i);
+  if(st) data.stepsAvg=parseInt(st[1].replace(/\s/g,''));
+  const sg=md.match(/Ціль[:\s]+(\d+)k?\+?/i);
+  if(sg) data.stepsTarget=sg[1].length<3?parseInt(sg[1])*1000:parseInt(sg[1]);
+  // highlights: non-header lines with meaningful content
+  const lines=md.split('\n');
+  for(const line of lines){
+    const t=line.trim();
+    if(!t||t.startsWith('#')||t.startsWith('*Generated')||t.startsWith('---')) continue;
+    const clean=t.replace(/^[-*•]\s*/,'').replace(/\*\*/g,'').trim();
+    if(clean.length<6||clean.length>180) continue;
+    // skip lines we've already structurally extracted
+    if(/Recovery\s+Score/i.test(clean)) continue;
+    if(/Тренувань\s+за\s+тиждень/i.test(clean)) continue;
+    if(/⚡.*підх/i.test(clean)) continue;
+    if(/^Hooper/i.test(clean)) continue;
+    if(/^Сон\s/i.test(clean)) continue;
+    if(/^Вага\s+[↓↑]/i.test(clean)) continue;
+    if(/^Жир\s+[↓↑]/i.test(clean)) continue;
+    if(/^Кроки\s/i.test(clean)) continue;
+    data.highlights.push(clean);
+  }
+  return data;
+}
+
+// Fallback: compute live metrics from app state when md is sparse
+function liveCoachMetrics(){
+  const m={};
+  const today=new Date(); today.setHours(0,0,0,0);
+  const weekStart=new Date(today); weekStart.setDate(today.getDate()-today.getDay()+(today.getDay()===0?-6:1));
+  const weekStartStr=weekStart.toISOString().slice(0,10);
+  const sessions=(getLogs().sessions||[]).filter(s=>!s.skipped);
+  m.sessionsWeek=sessions.filter(s=>s.date>=weekStartStr).length;
+  m.sessionsTarget=4;
+  // Build per-workout slot completion in current week cycle
+  const cycle=['upper_a','lower_a','upper_b','lower_b'];
+  const doneThisWeek=new Set(sessions.filter(s=>s.date>=weekStartStr).map(s=>s.workout_id));
+  m.weekSlots=cycle.map(id=>({id,done:doneThisWeek.has(id)}));
+  // next = first not done in cycle order (or fallback to nextWorkoutId)
+  let nextId=null;
+  for(const s of m.weekSlots){if(!s.done){nextId=s.id;break;}}
+  if(nextId){for(const s of m.weekSlots){if(s.id===nextId)s.next=true;}}
+  // weight / fat / steps from healthData
+  if(healthData){
+    const w=healthData.weight_kg||[]; const f=healthData.body_fat_pct||[]; const st=healthData.steps||[];
+    if(w.length){
+      m.weightCurrent=+w[w.length-1].value.toFixed(1);
+      const old=w.find(x=>{const diff=(new Date(w[w.length-1].date)-new Date(x.date))/86400000;return diff>=7&&diff<=14;})||w[0];
+      if(old&&old!==w[w.length-1]){
+        m.weightDelta=+(w[w.length-1].value-old.value).toFixed(1);
+        m.weightDeltaDays=Math.round((new Date(w[w.length-1].date)-new Date(old.date))/86400000);
+      }
+      m.weightSpark=w.slice(-14).map(x=>x.value);
+    }
+    if(f.length){
+      m.fatCurrent=+f[f.length-1].value.toFixed(1);
+      const old=f.find(x=>{const diff=(new Date(f[f.length-1].date)-new Date(x.date))/86400000;return diff>=7&&diff<=14;})||f[0];
+      if(old&&old!==f[f.length-1]) m.fatDelta=+(f[f.length-1].value-old.value).toFixed(1);
+      m.fatSpark=f.slice(-14).map(x=>x.value);
+    }
+    if(st.length){
+      const last7=st.slice(-7);
+      m.stepsAvg=Math.round(last7.reduce((a,b)=>a+b.value,0)/last7.length);
+      m.stepsSpark=last7.map(x=>x.value);
+      m.stepsTarget=8000;
+    }
+  }
+  // daily note today
+  const noteToday=getDailyNote(new Date().toISOString().slice(0,10));
+  if(noteToday){
+    m.hooperScore=calcHooperScore(noteToday);
+    m.sleepHours=noteToday.sleep_hours||null;
+    m.stressLevel=noteToday.stress_level||null;
+    m.fatigueLevel=noteToday.fatigue_level||null;
+  }
+  // Volume per muscle last 7 days
+  const recent=sessions.filter(s=>s.date>=weekStartStr);
+  const muscleSets={};
+  if(workoutData){
+    const exMap={};
+    for(const wk of workoutData.workouts) for(const ex of wk.exercises){
+      if(ex.type==='superset') for(const sub of ex.exercises) exMap[sub.id]=sub;
+      else exMap[ex.id]=ex;
+    }
+    for(const sess of recent) for(const e of (sess.exercises||[])){
+      const def=exMap[e.exercise_id]; if(!def) continue;
+      const n=(e.sets||[]).length;
+      for(const mus of (def.primary_muscles||[])) muscleSets[mus]=(muscleSets[mus]||0)+n;
+    }
+  }
+  m.muscleVolume=muscleSets;
+  return m;
+}
+
+function _sparkSVG(arr,color='var(--p)'){
+  if(!arr||arr.length<2) return '';
+  const w=120,h=22,min=Math.min(...arr),max=Math.max(...arr),range=max-min||1;
+  const pts=arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-((v-min)/range)*h).toFixed(1)}`).join(' ');
+  return `<svg class="bc-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/></svg>`;
+}
+
+function _recoveryStatus(score){
+  if(score==null) return {lbl:'Немає даних',cls:'okay',desc:'Заповни щоденну нотатку для аналізу'};
+  if(score>=75) return {lbl:'Відмінно',cls:'good',desc:'Готовий до інтенсивного тренування'};
+  if(score>=55) return {lbl:'Помірна готовність',cls:'okay',desc:'Можна тренуватись, але без зайвого героїзму'};
+  if(score>=35) return {lbl:'Знижена',cls:'okay',desc:'Зменш обсяг на 1–2 підходи'};
+  return {lbl:'Низька',cls:'poor',desc:'Відпочинок або дуже легка сесія'};
+}
+
+function _muscleNameUA(m){
+  return ({chest:'Груди',back_lat:'Широка',back_mid:'Середня',lateral_deltoid:'Бічна дельта',
+    anterior_deltoid:'Передня дельта',posterior_deltoid:'Задня дельта',biceps:'Біцепс',
+    triceps:'Тріцепс',quadriceps:'Квадро',hamstrings:'Хамстрінги',glutes:'Сідниці',
+    calves:'Ікри',abs:'Прес',erectors:'Розгиначі',traps:'Трапеція',forearms:'Передпліччя',
+    hip_flexors:'Згиначі стегна',brachialis:'Плечовий'})[m]||m;
+}
+
+function _workoutShortName(id){
+  return ({upper_a:'Upper A',lower_a:'Lower A',upper_b:'Upper B',lower_b:'Lower B'})[id]||id;
+}
+
 function renderCoachLogContent(){
   const el=document.getElementById('coach-log-content'); if(!el) return;
-  if(!coachLogText){el.innerHTML='<div class="empty" style="padding:40px 0"><div class="empty-ico">📋</div><div>Лог тренера не завантажено</div></div>';return;}
-  const html=coachLogText
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/^### (.+)$/gm,'<div class="coach-h3">$1</div>')
-    .replace(/^## (.+)$/gm,'<div class="coach-h2">$1</div>')
-    .replace(/^# (.+)$/gm,'<div class="coach-h1">$1</div>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--t)">$1</strong>')
-    .replace(/`(.+?)`/g,'<code style="background:var(--s3);border-radius:4px;padding:1px 5px;font-size:12px">$1</code>')
-    .replace(/^[-*•] (.+)$/gm,'<div class="coach-li">· $1</div>')
-    .replace(/\n{2,}/g,'<br><br>').replace(/\n(?!<)/g,'<br>');
-  el.innerHTML=`<div class="coach-log-body">${html}</div><div style="height:30px"></div>`;
+  const parsed=parseCoachData();
+  const live=liveCoachMetrics();
+  // Merge: md-parsed takes precedence; fill gaps with live
+  const d={
+    date:parsed.date||new Date().toISOString().slice(0,10),
+    recovery:parsed.recovery!=null?parsed.recovery:_computeRecoveryFromNote(),
+    hooperScore:parsed.hooperScore??live.hooperScore,
+    sleepHours:parsed.sleepHours??live.sleepHours,
+    adjustment:parsed.adjustment,
+    sessionsWeek:parsed.sessionsWeek??live.sessionsWeek,
+    sessionsTarget:parsed.sessionsTarget||live.sessionsTarget||4,
+    weightCurrent:parsed.weightCurrent??live.weightCurrent,
+    weightDelta:parsed.weightDelta??live.weightDelta,
+    weightDeltaDays:parsed.weightDeltaDays??live.weightDeltaDays,
+    weightSpark:live.weightSpark,
+    fatCurrent:live.fatCurrent,
+    fatDelta:parsed.fatDelta??live.fatDelta,
+    fatSpark:live.fatSpark,
+    stepsAvg:parsed.stepsAvg??live.stepsAvg,
+    stepsTarget:parsed.stepsTarget||live.stepsTarget||8000,
+    stepsSpark:live.stepsSpark,
+    weekSlots:live.weekSlots,
+    muscleVolume:live.muscleVolume||{},
+    highlights:parsed.highlights
+  };
+
+  const status=_recoveryStatus(d.recovery);
+  const rScore=d.recovery??0;
+  const circumf=2*Math.PI*52; // r=52
+  const dashoffset=circumf*(1-rScore/100);
+  const ringColor=rScore>=75?'#22c55e':rScore>=55?'#eab308':rScore>=35?'#f59e0b':'#f87171';
+
+  // Build sections
+  let html=`<div class="coach-page coach-stagger">`;
+
+  // Hero
+  html+=`<div class="coach-hero">
+    <div class="coach-ring-wrap">
+      <svg class="coach-ring" viewBox="0 0 120 120">
+        <circle class="coach-ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="coach-ring-fg" cx="60" cy="60" r="52"
+          stroke="${ringColor}"
+          style="stroke-dasharray:${circumf.toFixed(1)};stroke-dashoffset:${circumf.toFixed(1)}"/>
+      </svg>
+      <div class="coach-ring-center">
+        <div class="coach-ring-value" style="color:${ringColor}">${d.recovery??'—'}</div>
+        <div class="coach-ring-max">зі 100</div>
+      </div>
+    </div>
+    <div class="coach-hero-meta">
+      <div class="coach-hero-lbl">${d.date?fmtDate(d.date):''} · Recovery</div>
+      <div class="coach-hero-title">${status.lbl}</div>
+      <div class="coach-hero-desc">${status.desc}</div>
+    </div>
+  </div>`;
+
+  // Adjustment banner (if set)
+  if(d.adjustment!=null){
+    const sign=d.adjustment>0?'+':(d.adjustment<0?'':'');
+    const cls=d.adjustment===0?'pos':(d.adjustment>0?'pos':'neg');
+    const ico=d.adjustment===0?'✅':(d.adjustment>0?'🔥':'⚠️');
+    const valTxt=d.adjustment===0?'Без коригувань':`${sign}${d.adjustment} підхід${Math.abs(d.adjustment)===1?'':'ів'} на вправу`;
+    const desc=d.adjustment===0?'Працюй за планом, стан дозволяє':(d.adjustment<0?`Зменш обсяг (recovery ${d.recovery||'?'}/100)`:'Можна додати підхід');
+    html+=`<div class="coach-adjust ${cls}">
+      <div class="adjust-ico">${ico}</div>
+      <div class="adjust-body">
+        <div class="adjust-val">${valTxt}</div>
+        <div class="adjust-desc">${desc}</div>
+      </div>
+    </div>`;
+  }
+
+  // Daily note chips
+  if(d.hooperScore!=null||d.sleepHours!=null){
+    let chips='';
+    if(d.hooperScore!=null){
+      const hCls=d.hooperScore<=7?'good':(d.hooperScore<=13?'okay':'poor');
+      chips+=`<span class="dn-chip">😊 Hooper <strong>${d.hooperScore}</strong>/20</span>`;
+    }
+    if(d.sleepHours!=null){
+      const sEmj=d.sleepHours>=7?'😴':d.sleepHours>=6?'🛌':'🥱';
+      chips+=`<span class="dn-chip">${sEmj} Сон <strong>${d.sleepHours}</strong>год</span>`;
+    }
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Сьогодні</div>
+      <div class="dn-row">${chips}</div>
+    </div>`;
+  }
+
+  // Week training visualization
+  if(d.weekSlots&&d.weekSlots.length){
+    const doneCount=d.weekSlots.filter(s=>s.done).length;
+    const slotsHtml=d.weekSlots.map(s=>{
+      const cls=s.done?'done':(s.next?'next':'');
+      return `<div class="wt-slot ${cls}">
+        <div class="wt-dot"></div>
+        <div class="wt-lbl">${_workoutShortName(s.id)}</div>
+      </div>`;
+    }).join('');
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Тренувальний тиждень · ${doneCount}/${d.sessionsTarget}</div>
+      <div class="week-train">${slotsHtml}</div>
+    </div>`;
+  }
+
+  // Body metrics grid
+  const bodyCards=[];
+  if(d.weightCurrent!=null){
+    const delta=d.weightDelta;
+    const dCls=delta==null?'flat':(delta<0?'down':(delta>0?'up':'flat'));
+    const dTxt=delta==null?'—':`${delta>0?'+':''}${delta}кг${d.weightDeltaDays?` · ${d.weightDeltaDays}д`:''}`;
+    bodyCards.push(`<div class="body-card">
+      <div class="bc-lbl">Вага</div>
+      <div class="bc-val">${d.weightCurrent}<small>кг</small></div>
+      ${_sparkSVG(d.weightSpark,ringColor)}
+      <div class="bc-delta ${dCls}">${dTxt}</div>
+    </div>`);
+  }
+  if(d.fatCurrent!=null||d.fatDelta!=null){
+    const delta=d.fatDelta;
+    const dCls=delta==null?'flat':(delta<0?'down':(delta>0?'up':'flat'));
+    const dTxt=delta==null?'—':`${delta>0?'+':''}${delta}%`;
+    bodyCards.push(`<div class="body-card">
+      <div class="bc-lbl">Жир</div>
+      <div class="bc-val">${d.fatCurrent??'—'}<small>%</small></div>
+      ${_sparkSVG(d.fatSpark,'#eab308')}
+      <div class="bc-delta ${dCls}">${dTxt}</div>
+    </div>`);
+  }
+  if(d.stepsAvg!=null){
+    const pct=Math.min(100,Math.round(d.stepsAvg/d.stepsTarget*100));
+    const dCls=pct>=90?'up':(pct>=60?'flat':'down');
+    bodyCards.push(`<div class="body-card">
+      <div class="bc-lbl">Кроки/день</div>
+      <div class="bc-val">${d.stepsAvg.toLocaleString('uk-UA')}</div>
+      ${_sparkSVG(d.stepsSpark,'#22c55e')}
+      <div class="bc-delta ${dCls}">${pct}% цілі (${(d.stepsTarget/1000).toFixed(0)}k)</div>
+    </div>`);
+  }
+  if(bodyCards.length){
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Тіло · Композиція</div>
+      <div class="body-grid">${bodyCards.join('')}</div>
+    </div>`;
+  }
+
+  // Volume per muscle (last 7 days)
+  if(d.muscleVolume&&Object.keys(d.muscleVolume).length){
+    const order=['chest','back_lat','back_mid','lateral_deltoid','posterior_deltoid','biceps','triceps','quadriceps','hamstrings','glutes'];
+    const rows=order.map(mus=>{
+      const n=d.muscleVolume[mus]||0; if(n===0&&!['chest','back_lat','back_mid','quadriceps','hamstrings'].includes(mus)) return '';
+      const target=mus==='lateral_deltoid'||mus==='posterior_deltoid'?6:10;
+      const pct=Math.min(100,(n/target)*100);
+      const cls=n>=target?'good':(n>=target*0.6?'mid':'low');
+      return `<div class="vol-row">
+        <div class="vol-mus">${_muscleNameUA(mus)}</div>
+        <div class="vol-bar"><div class="vol-fill ${cls}" style="width:${pct}%"></div></div>
+        <div class="vol-num">${n}/${target}</div>
+      </div>`;
+    }).filter(Boolean).join('');
+    if(rows){
+      html+=`<div class="coach-sec">
+        <div class="coach-sec-title">Обсяг за тиждень · підходи</div>
+        ${rows}
+      </div>`;
+    }
+  }
+
+  // Highlights
+  if(d.highlights&&d.highlights.length){
+    html+=`<div class="coach-sec">
+      <div class="coach-sec-title">Нотатки тренера</div>
+      <div class="coach-highlights">
+        ${d.highlights.slice(0,8).map(h=>`<div class="coach-hl-item"><div class="coach-hl-dot"></div><div>${escapeHTML(h)}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if(!d.recovery&&!d.weightCurrent&&!d.sessionsWeek){
+    html+=`<div class="empty" style="padding:30px 0"><div class="empty-ico">📋</div><div>Почни тренуватись і додавати щоденні нотатки — AI Coach побудує аналіз</div></div>`;
+  }
+
+  html+=`<div style="height:30px"></div></div>`;
+  el.innerHTML=html;
+
+  // Trigger ring fill animation on next frame
+  requestAnimationFrame(()=>{
+    const fg=el.querySelector('.coach-ring-fg');
+    if(fg) fg.style.strokeDashoffset=dashoffset.toFixed(1);
+  });
+}
+
+// Simple recovery score from daily note when md lacks it
+function _computeRecoveryFromNote(){
+  const note=getDailyNote(new Date().toISOString().slice(0,10));
+  if(!note) return null;
+  let score=100;
+  const h=calcHooperScore(note); // 4=best, 20=worst
+  if(h!=null) score-=((h-4)/16)*50;
+  if(note.sleep_hours!=null){
+    if(note.sleep_hours<6) score-=15;
+    else if(note.sleep_hours<7) score-=8;
+  }
+  return Math.max(0,Math.min(100,Math.round(score)));
 }
 
 // ─── Functional Test Composite Score ─────────────────────────────────────────
