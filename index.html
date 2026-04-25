@@ -820,6 +820,24 @@
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .toast.success{border-color:rgba(34,197,94,.3)}.toast.error{border-color:rgba(239,68,68,.3)}
 
+    /* ── Info button + modal ─────────────────────────────────── */
+    .info-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--s3);color:var(--t3);font-size:11px;font-weight:700;border:none;cursor:pointer;margin-left:6px;vertical-align:1px;flex-shrink:0;font-family:Georgia,serif;font-style:italic;transition:background 150ms ease,color 150ms ease;padding:0;line-height:1}
+    .info-btn:active{background:var(--p);color:#fff;transform:scale(.92)}
+    @media(hover:hover){.info-btn:hover{background:var(--p);color:#fff}}
+    .info-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);z-index:1100;opacity:0;pointer-events:none;transition:opacity 200ms var(--eo3)}
+    .info-backdrop.open{opacity:1;pointer-events:auto}
+    .info-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.96);width:min(360px,calc(100vw - 32px));max-height:80vh;overflow-y:auto;background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:20px 22px 22px;z-index:1101;opacity:0;pointer-events:none;transition:opacity 220ms var(--eo3),transform 220ms cubic-bezier(.16,1,.3,1);box-shadow:0 24px 60px -10px rgba(0,0,0,.6)}
+    .info-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+    .info-modal-title{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px;color:var(--t)}
+    .info-modal-body{font-size:13px;color:var(--t2);line-height:1.55}
+    .info-modal-body p{margin:0 0 10px}
+    .info-modal-body p:last-child{margin-bottom:0}
+    .info-modal-body strong{color:var(--t);font-weight:700}
+    .info-modal-body em{color:var(--p2);font-style:normal;font-weight:600}
+    .info-modal-close{margin-top:14px;width:100%;padding:10px;background:var(--s2);border:1px solid var(--bd);border-radius:10px;color:var(--t);font-size:13px;font-weight:600;cursor:pointer}
+    .info-modal-close:active{background:var(--p);color:#fff}
+    @media(prefers-reduced-motion:reduce){.info-modal,.info-backdrop{transition:none}}
+
     /* ── Empty state ─────────────────────────────────────────── */
     .empty{text-align:center;padding:32px 20px;color:var(--t3)}
     .empty-ico{font-size:30px;margin-bottom:9px;opacity:.5}
@@ -881,6 +899,14 @@
 </header>
 
 <div id="toast" class="toast"></div>
+
+<!-- Info tooltip modal -->
+<div class="info-backdrop" id="info-backdrop" onclick="closeInfo()"></div>
+<div class="info-modal" id="info-modal" role="dialog" aria-modal="true">
+  <div class="info-modal-title" id="info-modal-title"></div>
+  <div class="info-modal-body" id="info-modal-body"></div>
+  <button class="info-modal-close" onclick="closeInfo()">Зрозуміло</button>
+</div>
 
 <!-- Swipeable pages: Home | Workout | History -->
 <div class="swipe-root" id="swipe-root">
@@ -1096,6 +1122,18 @@
     </div>
   </div>
   <div id="coach-log-content"></div>
+</div>
+
+<!-- Overlay: Performance Manager (PMC) -->
+<div class="overlay" id="ov-pmc">
+  <div class="overlay-header">
+    <div class="overlay-header-inner">
+      <button class="icon-btn" onclick="closeOverlay('ov-pmc')" aria-label="Close">&#8592;</button>
+      <span class="overlay-title">Performance Manager</span>
+      <div style="width:32px"></div>
+    </div>
+  </div>
+  <div id="pmc-content"></div>
 </div>
 
 <!-- Overlay: Weekly AI report -->
@@ -2216,6 +2254,37 @@ function renderMetricsSection() {
 }
 
 // ─── Metric Detail Page ──────────────────────────────────────────────────────
+// ─── Glossary tooltips ────────────────────────────────────────────────────────
+const GLOSSARY = {
+  recovery:{t:'Recovery Score',b:'<p>Композитна оцінка готовності до тренування (0–100). Натхнена Whoop/Oura.</p><p>Складається з: <strong>Hooper</strong> (сон+стрес+втома+біль), <strong>тривалості сну</strong>, <strong>дефіциту сну за 14д</strong>, <strong>A:C ratio</strong>, <strong>HRV z-score</strong>, <strong>RHR z-score</strong>, хвороби, алкоголю.</p><p><em>≥85</em> готовий до піку · <em>70–85</em> свіжий · <em>50–70</em> помірно · <em>&lt;50</em> легке</p>'},
+  strain:{t:'Strain (0–21)',b:'<p>Денне навантаження за лог-шкалою Borg CR-10. Скільки стресу твій організм пережив сьогодні (тренування + кардіо).</p><p><em>0–8</em> легкий день · <em>8–14</em> помірний · <em>14–18</em> інтенсивний · <em>18+</em> максимальний.</p><p>Розрахунок: <strong>sRPE × тривалість</strong> для силових + <strong>Banister TRIMP</strong> для кардіо (HR-base). Лог-нормовано.</p>'},
+  tsb:{t:'Form (TSB)',b:'<p><strong>Training Stress Balance</strong> — різниця між фітнесом (CTL) і втомою (ATL). Показує, чи готовий ти до піку.</p><p><em>+5...+15</em> свіжий — гарний день для PR · <em>−10...+5</em> у формі · <em>−10...−20</em> накопичена втома · <em>&lt;−20</em> глибока втома · <em>&gt;+15</em> детренуєшся, додай навантаження.</p><p>Метод TrainingPeaks: TSB = CTL − ATL.</p>'},
+  ctl:{t:'CTL — Фітнес',b:'<p><strong>Chronic Training Load</strong> — твоя хронічна тренованість, експоненційно зважена за останні <em>~42 дні</em>.</p><p>Рости повільно (≈3–5 пунктів/тиждень). Високий CTL = висока тренованість.</p>'},
+  atl:{t:'ATL — Втома',b:'<p><strong>Acute Training Load</strong> — гостра втома, експоненційно зважена за останні <em>~7 днів</em>.</p><p>Швидко росте після важких сесій, швидко падає при відпочинку. Висока ATL надовго → перетренування.</p>'},
+  pmc:{t:'Performance Manager Chart',b:'<p>Класична методологія TrainingPeaks для управління тренувальним навантаженням.</p><p>Три криві:<br>• <strong>CTL</strong> (синя) — фітнес, EWMA 42д<br>• <strong>ATL</strong> (червона) — втома, EWMA 7д<br>• <strong>TSB</strong> (зелена/червона зона знизу) — форма (CTL−ATL)</p><p>Логіка: збільшуй CTL поступово (+3-5/тижд), не дай ATL надовго перевищити CTL, і знижуй ATL (на recovery week) для піку TSB перед змаганням / тестом.</p>'},
+  ac_ratio:{t:'Acute:Chronic Ratio',b:'<p>Співвідношення гострого (7д) до хронічного (28д) навантаження.</p><p><em>0.8–1.3</em> зелена зона · <em>1.3–1.5</em> перегрів · <em>&gt;1.5</em> небезпека травми · <em>&lt;0.7</em> детренуєшся.</p><p>Дослідження Габетта показали, що тримання в зоні 0.8–1.3 знижує ризик травм у 2–4 рази.</p>'},
+  load:{t:'Load (AU)',b:'<p><strong>Тренувальне навантаження</strong> в умовних одиницях (Arbitrary Units) за тиждень.</p><p>Метод Foster sRPE: <strong>sRPE × тривалість</strong> для силових. Для кардіо — Banister TRIMP (на основі ЧСС).</p><p>Не порівнюй абсолютне число з іншими — це твоя особиста шкала. Стеж за ТРЕНДОМ.</p>'},
+  monotony:{t:'Monotony',b:'<p>Однотипність навантаження за тиждень: <strong>середнє ÷ SD</strong> денних завантажень.</p><p><em>&lt;1.5</em> добра варіативність · <em>1.5–2.0</em> попередження · <em>&gt;2.0</em> небезпечно.</p><p>Високий monotony = одноманітні дні без відпочинку → плато і ризик травм. Додай легкі/важкі дні для контрасту.</p>'},
+  foster_strain:{t:'Foster Strain',b:'<p>Тижневий Strain за методом Foster: <strong>weekly load × monotony</strong>.</p><p>Дослідження показали кореляцію: weeks with strain >2× персонального baseline → +75% ризик травм/хвороб.</p><p>Високий Strain = багато роботи + однотипно. Знижуй monotony або зменш загальний load.</p>'},
+  hooper:{t:'Hooper Index',b:'<p>Психометрична оцінка готовності з 4 компонентів (кожен 1–7):<br>• Якість сну<br>• Рівень стресу<br>• Втома<br>• М’язовий біль</p><p>Сума 4–28. У нашій шкалі поділена на 5 рівнів (4–20).</p><p><em>4–7</em> чудово · <em>8–13</em> ок · <em>14–20</em> погано. Рости 4+ балів = ознака нефункц. перевантаження.</p>'},
+  hrv:{t:'HRV (rMSSD)',b:'<p><strong>Heart Rate Variability</strong> — варіабельність серцевого ритму, ms (root mean square of successive differences).</p><p>Парасимпатичний тонус. Високий HRV = добре відновлення. Низький → стрес/перетрен/хвороба.</p><p>Аналізуємо як <strong>z-score від твого 60-денного baseline</strong> (логнормалізовано). Сирі цифри між людьми не порівнюються.</p>'},
+  rhr:{t:'Resting HR',b:'<p><strong>Пульс спокою</strong> зранку, ударів/хв.</p><p>Аналізуємо як z-score від твого 60-денного baseline.</p><p><em>+0.8σ</em> підвищений → стрес/недосип/хвороба/перетрен. Кореляція з HRV.</p>'},
+  sleep_debt:{t:'Дефіцит сну · 14д',b:'<p>Накопичений недосип за останні 14 ночей (тільки додавання при недосипанні, переспати не «компенсує»).</p><p>Особиста потреба = середнє з ТОП 25% сну за 90 днів (мінімум 7, максимум 9 год).</p><p>Кожна година дефіциту знижує recovery на 3–5%. Дефіцит >7h/14д = критичний — додай 30+ хв сну.</p>'},
+  acwr:{t:'A:C Ratio (EWMA)',b:'<p>Сучасний варіант Acute:Chronic, де гостре і хронічне навантаження експоненційно зважені (а не прості суми).</p><p>Точніший за класичний (7д/28д), бо враховує що недавні дні впливають сильніше.</p><p>Зелена зона <em>0.8–1.3</em>.</p>'}
+};
+function showInfo(key){
+  const item=GLOSSARY[key]; if(!item) return;
+  document.getElementById('info-modal-title').textContent=item.t;
+  document.getElementById('info-modal-body').innerHTML=item.b;
+  document.getElementById('info-backdrop').classList.add('open');
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfo(){
+  document.getElementById('info-backdrop').classList.remove('open');
+  document.getElementById('info-modal').classList.remove('open');
+}
+function infoBtn(key){return `<button class="info-btn" onclick="event.stopPropagation();showInfo('${key}')" aria-label="Що це?">i</button>`;}
+
 const METRICS = {
   weight: {label:'Вага', unit:'кг', color:'#8b5cf6', decimals:1, src:'weight_kg', invert:true, agg:'last'},
   fat:    {label:'Жир',  unit:'%',  color:'#f87171', decimals:1, src:'body_fat_pct', invert:true, agg:'last'},
@@ -2447,7 +2516,9 @@ function buildPickerList(query='') {
   if(!absFiltered.length&&!allFiltered.length) html=`<div style="padding:24px;text-align:center;color:var(--t3);font-size:13px">Нічого не знайдено</div>`;
   const el=document.getElementById('ex-picker-list'); if(el) el.innerHTML=html;
 }
-function openExercisePicker(){
+let pickerContext='active'; // 'active' | 'edit'
+function openExercisePicker(ctx){
+  pickerContext=ctx||'active';
   const sheet=document.getElementById('ex-picker-sheet');
   const bd=document.getElementById('ex-picker-backdrop');
   const inp=document.getElementById('ex-search');
@@ -2466,6 +2537,29 @@ function addExerciseToSession(exJson){
   closeExercisePicker();
   let ex; try{ex=JSON.parse(exJson.replace(/&quot;/g,'"'));}catch(e){return;}
   if(!ex||!ex.id) return;
+
+  // Editing past session from journal: append to editingSession.exercises and re-render
+  if(pickerContext==='edit'&&editingSession){
+    if(!editingSession.exercises) editingSession.exercises=[];
+    // Persist current input values before re-render
+    for(let ei=0;ei<editingSession.exercises.length;ei++){
+      for(let si=0;si<(editingSession.exercises[ei].sets||[]).length;si++){
+        const w=document.getElementById(`es-w-${ei}-${si}`);
+        const r=document.getElementById(`es-r-${ei}-${si}`);
+        if(w) editingSession.exercises[ei].sets[si].weight=parseFloat(w.value)||0;
+        if(r) editingSession.exercises[ei].sets[si].reps=parseInt(r.value)||0;
+      }
+    }
+    const setsCount=Math.max(1,Math.min(8,+ex.sets||3));
+    const sets=[];
+    for(let i=1;i<=setsCount;i++) sets.push({set:i,weight:0,reps:0});
+    editingSession.exercises.push({exercise_id:ex.id,sets});
+    renderEditSessionContent();
+    showToast(`+ ${ex.name}`,'success');
+    return;
+  }
+
+  // Active workout: append to DOM
   const list=document.getElementById('ex-list'); if(!list) return;
   const n=list.querySelectorAll('.ex-card').length+1;
   const html=renderEx(ex,n);
@@ -3020,6 +3114,7 @@ function renderEditSessionContent(){
         body+=`</div>`;
       }
     }
+    body+=`<button class="add-ex-btn" onclick="openExercisePicker('edit')" aria-label="Додати вправу" style="margin-bottom:14px">+ Додати вправу</button>`;
   }
   body+=`<button class="btn btn-p" onclick="saveEditSession()">Зберегти</button><div style="height:20px"></div>`;
   document.getElementById('edit-session-content').innerHTML=body;
@@ -3928,17 +4023,17 @@ function renderCoachLogContent(){
     }
     html+=`<div class="perf-tri">
       <div class="perf-card recovery ${recCls}">
-        <div class="perf-lbl">Recovery</div>
+        <div class="perf-lbl">Recovery${infoBtn('recovery')}</div>
         <div class="perf-val">${rec??'—'}<small>/100</small></div>
         <div class="perf-sub">${recDesc}</div>
       </div>
       <div class="perf-card strain">
-        <div class="perf-lbl">Strain</div>
+        <div class="perf-lbl">Strain${infoBtn('strain')}</div>
         <div class="perf-val">${strain.toFixed(1)}<small>/21</small></div>
         <div class="perf-sub">${strainDesc}</div>
       </div>
-      <div class="perf-card tsb ${tsbCls}">
-        <div class="perf-lbl">Form (TSB)</div>
+      <div class="perf-card tsb ${tsbCls}" onclick="openPMC()" style="cursor:pointer">
+        <div class="perf-lbl">Form (TSB)${infoBtn('tsb')}</div>
         <div class="perf-val">${tsb==null?'—':(tsb>0?'+':'')+Math.round(tsb)}</div>
         <div class="perf-sub">${tsbDesc}</div>
       </div>
@@ -3956,7 +4051,7 @@ function renderCoachLogContent(){
         sub=`${z>=0?'+':''}${z.toFixed(1)}σ vs ${bl.mean}ms`;
         cls=z>=0.3?'good':(z>=-0.5?'':(z>=-1.5?'warn':'poor'));
       }
-      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">HRV</div><div class="vital-chip-val">${d.hrvRmssd}<small style="font-size:10px;color:var(--t3)">ms</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">HRV${infoBtn('hrv')}</div><div class="vital-chip-val">${d.hrvRmssd}<small style="font-size:10px;color:var(--t3)">ms</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
     }
     if(d.rhr!=null){
       const bl=d.rhrBaseline;
@@ -3966,7 +4061,7 @@ function renderCoachLogContent(){
         sub=`${z>=0?'+':''}${z.toFixed(1)}σ vs ${bl.mean}bpm`;
         cls=z<=-0.3?'good':(z<=0.5?'':(z<=1.5?'warn':'poor'));
       }
-      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">RHR</div><div class="vital-chip-val">${d.rhr}<small style="font-size:10px;color:var(--t3)">bpm</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">RHR${infoBtn('rhr')}</div><div class="vital-chip-val">${d.rhr}<small style="font-size:10px;color:var(--t3)">bpm</small></div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
     }
     if(d.bodyTemp!=null){
       const dev=d.bodyTemp-36.6;
@@ -3986,7 +4081,7 @@ function renderCoachLogContent(){
       <div class="rec-row-delta ${b.delta<0?'neg':'pos'}">${b.delta>0?'+':''}${b.delta}</div>
     </div>`).join('');
     html+=`<div class="coach-sec">
-      <div class="coach-sec-title">Recovery — розклад балів</div>
+      <div class="coach-sec-title">Recovery — розклад балів${infoBtn('recovery')}</div>
       <div class="rec-breakdown">
         ${rows}
         <div class="rec-data-quality">Повнота даних: ${d.recoveryCompleteness}% · більше даних → точніший аналіз</div>
@@ -4015,12 +4110,12 @@ function renderCoachLogContent(){
     const tsbNegPath=`M${PAD},${baseY} ${pts.map((p,i)=>`L${(PAD+i*xStep).toFixed(1)},${(p.tsb<0?yTSB(p.tsb):baseY).toFixed(1)}`).join(' ')} L${(PAD+(pts.length-1)*xStep).toFixed(1)},${baseY} Z`;
     const lastP=pts[pts.length-1];
     html+=`<div class="coach-sec">
-      <div class="coach-sec-title">Performance Manager · ${pts.length}д</div>
-      <div class="pmc-chart">
+      <div class="coach-sec-title">Performance Manager · ${pts.length}д${infoBtn('pmc')}</div>
+      <div class="pmc-chart" onclick="openPMC()" style="cursor:pointer">
         <div class="pmc-legend">
-          <span><i style="background:#3b82f6"></i>CTL ${Math.round(lastP.ctl)} (фітнес)</span>
-          <span><i style="background:#f87171"></i>ATL ${Math.round(lastP.atl)} (втома)</span>
-          <span><i style="background:#22c55e"></i>TSB ${lastP.tsb>0?'+':''}${Math.round(lastP.tsb)} (форма)</span>
+          <span><i style="background:#3b82f6"></i>CTL ${Math.round(lastP.ctl)}</span>
+          <span><i style="background:#f87171"></i>ATL ${Math.round(lastP.atl)}</span>
+          <span><i style="background:#22c55e"></i>TSB ${lastP.tsb>0?'+':''}${Math.round(lastP.tsb)}</span>
         </div>
         <svg class="pmc-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           <line class="grid" x1="${PAD}" y1="${midY}" x2="${W-PAD}" y2="${midY}"/>
@@ -4030,6 +4125,7 @@ function renderCoachLogContent(){
           <path class="ctl" d="${ctlPath}"/>
           <path class="atl" d="${atlPath}"/>
         </svg>
+        <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:6px">Натисни для деталей →</div>
       </div>
     </div>`;
   }
@@ -4040,7 +4136,7 @@ function renderCoachLogContent(){
     const cls=sd.debt<=2?'ok':'';
     const lvl=sd.debt<=2?'У нормі':(sd.debt<=5?'Помірний':(sd.debt<=10?'Високий':'Критичний'));
     html+=`<div class="coach-sec">
-      <div class="coach-sec-title">Дефіцит сну · 14д</div>
+      <div class="coach-sec-title">Дефіцит сну · 14д${infoBtn('sleep_debt')}</div>
       <div class="sleep-debt">
         <div class="sleep-debt-num ${cls}">${sd.debt}<small style="font-size:14px;color:var(--t3);font-weight:600">h</small></div>
         <div class="sleep-debt-info">
@@ -4060,15 +4156,15 @@ function renderCoachLogContent(){
       <div class="foster-grid">
         <div class="foster-cell">
           <div class="foster-cell-val">${f.weeklyLoad.toLocaleString('uk-UA')}</div>
-          <div class="foster-cell-lbl">Load (AU)</div>
+          <div class="foster-cell-lbl">Load (AU)${infoBtn('load')}</div>
         </div>
         <div class="foster-cell">
           <div class="foster-cell-val" style="color:${f.monotony>=2?'#f87171':(f.monotony>=1.5?'#eab308':'#22c55e')}">${f.monotony||'—'}</div>
-          <div class="foster-cell-lbl">Monotony</div>
+          <div class="foster-cell-lbl">Monotony${infoBtn('monotony')}</div>
         </div>
         <div class="foster-cell">
           <div class="foster-cell-val">${f.strain.toLocaleString('uk-UA')}</div>
-          <div class="foster-cell-lbl">Strain</div>
+          <div class="foster-cell-lbl">Strain${infoBtn('foster_strain')}</div>
         </div>
       </div>
       <div style="font-size:10.5px;color:var(--t3);margin-top:8px;line-height:1.4">${f.monotony>=2?'⚠️ Monotony ≥2 — додай легких/важких днів. Однотипне навантаження → плато':'Monotony &lt;2 — здорова варіативність'}</div>
@@ -4080,7 +4176,7 @@ function renderCoachLogContent(){
     let chips='';
     if(d.hooperScore!=null){
       const hCls=d.hooperScore<=7?'good':(d.hooperScore<=13?'okay':'poor');
-      chips+=`<span class="dn-chip">😊 Hooper <strong>${d.hooperScore}</strong>/20</span>`;
+      chips+=`<span class="dn-chip">😊 Hooper <strong>${d.hooperScore}</strong>/20${infoBtn('hooper')}</span>`;
     }
     if(d.sleepHours!=null){
       const sEmj=d.sleepHours>=7?'😴':d.sleepHours>=6?'🛌':'🥱';
@@ -4114,7 +4210,7 @@ function renderCoachLogContent(){
     const delta=d.weightDelta;
     const dCls=delta==null?'flat':(delta<0?'down':(delta>0?'up':'flat'));
     const dTxt=delta==null?'—':`${delta>0?'+':''}${delta}кг${d.weightDeltaDays?` · ${d.weightDeltaDays}д`:''}`;
-    bodyCards.push(`<div class="body-card">
+    bodyCards.push(`<div class="body-card" onclick="openMetric('weight')" style="cursor:pointer">
       <div class="bc-lbl">Вага</div>
       <div class="bc-val">${d.weightCurrent}<small>кг</small></div>
       ${_sparkSVG(d.weightSpark,ringColor)}
@@ -4125,7 +4221,7 @@ function renderCoachLogContent(){
     const delta=d.fatDelta;
     const dCls=delta==null?'flat':(delta<0?'down':(delta>0?'up':'flat'));
     const dTxt=delta==null?'—':`${delta>0?'+':''}${delta}%`;
-    bodyCards.push(`<div class="body-card">
+    bodyCards.push(`<div class="body-card" onclick="openMetric('fat')" style="cursor:pointer">
       <div class="bc-lbl">Жир</div>
       <div class="bc-val">${d.fatCurrent??'—'}<small>%</small></div>
       ${_sparkSVG(d.fatSpark,'#eab308')}
@@ -4135,7 +4231,7 @@ function renderCoachLogContent(){
   if(d.stepsAvg!=null){
     const pct=Math.min(100,Math.round(d.stepsAvg/d.stepsTarget*100));
     const dCls=pct>=90?'up':(pct>=60?'flat':'down');
-    bodyCards.push(`<div class="body-card">
+    bodyCards.push(`<div class="body-card" onclick="openMetric('steps')" style="cursor:pointer">
       <div class="bc-lbl">Кроки/день</div>
       <div class="bc-val">${d.stepsAvg.toLocaleString('uk-UA')}</div>
       ${_sparkSVG(d.stepsSpark,'#22c55e')}
@@ -4174,7 +4270,7 @@ function renderCoachLogContent(){
         const desc=acr>1.5?'Небезпечно — деолад':(acr>1.3?'Перегрів — обережно':(acr<0.7?'Детренування':'Оптимальна зона'));
         acBlock=`<div class="coach-ac ${cls}">
           <div>
-            <div class="coach-ac-label">Acute:Chronic Ratio · 7д vs 28д</div>
+            <div class="coach-ac-label">Acute:Chronic Ratio · 7д vs 28д${infoBtn('ac_ratio')}</div>
             <div class="coach-ac-desc">${desc} · зелена зона 0.8–1.3</div>
           </div>
           <div class="coach-ac-val">${acr.toFixed(2)}</div>
@@ -4246,6 +4342,122 @@ function renderCoachLogContent(){
     const fg=el.querySelector('.coach-ring-fg');
     if(fg) fg.style.strokeDashoffset=dashoffset.toFixed(1);
   });
+}
+
+// ─── Performance Manager (PMC) detail page ────────────────────────────────────
+let pmcRange=60;
+function openPMC(range){
+  if(range) pmcRange=range;
+  renderPMC();
+  openOverlay('ov-pmc');
+}
+function setPMCRange(d){pmcRange=d;renderPMC();}
+function renderPMC(){
+  const el=document.getElementById('pmc-content'); if(!el) return;
+  const pts=pmcMetrics(pmcRange);
+  if(!pts||pts.length<3){
+    el.innerHTML=`<div class="empty" style="padding:40px 20px"><div class="empty-ico">📈</div><div>Замало даних. Тренуйся регулярно — графік побудується автоматично</div></div>`;
+    return;
+  }
+  const last=pts[pts.length-1];
+  const tsbCls=last.tsb>15?'detrain':last.tsb>5?'fresh':last.tsb>-10?'':last.tsb>-20?'tired':'tired';
+  const tsbDesc=last.tsb>15?'Детренуєшся — додай навантаження':last.tsb>5?'Свіжий — гарний день для PR':last.tsb>-10?'У формі — стабільна робоча зона':last.tsb>-20?'Накопичена втома — рознавантажся':'Глибока втома — рознавантажся обов\'язково';
+
+  // SVG dimensions for big chart
+  const W=600,H=300,PAD=14;
+  const maxY=Math.max(...pts.map(p=>Math.max(p.atl,p.ctl)),50);
+  const tsbAbs=Math.max(...pts.map(p=>Math.abs(p.tsb)),20);
+  const topH=180, botH=80, midY=PAD+topH+10, baseY=midY+botH/2;
+  const xStep=(W-PAD*2)/(pts.length-1);
+  const yLoad=v=>PAD+topH-(v/maxY)*topH;
+  const yTSB=v=>baseY-(v/tsbAbs)*(botH/2);
+
+  const ctlPath=pts.map((p,i)=>`${i?'L':'M'}${(PAD+i*xStep).toFixed(1)},${yLoad(p.ctl).toFixed(1)}`).join(' ');
+  const atlPath=pts.map((p,i)=>`${i?'L':'M'}${(PAD+i*xStep).toFixed(1)},${yLoad(p.atl).toFixed(1)}`).join(' ');
+  const tsbPosPath=`M${PAD},${baseY} ${pts.map((p,i)=>`L${(PAD+i*xStep).toFixed(1)},${(p.tsb>0?yTSB(p.tsb):baseY).toFixed(1)}`).join(' ')} L${(PAD+(pts.length-1)*xStep).toFixed(1)},${baseY} Z`;
+  const tsbNegPath=`M${PAD},${baseY} ${pts.map((p,i)=>`L${(PAD+i*xStep).toFixed(1)},${(p.tsb<0?yTSB(p.tsb):baseY).toFixed(1)}`).join(' ')} L${(PAD+(pts.length-1)*xStep).toFixed(1)},${baseY} Z`;
+
+  // Y-axis ticks
+  const yTicks=[0,Math.round(maxY*.25),Math.round(maxY*.5),Math.round(maxY*.75),Math.round(maxY)];
+  const xTicks=[0,Math.floor(pts.length*.25),Math.floor(pts.length*.5),Math.floor(pts.length*.75),pts.length-1];
+
+  // CTL trend (last 14d)
+  const recent=pts.slice(-14);
+  const ctlTrend=recent.length>=7?recent[recent.length-1].ctl-recent[0].ctl:0;
+  const ctlTrendCls=ctlTrend>0.5?'pos':ctlTrend<-0.5?'neg':'';
+
+  el.innerHTML=`<div class="coach-page" style="padding-top:8px">
+
+    <div class="perf-tri" style="margin-bottom:10px">
+      <div class="perf-card" style="--accent:#3b82f6">
+        <div class="perf-lbl">CTL${infoBtn('ctl')}</div>
+        <div class="perf-val">${Math.round(last.ctl)}</div>
+        <div class="perf-sub">Фітнес · 42д</div>
+      </div>
+      <div class="perf-card" style="--accent:#f87171">
+        <div class="perf-lbl">ATL${infoBtn('atl')}</div>
+        <div class="perf-val">${Math.round(last.atl)}</div>
+        <div class="perf-sub">Втома · 7д</div>
+      </div>
+      <div class="perf-card tsb ${tsbCls}">
+        <div class="perf-lbl">TSB${infoBtn('tsb')}</div>
+        <div class="perf-val">${last.tsb>0?'+':''}${Math.round(last.tsb)}</div>
+        <div class="perf-sub">Форма</div>
+      </div>
+    </div>
+
+    <div class="range-tabs" style="margin-bottom:10px">
+      ${[7,30,60,90].map(r=>`<button class="range-tab ${r===pmcRange?'active':''}" onclick="setPMCRange(${r})">${r}д</button>`).join('')}
+    </div>
+
+    <div class="pmc-chart" style="padding:14px 8px 4px">
+      <div class="pmc-legend">
+        <span><i style="background:#3b82f6"></i>CTL — фітнес</span>
+        <span><i style="background:#f87171"></i>ATL — втома</span>
+        <span><i style="background:#22c55e"></i>+TSB</span>
+        <span><i style="background:#f87171;opacity:.5"></i>−TSB</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block">
+        ${yTicks.map(t=>`<line x1="${PAD}" y1="${yLoad(t).toFixed(1)}" x2="${W-PAD}" y2="${yLoad(t).toFixed(1)}" stroke="rgba(255,255,255,.06)" stroke-dasharray="2,3"/><text x="${PAD-4}" y="${(yLoad(t)+3).toFixed(1)}" text-anchor="end" fill="var(--t3)" font-size="9">${t}</text>`).join('')}
+        <line x1="${PAD}" y1="${midY}" x2="${W-PAD}" y2="${midY}" stroke="rgba(255,255,255,.1)"/>
+        <line x1="${PAD}" y1="${baseY}" x2="${W-PAD}" y2="${baseY}" stroke="rgba(255,255,255,.06)" stroke-dasharray="2,3"/>
+        <text x="${PAD}" y="${(midY-4).toFixed(1)}" fill="var(--t3)" font-size="9">Load (AU)</text>
+        <text x="${PAD}" y="${(midY+12).toFixed(1)}" fill="var(--t3)" font-size="9">TSB</text>
+        <path d="${tsbPosPath}" fill="rgba(34,197,94,.5)"/>
+        <path d="${tsbNegPath}" fill="rgba(248,113,113,.5)"/>
+        <path d="${ctlPath}" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>
+        <path d="${atlPath}" fill="none" stroke="#f87171" stroke-width="1.6" stroke-linejoin="round"/>
+        ${xTicks.map(i=>`<text x="${(PAD+i*xStep).toFixed(1)}" y="${H-4}" text-anchor="middle" fill="var(--t3)" font-size="9">${pts[i].date.slice(5).replace('-','/')}</text>`).join('')}
+      </svg>
+    </div>
+
+    <div class="coach-sec" style="margin-top:14px">
+      <div class="coach-sec-title">Що це значить зараз</div>
+      <div class="coach-adjust ${last.tsb>5?'pos':last.tsb<-15?'neg':''}">
+        <div class="adjust-ico">${last.tsb>5?'🔥':last.tsb<-15?'⚠️':'✅'}</div>
+        <div class="adjust-body">
+          <div class="adjust-val">TSB ${last.tsb>0?'+':''}${Math.round(last.tsb)} · ${tsbDesc.split(' — ')[0]}</div>
+          <div class="adjust-desc">${tsbDesc.split(' — ')[1]||tsbDesc}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:10px 12px;background:var(--s2);border-radius:10px;font-size:12px;color:var(--t2);line-height:1.5">
+        <strong style="color:var(--t)">Тренд CTL за 14д:</strong> <span class="rec-row-delta ${ctlTrendCls}">${ctlTrend>0?'+':''}${ctlTrend.toFixed(1)}</span><br>
+        ${ctlTrend>0.5?'Фітнес росте — продовжуй':ctlTrend<-0.5?'Фітнес падає — додай навантаження або сесій':'Стабільний рівень — ок для підтримки'}
+      </div>
+    </div>
+
+    <div class="coach-sec">
+      <div class="coach-sec-title">Як читати графік</div>
+      <div style="font-size:12.5px;color:var(--t2);line-height:1.6">
+        <p style="margin:0 0 8px"><strong style="color:#3b82f6">CTL (синя)</strong> — твій <em style="color:var(--p2);font-style:normal">фітнес</em>. Експоненційно зважене навантаження за останні 42 дні. Рости повільно (~3–5 пунктів/тиждень).</p>
+        <p style="margin:0 0 8px"><strong style="color:#f87171">ATL (червона)</strong> — твоя <em style="color:var(--p2);font-style:normal">гостра втома</em>. EWMA за останні 7 днів. Швидко росте і швидко падає.</p>
+        <p style="margin:0 0 8px"><strong style="color:#22c55e">TSB (зелена/червона зона знизу)</strong> — <em style="color:var(--p2);font-style:normal">форма</em> = CTL − ATL. Якщо &gt; 0 — ти свіжіший за середнє, якщо &lt; 0 — втомленіший.</p>
+        <p style="margin:0">Стратегія: піднімай CTL поступово, коли потрібен пік (тест, змагання) — знижуй навантаження на 7–10 днів, щоб TSB вийшов у +5...+15.</p>
+      </div>
+    </div>
+
+    <div style="height:30px"></div>
+  </div>`;
 }
 
 // ─── Coach Engine v2 — Whoop/Oura/Banister-grade analytics ────────────────────
