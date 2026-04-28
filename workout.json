@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.14",
+    "version": "3.15",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-27"
+    "updated": "2026-04-28"
   },
   "schedule": [
     {
