@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.15",
+    "version": "3.16",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-04-28"
+    "updated": "2026-04-29"
   },
   "schedule": [
     {
@@ -71,7 +71,7 @@
           ],
           "warmup": null,
           "sets": 3,
-          "reps": "8",
+          "reps": "9",
           "weight_kg": 60,
           "rir": "1-2",
           "rest_sec": 150,
@@ -145,8 +145,8 @@
           ],
           "warmup": null,
           "sets": 3,
-          "reps": "15",
-          "weight_kg": 5,
+          "reps": "10",
+          "weight_kg": 6.0,
           "rir": "1-2",
           "rest_sec": 60,
           "jefit_url": "https://www.jefit.com/exercises/26/dumbbell-lateral-raise",
@@ -191,8 +191,8 @@
               ],
               "secondary_muscles": [],
               "sets": 3,
-              "reps": "10",
-              "weight_kg": 36.0,
+              "reps": "8",
+              "weight_kg": 37.0,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті притиснуті до тулуба і НЕ РУХАЮТЬСЯ",
