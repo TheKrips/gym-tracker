@@ -883,6 +883,18 @@
 
     /* ── Edit session ────────────────────────────────────────── */
     .edit-set-row{display:grid;grid-template-columns:22px 1fr 1fr;gap:5px;align-items:center;margin-bottom:5px}
+
+    /* ── Sync chip ───────────────────────────────────────────── */
+    .sync-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:.01em;border:var(--bh) solid var(--bd2);background:var(--s2);color:var(--t2);margin:14px 0 8px;-webkit-tap-highlight-color:transparent;transition:background 150ms ease,border-color 150ms ease}
+    .sync-chip.ok{color:#22c55e;border-color:rgba(34,197,94,.22);background:rgba(34,197,94,.05)}
+    .sync-chip.fail{color:#ef4444;border-color:rgba(239,68,68,.28);background:rgba(239,68,68,.06);cursor:pointer}
+    .sync-chip.warn{color:#eab308;border-color:rgba(234,179,8,.28);background:rgba(234,179,8,.06);cursor:pointer}
+    .sync-chip.dim{color:var(--t3)}
+    .sync-chip:active.fail,.sync-chip:active.warn{transform:scale(0.97)}
+    .sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+    .sync-chip.ok .sync-dot{box-shadow:0 0 0 0 currentColor;animation:sync-pulse 2.4s ease-in-out infinite}
+    @keyframes sync-pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+    @media (prefers-reduced-motion:reduce){.sync-chip.ok .sync-dot{animation:none}}
   </style>
 </head>
 <body>
@@ -944,6 +956,8 @@
       <div class="queue-hero" id="queue-hero"></div>
       <div class="queue-rest" id="queue-rest"></div>
       <button class="cardio-btn" onclick="openCardio()"><span style="font-size:17px">🏃</span><span>Додати кардіо</span></button>
+
+      <div id="sync-chip-wrap" style="display:flex;justify-content:center"></div>
     </div>
 
     <!-- PAGE 1: WORKOUT -->
@@ -1419,7 +1433,61 @@ function renderTimers() { const h=timerHTML(); ['timer-home','timer-workout'].fo
 // ─── Settings ─────────────────────────────────────────────────────────────────
 function getSetting(k,fb='') { return localStorage.getItem('gym_'+k)||fb; }
 function setSetting(k,v) { localStorage.setItem('gym_'+k,v); }
-function saveSettings() { setSetting('github_token',document.getElementById('s-token').value.trim()); setSetting('github_owner',document.getElementById('s-owner').value.trim()||'TheKrips'); setSetting('github_repo',document.getElementById('s-repo').value.trim()||'gym-tracker'); showToast('Збережено','success'); }
+
+function getSyncState(){try{return JSON.parse(localStorage.getItem('gym_sync_state')||'null');}catch(e){return null;}}
+function recordSync(ok,label,err){
+  const state={ok:!!ok,ts:new Date().toISOString(),label:label||'',err:err||null};
+  localStorage.setItem('gym_sync_state',JSON.stringify(state));
+  if(ok){const q=getPendingSync();if(q[label])delete q[label];localStorage.setItem('gym_pending_sync',JSON.stringify(q));}
+  else if(label){const q=getPendingSync();q[label]=Date.now();localStorage.setItem('gym_pending_sync',JSON.stringify(q));}
+  renderSyncChip();
+}
+function getPendingSync(){try{return JSON.parse(localStorage.getItem('gym_pending_sync')||'{}');}catch(e){return {};}}
+function syncRel(ts){
+  const sec=Math.max(0,Math.floor((Date.now()-new Date(ts).getTime())/1000));
+  if(sec<45) return 'щойно';
+  if(sec<3600) return Math.floor(sec/60)+' хв тому';
+  if(sec<86400) return Math.floor(sec/3600)+' год тому';
+  return Math.floor(sec/86400)+' дн тому';
+}
+async function pushAllPending(){
+  const q=getPendingSync();
+  if(q.note) await pushDailyNotesToGitHub(getDailyNotes());
+  if(q.log) await pushLogsToGitHub(getLogs());
+  if(q.functest) await pushFuncTestsToGitHub(getFuncTests());
+  if(q.markers) await pushHealthMarkersToGitHub(getHealthMarkers());
+}
+function onSyncChipTap(){
+  const t=getSetting('github_token');
+  if(!t){openSettings();return;}
+  const s=getSyncState();
+  if(s&&!s.ok){showToast('Повторюю синк…','');pushAllPending();return;}
+  const pend=Object.keys(getPendingSync());
+  if(pend.length){showToast('Повторюю синк…','');pushAllPending();return;}
+  showToast(s?`OK · ${syncRel(s.ts)} · ${s.label||'-'}`:'GitHub: ще не синкнуто','success');
+}
+function renderSyncChip(){
+  const el=document.getElementById('sync-chip-wrap'); if(!el) return;
+  const token=getSetting('github_token');
+  if(!token){
+    el.innerHTML=`<div class="sync-chip warn" onclick="onSyncChipTap()"><span class="sync-dot"></span>GitHub: токен не введений · натисни</div>`;
+    return;
+  }
+  const s=getSyncState();
+  const pend=Object.keys(getPendingSync()).length;
+  if(!s){
+    el.innerHTML=`<div class="sync-chip dim" onclick="onSyncChipTap()"><span class="sync-dot"></span>GitHub: ще не синкнуто</div>`;
+    return;
+  }
+  if(!s.ok || pend>0){
+    const why = s.ok ? `${pend} в черзі` : (s.err||'помилка');
+    el.innerHTML=`<div class="sync-chip fail" onclick="onSyncChipTap()"><span class="sync-dot"></span>Синк: ${why} · ${syncRel(s.ts)} · повторити</div>`;
+    return;
+  }
+  el.innerHTML=`<div class="sync-chip ok" onclick="onSyncChipTap()"><span class="sync-dot"></span>GitHub ✓ ${syncRel(s.ts)} · ${s.label||''}</div>`;
+}
+setInterval(()=>{ if(document.visibilityState==='visible') renderSyncChip(); }, 30000);
+function saveSettings() { setSetting('github_token',document.getElementById('s-token').value.trim()); setSetting('github_owner',document.getElementById('s-owner').value.trim()||'TheKrips'); setSetting('github_repo',document.getElementById('s-repo').value.trim()||'gym-tracker'); showToast('Збережено','success'); renderSyncChip(); }
 function saveTimerDefault() { const v=parseInt(document.getElementById('s-timer').value); if(v>0){timerDefault=v;localStorage.setItem('gym_timer_default',v);showToast('Збережено','success');renderTimers();} }
 function loadSettingsPage() {
   document.getElementById('s-token').value=getSetting('github_token');
@@ -1470,16 +1538,19 @@ async function fetchPrivateJSON(path) {
   } catch(e){return null;}
 }
 async function pushPrivateFile(path, jsonData, msg) {
-  const token=getSetting('github_token'); if(!token) return false;
-  const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr) return false;
+  const label=path.replace(/\..+$/,'').replace(/.*\//,''); // 'daily-notes', 'health-data', etc.
+  const token=getSetting('github_token'); if(!token){recordSync(false,label,'no token');return false;}
+  const o=getSetting('github_owner','TheKrips'), pr=getSetting('private_github_repo',''); if(!pr){recordSync(false,label,'no private repo');return false;}
   try {
     const hr=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
     const sha=hr.ok?(await hr.json()).sha:undefined;
     const content=btoa(unescape(encodeURIComponent(JSON.stringify(jsonData,null,2))));
     const body={message:msg||`update: ${path}`,content}; if(sha)body.sha=sha;
     const res=await fetch(`https://api.github.com/repos/${o}/${pr}/contents/${path}`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    return res.ok;
-  } catch(e){return false;}
+    if(res.ok){recordSync(true,label);return true;}
+    let err=`HTTP ${res.status}`; try{const j=await res.json();if(j.message)err=`${res.status}: ${j.message}`;}catch(e){}
+    recordSync(false,label,err); return false;
+  } catch(e){recordSync(false,label,'network'); return false;}
 }
 async function fetchWorkoutJson() {
   const d=await fetchJSON('workout.json');
@@ -1523,15 +1594,18 @@ async function fetchHealthData() {
   return { weight_kg: toArr(weightByDay), body_fat_pct: toArr(fatByDay), bmi: toArr(bmiByDay), steps: toArr(stepsByDay) };
 }
 async function pushLogsToGitHub(logs) {
-  const token=getSetting('github_token'); if(!token) return false;
+  const token=getSetting('github_token'); if(!token){recordSync(false,'log','no token');return false;}
   const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
   try {
     const infoRes=await fetch(`https://api.github.com/repos/${o}/${r}/contents/logs.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
-    if(!infoRes.ok) return false; const info=await infoRes.json();
+    if(!infoRes.ok){recordSync(false,'log',`HEAD ${infoRes.status}`);return false;}
+    const info=await infoRes.json();
     const content=btoa(unescape(encodeURIComponent(JSON.stringify(logs,null,2))));
     const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/logs.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify({message:`log: session ${new Date().toISOString().split('T')[0]}`,content,sha:info.sha})});
-    return res.ok;
-  } catch(e){return false;}
+    if(res.ok){recordSync(true,'log');return true;}
+    let err=`HTTP ${res.status}`; try{const j=await res.json();if(j.message)err=`${res.status}: ${j.message}`;}catch(e){}
+    recordSync(false,'log',err); return false;
+  } catch(e){recordSync(false,'log','network'); return false;}
 }
 
 // ─── Local logs ───────────────────────────────────────────────────────────────
@@ -1777,8 +1851,12 @@ function upsertDailyNote(n) {
 }
 async function pushDailyNotesToGitHub(notes) {
   const privRepo = getSetting('private_github_repo','');
-  if (privRepo) return await pushPrivateFile('daily-notes.json', {notes}, `note: ${new Date().toISOString().split('T')[0]}`);
-  const token=getSetting('github_token'); if(!token) return false;
+  if (privRepo) {
+    const ok=await pushPrivateFile('daily-notes.json', {notes}, `note: ${new Date().toISOString().split('T')[0]}`);
+    if(ok) recordSync(true,'note'); // re-label for clarity in chip
+    return ok;
+  }
+  const token=getSetting('github_token'); if(!token){recordSync(false,'note','no token');return false;}
   const o=getSetting('github_owner','TheKrips'), r=getSetting('github_repo','gym-tracker');
   try {
     const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/daily-notes.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
@@ -1787,8 +1865,10 @@ async function pushDailyNotesToGitHub(notes) {
     const body={message:`note: ${new Date().toISOString().split('T')[0]}`,content};
     if (sha) body.sha=sha;
     const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/daily-notes.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    return res.ok;
-  } catch(e){return false;}
+    if(res.ok){recordSync(true,'note');return true;}
+    let err=`HTTP ${res.status}`; try{const j=await res.json();if(j.message)err=`${res.status}: ${j.message}`;}catch(e){}
+    recordSync(false,'note',err); return false;
+  } catch(e){recordSync(false,'note','network'); return false;}
 }
 async function fetchDailyNotesFromGitHub() {
   const privRepo = getSetting('private_github_repo','');
@@ -3220,7 +3300,7 @@ function getFuncTests(){try{return JSON.parse(localStorage.getItem('gym_func_tes
 function saveFuncTestsLocal(d){localStorage.setItem('gym_func_tests',JSON.stringify(d));}
 async function fetchFuncTestsFromGitHub(){const d=await fetchJSON('functional-tests.json');return d&&d.tests?d:null;}
 async function pushFuncTestsToGitHub(data){
-  const token=getSetting('github_token'); if(!token)return false;
+  const token=getSetting('github_token'); if(!token){recordSync(false,'functest','no token');return false;}
   const o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker');
   try{
     const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/functional-tests.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
@@ -3229,8 +3309,10 @@ async function pushFuncTestsToGitHub(data){
     const body={message:`funtest: ${new Date().toISOString().split('T')[0]}`,content};
     if(sha)body.sha=sha;
     const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/functional-tests.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    return res.ok;
-  }catch(e){return false;}
+    if(res.ok){recordSync(true,'functest');return true;}
+    let err=`HTTP ${res.status}`; try{const j=await res.json();if(j.message)err=`${res.status}: ${j.message}`;}catch(e){}
+    recordSync(false,'functest',err); return false;
+  }catch(e){recordSync(false,'functest','network'); return false;}
 }
 function renderFuncTestBanner(){
   const el=document.getElementById('funtest-banner'); if(!el)return;
@@ -3606,7 +3688,7 @@ function getHealthMarkers(){try{return JSON.parse(localStorage.getItem('gym_heal
 function saveHealthMarkersLocal(d){localStorage.setItem('gym_health_markers',JSON.stringify(d));}
 async function fetchHealthMarkersFromGitHub(){const d=await fetchJSON('health-markers.json');return d&&d.ldl?d:null;}
 async function pushHealthMarkersToGitHub(data){
-  const token=getSetting('github_token'); if(!token)return false;
+  const token=getSetting('github_token'); if(!token){recordSync(false,'markers','no token');return false;}
   const o=getSetting('github_owner','TheKrips'),r=getSetting('github_repo','gym-tracker');
   try{
     const hr=await fetch(`https://api.github.com/repos/${o}/${r}/contents/health-markers.json`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
@@ -3615,8 +3697,10 @@ async function pushHealthMarkersToGitHub(data){
     const body={message:`markers: ${new Date().toISOString().split('T')[0]}`,content};
     if(sha)body.sha=sha;
     const res=await fetch(`https://api.github.com/repos/${o}/${r}/contents/health-markers.json`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    return res.ok;
-  }catch(e){return false;}
+    if(res.ok){recordSync(true,'markers');return true;}
+    let err=`HTTP ${res.status}`; try{const j=await res.json();if(j.message)err=`${res.status}: ${j.message}`;}catch(e){}
+    recordSync(false,'markers',err); return false;
+  }catch(e){recordSync(false,'markers','network'); return false;}
 }
 function openLDL(){renderLDLContent();openOverlay('ov-ldl');}
 function renderLDLContent(){
@@ -4994,6 +5078,7 @@ async function init(){
 
   renderTimers(); renderDayGrid(); renderStats();
   renderHealthSection(); // placeholder until data loads
+  renderSyncChip();
 
   // Load workout program
   workoutData=await fetchWorkoutJson();
@@ -5035,7 +5120,11 @@ async function init(){
     saveDailyNotes(Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)));
     renderDailyNoteCard(); renderWeekRow(); renderCoachLogBanner();
   }
+
+  // Retry any failed pushes from previous session
+  if (Object.keys(getPendingSync()).length) pushAllPending();
 }
+window.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){renderSyncChip(); if(Object.keys(getPendingSync()).length) pushAllPending();} });
 init();
 
 // ─── Pull-to-refresh ──────────────────────────────────────────────────────────
