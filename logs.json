@@ -1,6 +1,143 @@
 {
   "sessions": [
     {
+      "date": "2026-05-01",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 62.5,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 62.5,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 62.5,
+              "reps": 10
+            },
+            {
+              "set": 4,
+              "weight": 62.5,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 90,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 110,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 110,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_extension",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 37,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 37,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 37,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 40,
+              "reps": 12
+            },
+            {
+              "set": 2,
+              "weight": 40,
+              "reps": 12
+            },
+            {
+              "set": 3,
+              "weight": 40,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "hyperextension_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 10,
+              "reps": 12
+            },
+            {
+              "set": 2,
+              "weight": 10,
+              "reps": 12
+            },
+            {
+              "set": 3,
+              "weight": 10,
+              "reps": 12
+            }
+          ]
+        },
+        {
+          "exercise_id": "calf_raise_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 0,
+              "reps": 25
+            },
+            {
+              "set": 2,
+              "weight": 0,
+              "reps": 25
+            },
+            {
+              "set": 3,
+              "weight": 0,
+              "reps": 25
+            }
+          ]
+        }
+      ],
+      "started_at": "2026-05-01T12:08:19.223Z",
+      "finished_at": "2026-05-01T14:35:24.408Z",
+      "duration_min": 60,
+      "rpe": 4,
+      "load_au": 240
+    },
+    {
       "date": "2026-04-27",
       "workout_id": "upper_a",
       "workout_name": "Upper A",
