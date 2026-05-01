@@ -1930,8 +1930,14 @@ function renderNoteEditor() {
       <div class="num-input-group"><label>Темп. °C</label>
         <input type="number" class="num-input" placeholder="—" value="${n.body_temp||''}" oninput="editingNote.body_temp=this.value?+this.value:null" inputmode="decimal" step="0.1"></div>
     </div>
+    <div class="num-inputs-row">
+      <div class="num-input-group"><label>Тиск систолічний</label>
+        <input type="number" class="num-input" placeholder="120" value="${n.bp_sys||''}" oninput="editingNote.bp_sys=this.value?+this.value:null" inputmode="numeric" min="60" max="220"></div>
+      <div class="num-input-group"><label>Тиск діастолічний</label>
+        <input type="number" class="num-input" placeholder="80" value="${n.bp_dia||''}" oninput="editingNote.bp_dia=this.value?+this.value:null" inputmode="numeric" min="40" max="140"></div>
+    </div>
     <div style="font-size:10.5px;color:var(--t3);margin-top:-8px;margin-bottom:6px;line-height:1.4">
-      Apple Health → Дихання & Серце → HRV/Пульс у спокої. Або Watch → Mindfulness. Заповнюй ранком після пробудження.
+      Apple Health → Дихання & Серце → HRV/Пульс у спокої. Тиск — зранку у спокої сидячи (норма ≈120/80). Заповнюй 2-3×/тиждень.
     </div>
     <div class="toggle-row" onclick="editingNote.illness=!editingNote.illness; preserveTextAndRerender()">
       <span class="toggle-label">🤒 Я хворію</span>
@@ -2270,7 +2276,8 @@ const GLOSSARY = {
   hrv:{t:'HRV (rMSSD)',b:'<p><strong>Heart Rate Variability</strong> — варіабельність серцевого ритму, ms (root mean square of successive differences).</p><p>Парасимпатичний тонус. Високий HRV = добре відновлення. Низький → стрес/перетрен/хвороба.</p><p>Аналізуємо як <strong>z-score від твого 60-денного baseline</strong> (логнормалізовано). Сирі цифри між людьми не порівнюються.</p>'},
   rhr:{t:'Resting HR',b:'<p><strong>Пульс спокою</strong> зранку, ударів/хв.</p><p>Аналізуємо як z-score від твого 60-денного baseline.</p><p><em>+0.8σ</em> підвищений → стрес/недосип/хвороба/перетрен. Кореляція з HRV.</p>'},
   sleep_debt:{t:'Дефіцит сну · 14д',b:'<p>Накопичений недосип за останні 14 ночей (тільки додавання при недосипанні, переспати не «компенсує»).</p><p>Особиста потреба = середнє з ТОП 25% сну за 90 днів (мінімум 7, максимум 9 год).</p><p>Кожна година дефіциту знижує recovery на 3–5%. Дефіцит >7h/14д = критичний — додай 30+ хв сну.</p>'},
-  acwr:{t:'A:C Ratio (EWMA)',b:'<p>Сучасний варіант Acute:Chronic, де гостре і хронічне навантаження експоненційно зважені (а не прості суми).</p><p>Точніший за класичний (7д/28д), бо враховує що недавні дні впливають сильніше.</p><p>Зелена зона <em>0.8–1.3</em>.</p>'}
+  acwr:{t:'A:C Ratio (EWMA)',b:'<p>Сучасний варіант Acute:Chronic, де гостре і хронічне навантаження експоненційно зважені (а не прості суми).</p><p>Точніший за класичний (7д/28д), бо враховує що недавні дні впливають сильніше.</p><p>Зелена зона <em>0.8–1.3</em>.</p>'},
+  bp:{t:'Артеріальний тиск',b:'<p>Систолічний / діастолічний тиск (mmHg). Вимірюй зранку у спокої сидячи, після 5 хв тиші, без кави.</p><p><em>&lt;120/80</em> оптимальний · <em>120–129/80–84</em> нормальний · <em>130–139/85–89</em> підвищений · <em>≥140/90</em> гіпертензія I+ ст.</p><p>Хронічно високий тиск перед тренуваннями = ризик. Стрибок &gt;15 mmHg vs твоя норма → перевір сон/стрес/сіль/алкоголь. 2–3 заміри/тижд достатньо для тренду.</p>'}
 };
 function showInfo(key){
   const item=GLOSSARY[key]; if(!item) return;
@@ -3848,6 +3855,8 @@ function liveCoachMetrics(){
     m.hrvRmssd=noteToday.hrv_rmssd||null;
     m.rhr=noteToday.rhr||null;
     m.bodyTemp=noteToday.body_temp||null;
+    m.bpSys=noteToday.bp_sys||null;
+    m.bpDia=noteToday.bp_dia||null;
     m.illness=!!noteToday.illness;
     m.alcohol=noteToday.alcohol_units||0;
   }
@@ -3913,6 +3922,8 @@ function renderCoachLogContent(){
     hrvRmssd:live.hrvRmssd,
     rhr:live.rhr,
     bodyTemp:live.bodyTemp,
+    bpSys:live.bpSys,
+    bpDia:live.bpDia,
     illness:live.illness,
     alcohol:live.alcohol,
     adjustment:parsed.adjustment,
@@ -4040,8 +4051,8 @@ function renderCoachLogContent(){
     </div>`;
   }
 
-  // Vitals chips (HRV / RHR / Body temp)
-  if(d.hrvRmssd!=null||d.rhr!=null||d.bodyTemp!=null){
+  // Vitals chips (HRV / RHR / Body temp / BP)
+  if(d.hrvRmssd!=null||d.rhr!=null||d.bodyTemp!=null||d.bpSys!=null){
     const chips=[];
     if(d.hrvRmssd!=null){
       const bl=d.hrvBaseline;
@@ -4067,6 +4078,14 @@ function renderCoachLogContent(){
       const dev=d.bodyTemp-36.6;
       const cls=Math.abs(dev)<0.3?'good':(Math.abs(dev)<0.6?'':'warn');
       chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">Темп</div><div class="vital-chip-val">${d.bodyTemp.toFixed(1)}<small style="font-size:10px;color:var(--t3)">°C</small></div><div class="vital-chip-sub ${cls}">${dev>=0?'+':''}${dev.toFixed(1)}° vs 36.6</div></div>`);
+    }
+    if(d.bpSys!=null&&d.bpDia!=null){
+      const sys=d.bpSys, dia=d.bpDia;
+      let sub='норма', cls='good';
+      if(sys>=140||dia>=90){sub='високий';cls='poor';}
+      else if(sys>=130||dia>=85){sub='підвищений';cls='warn';}
+      else if(sys<100||dia<60){sub='низький';cls='warn';}
+      chips.push(`<div class="vital-chip"><div class="vital-chip-lbl">Тиск${infoBtn('bp')}</div><div class="vital-chip-val">${sys}/${dia}</div><div class="vital-chip-sub ${cls}">${sub}</div></div>`);
     }
     html+=`<div class="coach-sec">
       <div class="coach-sec-title">Вітали (ранок)</div>
@@ -4306,6 +4325,7 @@ function renderCoachLogContent(){
     if(!d.hrvRmssd) missing.push({i:'❤️',t:'HRV (rMSSD, ms)',d:'Apple Health → HRV (ранкове). Найсильніший провісник готовності — додає ±15 балів до Recovery'});
     if(!d.rhr) missing.push({i:'💓',t:'Resting HR',d:'Apple Health → RHR (ранкове). Підвищений RHR → ознака стресу/хвороби/перетренування'});
     if(!d.bodyTemp) missing.push({i:'🌡️',t:'Темп. тіла',d:'Ранкова базальна. Відхилення +0.3°C → ознака запалення/хвороби'});
+    if(d.bpSys==null||d.bpDia==null) missing.push({i:'🩺',t:'Артеріальний тиск',d:'Зранку у спокої (≈120/80). Хронічно високий чи різкий стрибок → знизь інтенсивність, перевір стрес/сон'});
     const cards=missing.map(m=>`<div class="ai-rec low">
       <div class="ai-rec-ico">${m.i}</div>
       <div class="ai-rec-body">
