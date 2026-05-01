@@ -689,5 +689,9 @@
         }
       ]
     }
-  ]
+  ],
+  "override_today": {
+    "date": "2026-05-01",
+    "workout_id": "lower_a"
+  }
 }

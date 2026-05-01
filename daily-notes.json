@@ -1,6 +1,25 @@
 {
   "notes": [
     {
+      "date": "2026-05-01",
+      "hooper": {
+        "sleep_quality": 2,
+        "stress": 2,
+        "fatigue": 3,
+        "soreness": 1
+      },
+      "sleep_hours": 5.5,
+      "nutrition_adherence": 4,
+      "kcal": null,
+      "protein_g": null,
+      "alcohol_units": 0,
+      "illness": false,
+      "notes": "Спав 5.5 год, але поїв нормально. День — сили субʼєктивно є. Перерва в залі 7 днів. Сьогодні lower_a, але -1 підхід на вправу, без PR на squat, RIR 2.",
+      "text": "",
+      "hooper_score": 8,
+      "updated_at": "2026-05-01T11:00:00.000Z"
+    },
+    {
       "date": "2026-04-23",
       "hooper": {
         "sleep_quality": 2,
