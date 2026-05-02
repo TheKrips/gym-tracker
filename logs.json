@@ -118,6 +118,20 @@
       "load_au": 390
     },
     {
+      "date": "2026-05-02",
+      "workout_id": "cardio",
+      "workout_name": "Кардіо: Ходьба",
+      "finished_at": "2026-05-02T12:47:08.059Z",
+      "duration_min": 35,
+      "rpe": 4,
+      "load_au": 140,
+      "cardio_type": "walk",
+      "cardio_avg_hr": 143,
+      "cardio_speed_kmh": 6,
+      "cardio_elevation_m": 5,
+      "exercises": []
+    },
+    {
       "date": "2026-05-01",
       "workout_id": "lower_a",
       "workout_name": "Lower A",
