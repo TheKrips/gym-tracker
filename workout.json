@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.18",
+    "version": "3.19",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-05-01"
+    "updated": "2026-05-02"
   },
   "schedule": [
     {
@@ -192,7 +192,7 @@
               "secondary_muscles": [],
               "sets": 3,
               "reps": "8",
-              "weight_kg": 39.0,
+              "weight_kg": 40.0,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті притиснуті до тулуба і НЕ РУХАЮТЬСЯ",
@@ -273,7 +273,7 @@
           "warmup": null,
           "sets": 3,
           "reps": "10",
-          "weight_kg": 37.0,
+          "weight_kg": 38.0,
           "rir": "1-2",
           "rest_sec": 90,
           "jefit_url": "https://www.jefit.com/exercises/33/leg-extensions",
@@ -689,9 +689,5 @@
         }
       ]
     }
-  ],
-  "override_today": {
-    "date": "2026-05-01",
-    "workout_id": "lower_a"
-  }
+  ]
 }
