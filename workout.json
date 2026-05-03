@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.19",
+    "version": "3.20",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-05-02"
+    "updated": "2026-05-03"
   },
   "schedule": [
     {
@@ -192,7 +192,7 @@
               "secondary_muscles": [],
               "sets": 3,
               "reps": "8",
-              "weight_kg": 40.0,
+              "weight_kg": 41.0,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті притиснуті до тулуба і НЕ РУХАЮТЬСЯ",
@@ -377,8 +377,8 @@
           ],
           "warmup": null,
           "sets": 2,
-          "reps": "10",
-          "weight_kg": 60,
+          "reps": "6",
+          "weight_kg": 62.5,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/46/seated-cable-rows",
@@ -403,8 +403,8 @@
           ],
           "warmup": null,
           "sets": 2,
-          "reps": "8",
-          "weight_kg": 60,
+          "reps": "6",
+          "weight_kg": 62.5,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/32/close-grip-lat-pulldown",
@@ -427,8 +427,8 @@
           ],
           "warmup": "15 кг × 10",
           "sets": 2,
-          "reps": "10",
-          "weight_kg": 22,
+          "reps": "6",
+          "weight_kg": 24.5,
           "rir": "1-2",
           "rest_sec": 120,
           "jefit_url": "https://www.jefit.com/exercises/31/dumbbell-bench-press",
@@ -451,8 +451,8 @@
           ],
           "warmup": null,
           "sets": 2,
-          "reps": "15",
-          "weight_kg": 27,
+          "reps": "10",
+          "weight_kg": 28.0,
           "rir": "1-2",
           "rest_sec": 60,
           "jefit_url": "https://www.jefit.com/exercises/221/face-pull",
@@ -522,8 +522,8 @@
               ],
               "secondary_muscles": [],
               "sets": 2,
-              "reps": "15",
-              "weight_kg": 30,
+              "reps": "13",
+              "weight_kg": 31.0,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті до тулуба, повністю розгинай"
