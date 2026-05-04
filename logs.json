@@ -1,6 +1,160 @@
 {
   "sessions": [
     {
+      "date": "2026-05-04",
+      "workout_id": "upper_a",
+      "workout_name": "Upper A",
+      "exercises": [
+        {
+          "exercise_id": "db_shoulder_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 22.5,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 22.5,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 22.5,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "exercise_id": "bench_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 70,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 70,
+              "reps": 6
+            },
+            {
+              "set": 3,
+              "weight": 70,
+              "reps": 6
+            },
+            {
+              "set": 4,
+              "weight": 70,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "exercise_id": "lat_pulldown_wide",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 60,
+              "reps": 9
+            },
+            {
+              "set": 2,
+              "weight": 60,
+              "reps": 9
+            },
+            {
+              "set": 3,
+              "weight": 60,
+              "reps": 9
+            }
+          ]
+        },
+        {
+          "exercise_id": "db_row_one_arm",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 27.5,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 27.5,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 27.5,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "exercise_id": "lateral_raises",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 6,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 6,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 6,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "exercise_id": "bicep_curl_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 10,
+              "reps": 10
+            },
+            {
+              "set": 2,
+              "weight": 10,
+              "reps": 10
+            },
+            {
+              "set": 3,
+              "weight": 10,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "tricep_pushdown_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 40,
+              "reps": 12
+            },
+            {
+              "set": 2,
+              "weight": 40,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 40,
+              "reps": 15
+            }
+          ]
+        }
+      ],
+      "started_at": "2026-05-04T19:06:16.589Z",
+      "finished_at": "2026-05-04T19:28:51.113Z"
+    },
+    {
       "date": "2026-05-02",
       "workout_id": "upper_b",
       "workout_name": "Upper B",
