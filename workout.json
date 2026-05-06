@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.23",
+    "version": "3.24",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-05-05",
+    "updated": "2026-05-06",
     "kcal_target": 2750,
     "kcal_target_note": "Профіцит +300 ккал від підтримки (≈2460) для гіпертрофії. Перегляд через 4 тижні за вагою."
   },
