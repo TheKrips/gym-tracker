@@ -1,6 +1,20 @@
 {
   "sessions": [
     {
+      "date": "2026-05-07",
+      "workout_id": "cardio",
+      "workout_name": "Кардіо: Ходьба",
+      "finished_at": "2026-05-07T08:45:26.118Z",
+      "duration_min": 35,
+      "rpe": 2,
+      "load_au": 70,
+      "cardio_type": "walk",
+      "cardio_avg_hr": 130,
+      "cardio_speed_kmh": 6.4,
+      "cardio_elevation_m": 5,
+      "exercises": []
+    },
+    {
       "date": "2026-05-04",
       "workout_id": "upper_a",
       "workout_name": "Upper A",
