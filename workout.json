@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "3.26",
+    "version": "3.27",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
@@ -8,6 +8,11 @@
     "updated": "2026-05-08",
     "kcal_target": 2750,
     "kcal_target_note": "Профіцит +300 ккал від підтримки (≈2460) для гіпертрофії. Перегляд через 4 тижні за вагою."
+  },
+  "override_today": {
+    "date": "2026-05-08",
+    "workout_id": "lower_a",
+    "note": "Після 2 поганих ночей (Ср 5.5h, Чт 6h). Без PR. RIR ≥2. Squat тримай 62.5 (НЕ 67.5). Скороти leg press до 100 і leg ext до 35."
   },
   "schedule": [
     {
