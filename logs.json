@@ -1,6 +1,123 @@
 {
   "sessions": [
     {
+      "date": "2026-05-08",
+      "workout_id": "lower_a",
+      "workout_name": "Lower A",
+      "exercises": [
+        {
+          "exercise_id": "squat",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 62.5,
+              "reps": 8
+            },
+            {
+              "set": 2,
+              "weight": 62.5,
+              "reps": 8
+            },
+            {
+              "set": 3,
+              "weight": 62.5,
+              "reps": 8
+            },
+            {
+              "set": 4,
+              "weight": 62.5,
+              "reps": 8
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_press",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 110,
+              "reps": 6
+            },
+            {
+              "set": 2,
+              "weight": 110,
+              "reps": 6
+            },
+            {
+              "set": 3,
+              "weight": 110,
+              "reps": 10
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_extension",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 37,
+              "reps": 15
+            },
+            {
+              "set": 2,
+              "weight": 37,
+              "reps": 15
+            },
+            {
+              "set": 3,
+              "weight": 37,
+              "reps": 15
+            }
+          ]
+        },
+        {
+          "exercise_id": "leg_curl_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 40,
+              "reps": 11
+            },
+            {
+              "set": 2,
+              "weight": 40,
+              "reps": 11
+            },
+            {
+              "set": 3,
+              "weight": 40,
+              "reps": 11
+            }
+          ]
+        },
+        {
+          "exercise_id": "hyperextension_a",
+          "sets": [
+            {
+              "set": 1,
+              "weight": 10,
+              "reps": 12
+            },
+            {
+              "set": 2,
+              "weight": 10,
+              "reps": 12
+            },
+            {
+              "set": 3,
+              "weight": 10,
+              "reps": 12
+            }
+          ]
+        }
+      ],
+      "started_at": "2026-05-08T12:15:34.027Z",
+      "finished_at": "2026-05-08T13:06:41.353Z",
+      "duration_min": 50,
+      "rpe": 3,
+      "load_au": 150
+    },
+    {
       "date": "2026-05-06",
       "workout_id": "cardio",
       "workout_name": "Кардіо: Ходьба",
