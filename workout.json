@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "3.139",
+    "version": "3.140",
     "created": "2026-04-16",
     "profile": "Чоловік, 35р, 177см, ~65кг, стаж ~3 місяці.",
     "goal": "Сила + композиція тіла. Train 2x/week per muscle. Compounds first. Close to failure.",
     "progression": "Double progression: досяг верхньої межі повторів у всіх підходах → +2.5кг (верх) / +5кг (ноги)",
-    "updated": "2026-08-28",
+    "updated": "2026-08-29",
     "kcal_target": 2750,
     "kcal_target_note": "Профіцит +300 ккал від підтримки (≈2460) для гіпертрофії. Перегляд через 4 тижні за вагою."
   },
@@ -276,7 +276,7 @@
           "warmup": null,
           "sets": 3,
           "reps": "10",
-          "weight_kg": 36.8,
+          "weight_kg": 37.8,
           "rir": "1-2",
           "rest_sec": 90,
           "jefit_url": "https://www.jefit.com/exercises/33/leg-extensions",
@@ -381,7 +381,7 @@
           "warmup": null,
           "sets": 2,
           "reps": "6",
-          "weight_kg": 57.9,
+          "weight_kg": 60.4,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/46/seated-cable-rows",
@@ -407,7 +407,7 @@
           "warmup": null,
           "sets": 2,
           "reps": "6",
-          "weight_kg": 57.9,
+          "weight_kg": 60.4,
           "rir": "1-2",
           "rest_sec": 150,
           "jefit_url": "https://www.jefit.com/exercises/32/close-grip-lat-pulldown",
@@ -455,7 +455,7 @@
           "warmup": null,
           "sets": 2,
           "reps": "10",
-          "weight_kg": 25.8,
+          "weight_kg": 26.8,
           "rir": "1-2",
           "rest_sec": 60,
           "jefit_url": "https://www.jefit.com/exercises/221/face-pull",
@@ -526,7 +526,7 @@
               "secondary_muscles": [],
               "sets": 2,
               "reps": "8",
-              "weight_kg": 28.4,
+              "weight_kg": 29.4,
               "jefit_url": "https://www.jefit.com/exercises/37/tricep-pushdown",
               "cues": [
                 "Лікті до тулуба, повністю розгинай"
